@@ -32,9 +32,10 @@ def init_database():
     conn.execute('CREATE TABLE IF NOT EXISTS step_contents (id INTEGER PRIMARY KEY AUTOINCREMENT, step_id INTEGER NOT NULL, content TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS students (id INTEGER PRIMARY KEY AUTOINCREMENT, student_number TEXT UNIQUE, name TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS exam_records (id INTEGER PRIMARY KEY AUTOINCREMENT, student_id INTEGER, exam_date TEXT, total_score REAL, status TEXT DEFAULT "pending", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-    conn.execute('CREATE TABLE IF NOT EXISTS translation_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, difficulty TEXT DEFAULT "medium", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-    conn.execute('CREATE TABLE IF NOT EXISTS professional_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, subject_id INTEGER, content TEXT NOT NULL, difficulty TEXT DEFAULT "medium", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-    conn.execute('CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+    conn.execute('CREATE TABLE IF NOT EXISTS translation_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, question_index INTEGER, question_data TEXT, difficulty TEXT DEFAULT "medium", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+    conn.execute('CREATE TABLE IF NOT EXISTS professional_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, question_index INTEGER, question_data TEXT, difficulty TEXT DEFAULT "medium", subject TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+    conn.execute('CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, name TEXT NOT NULL, description TEXT, is_active BOOLEAN DEFAULT 1, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+    conn.execute('CREATE TABLE IF NOT EXISTS operation_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, operation_type TEXT, operator TEXT, operation_details TEXT, ip_address TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
 
     # 插入默认考试步骤（如果不存在）
     for step in DEFAULT_EXAM_STEPS:

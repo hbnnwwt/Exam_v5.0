@@ -6,11 +6,15 @@
 
 import os
 import sys
+from pathlib import Path
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 
 # 添加项目路径
-current_dir = os.path.dirname(os.path.abspath(__file__))
+backend_dir = Path(__file__).resolve().parent
+project_root = backend_dir.parent
+current_dir = str(backend_dir)
+
 if current_dir not in sys.path:
     sys.path.insert(0, current_dir)
 
@@ -19,7 +23,7 @@ from apis.common.logger import logger
 from config import get_config
 
 # 创建 Flask 应用
-app = Flask(__name__)
+app = Flask(__name__, static_folder=str(backend_dir / 'assets'), static_url_path='/backend-assets')
 app.config.from_object(get_config())
 
 # 启用 CORS（开发环境）
@@ -121,32 +125,67 @@ except ImportError as e:
 @app.route('/uploads/<path:filename>')
 def serve_uploads(filename):
     """服务上传的图片"""
-    uploads_path = os.path.normpath(os.path.join(current_dir, 'static', 'uploads'))
+    from pathlib import Path
+    uploads_path = str(Path(current_dir) / 'static' / 'uploads')
     return send_from_directory(uploads_path, filename)
 
 # 帮助文档截图
 @app.route('/docs/<path:filename>')
 def serve_docs(filename):
     """服务帮助文档截图"""
-    docs_path = os.path.normpath(os.path.join(current_dir, '..', 'docs'))
+    from pathlib import Path
+    docs_path = str(Path(current_dir).parent / 'docs')
     return send_from_directory(docs_path, filename)
 
 # 后端静态资源（图片、Logo、数据等）
 @app.route('/backend-assets/<path:filename>')
 def serve_backend_assets(filename):
     """服务后端静态资源"""
-    backend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets'))
-    return send_from_directory(backend_assets_path, filename)
+    import os
+    import glob
+
+    # Get backend directory
+    backend_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Split the path and search in the last directory
+    parts = filename.replace('\\', '/').split('/')
+    if len(parts) >= 2:
+        dir_part = os.path.join(backend_dir, 'assets', *parts[:-1])
+        file_part = parts[-1]
+    else:
+        dir_part = os.path.join(backend_dir, 'assets')
+        file_part = filename
+
+    # Use glob to find file (works around Git Bash path issues)
+    search_pattern = os.path.join(dir_part, file_part + '*')
+    matches = glob.glob(search_pattern)
+
+    if not matches:
+        return {'error': 'File not found'}, 404
+
+    file_path = matches[0]
+
+    # Determine content type
+    import mimetypes
+    content_type = mimetypes.guess_type(file_path)[0] or 'application/octet-stream'
+
+    # Read and return file content directly
+    with open(file_path, 'rb') as f:
+        content = f.read()
+
+    from flask import Response
+    return Response(content, mimetype=content_type)
 
 # 前端构建的静态资源（CSS、JS等）
 @app.route('/assets/<path:filename>')
 def serve_frontend_assets(filename):
     """服务前端构建的静态资源"""
-    frontend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets', 'frontend', 'assets'))
-    if os.path.exists(os.path.join(frontend_assets_path, filename)):
+    from pathlib import Path
+    frontend_assets_path = str(Path(current_dir) / 'assets' / 'frontend' / 'assets')
+    if (Path(frontend_assets_path) / filename).exists():
         return send_from_directory(frontend_assets_path, filename)
     # 如果前端资源不存在，返回后端资源
-    backend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets'))
+    backend_assets_path = str(Path(current_dir) / 'assets')
     return send_from_directory(backend_assets_path, filename)
 
 # 前端页面服务（生产环境）
@@ -154,16 +193,17 @@ def serve_frontend_assets(filename):
 @app.route('/<path:path>')
 def serve_frontend(path):
     """服务前端页面"""
+    from pathlib import Path
     # 如果是 API 请求或docs，跳过
     if path.startswith(('exam-api', 'api', 'export-api', 'docs')):
         return {'error': 'Not found'}, 404
 
     # 生产环境：返回前端构建文件
-    frontend_path = os.path.normpath(os.path.join(current_dir, 'assets', 'frontend'))
-    if os.path.exists(frontend_path):
-        if path and os.path.exists(os.path.join(frontend_path, path)):
-            return send_from_directory(frontend_path, path)
-        return send_from_directory(frontend_path, 'index.html')
+    frontend_path = Path(current_dir) / 'assets' / 'frontend'
+    if frontend_path.exists():
+        if path and (frontend_path / path).exists():
+            return send_from_directory(str(frontend_path), path)
+        return send_from_directory(str(frontend_path), 'index.html')
 
     return {'message': 'Frontend not built. Run: cd frontend && npm run build'}, 404
 

@@ -934,8 +934,8 @@ def get_header_settings():
         # 默认页头设置（不再硬编码标题和版权，从数据库读取）
         default_settings = {
             'title': '',
-            'instituteLogo': '/backend-assets/logos/institute-logo.png',
-            'collegeLogo': '/backend-assets/logos/college-logo.png',
+            'instituteLogo': '/backend-assets/logos/logo_institute.png',
+            'collegeLogo': '/backend-assets/logos/logo_college.png',
             'footerCopyright': ''
         }
 

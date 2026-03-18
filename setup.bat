@@ -8,11 +8,12 @@ echo ========================================
 echo.
 
 set "PYTHON_DIR=%~dp0python_portable"
-set "VENV_ACTIVATE=%PYTHON_DIR%\Scripts\activate.bat"
+set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
+set "PIP_EXE=%PYTHON_DIR%\Scripts\pip.exe"
 
-REM Check if virtual environment already exists
-if exist "%VENV_ACTIVATE%" (
-    echo [Info] Virtual environment already exists.
+REM Check if portable Python already exists
+if exist "%PIP_EXE%" (
+    echo [Info] Python environment already exists.
     goto :install_deps
 )
 
@@ -22,7 +23,9 @@ if %errorlevel% equ 0 (
     echo [Info] System Python found:
     python --version
     echo.
-    goto :create_venv
+    set "PYTHON_EXE=python"
+    set "PIP_EXE=pip"
+    goto :install_deps
 )
 
 REM No Python found - download portable version automatically
@@ -40,13 +43,12 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo [Extracting] Python to python_portable folder...
+echo [Extracting] Python...
 if exist "%PYTHON_DIR%" rmdir /s /q "%PYTHON_DIR%"
 powershell -Command "Expand-Archive -Path '%~dp0%PYTHON_ZIP%' -DestinationPath '%PYTHON_DIR%' -Force"
 del "%~dp0%PYTHON_ZIP%" 2>nul
 
-REM Check if python.exe exists
-if not exist "%PYTHON_DIR%\python.exe" (
+if not exist "%PYTHON_EXE%" (
     echo [Error] Failed to extract Python.
     pause
     exit /b 1
@@ -55,49 +57,24 @@ if not exist "%PYTHON_DIR%\python.exe" (
 echo [Installing] pip...
 powershell -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%~dp0get-pip.py'" 2>nul
 if exist "%~dp0get-pip.py" (
-    "%PYTHON_DIR%\python.exe" "%~dp0get-pip.py" --no-warn-script-location
+    "%PYTHON_EXE%" "%~dp0get-pip.py" --no-warn-script-location
     del "%~dp0get-pip.py" 2>nul
 )
 
-REM Check if pip is available now
-if not exist "%PYTHON_DIR%\Scripts\pip.exe" (
+if not exist "%PIP_EXE%" (
     echo [Error] Failed to install pip.
     pause
     exit /b 1
 )
 
-echo [Success] Python and pip installed.
-
-:create_venv
+echo [Success] Python installed.
 echo.
-echo [Step 1/2] Creating virtual environment...
-python -m venv "%PYTHON_DIR%" 2>nul
-if %errorlevel% neq 0 (
-    "%PYTHON_DIR%\python.exe" -m venv "%PYTHON_DIR%" 2>nul
-    if %errorlevel% neq 0 (
-        echo [Error] Failed to create virtual environment.
-        pause
-        exit /b 1
-    )
-)
 
 :install_deps
-echo.
-echo [Step 2/2] Installing dependencies...
-
-if exist "%PYTHON_DIR%\Scripts\pip.exe" (
-    call "%VENV_ACTIVATE%"
-    pip install --upgrade pip >nul 2>&1
-    pip install -r "%~dp0backend\requirements.txt"
-    set "install_result=%errorlevel%"
-    deactivate
-) else (
-    echo [Error] pip not found in virtual environment.
-    pause
-    exit /b 1
-)
-
-if %install_result% neq 0 (
+echo [Installing] Dependencies...
+"%PIP_EXE%" install --upgrade pip >nul 2>&1
+"%PIP_EXE%" install -r "%~dp0backend\requirements.txt"
+if %errorlevel% neq 0 (
     echo [Error] Failed to install dependencies.
     pause
     exit /b 1

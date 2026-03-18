@@ -25,33 +25,9 @@ if %errorlevel% equ 0 (
     goto :create_venv
 )
 
-REM No Python found - offer to download portable version
-echo [Error] Python not found on this system.
-echo.
-echo Options:
-echo   1. Download portable Python (auto-install)
-echo   2. I will install Python manually
-echo.
-set /p choice="Choose (1 or 2): "
-
-if "!choice!"=="1" goto :download_python
-if "!choice!"=="2" (
-    echo.
-    echo [Info] Please install Python 3.8+ from https://www.python.org/downloads/
-    echo [Tip] During installation, check "Add Python to PATH"
-    echo [Tip] After installation, run this script again.
-    pause
-    exit /b 0
-)
-
-echo [Error] Invalid choice.
-pause
-exit /b 1
-
-:download_python
-echo.
+REM No Python found - download portable version automatically
+echo [Info] Python not found on this system.
 echo [Downloading] Python 3.12 portable...
-echo [Info] Downloading Python embeddable package (~8MB)...
 echo.
 
 set "PYTHON_ZIP=python-3.12.0-embed-amd64.zip"
@@ -68,7 +44,6 @@ echo [Extracting] Python to python_portable folder...
 if exist "%PYTHON_DIR%" rmdir /s /q "%PYTHON_DIR%"
 powershell -Command "Expand-Archive -Path '%~dp0%PYTHON_ZIP%' -DestinationPath '%PYTHON_DIR%' -Force"
 del "%~dp0%PYTHON_ZIP%" 2>nul
-del "%~dp0%PYTHON_ZIP%" 2>nul
 
 REM Check if python.exe exists
 if not exist "%PYTHON_DIR%\python.exe" (
@@ -78,7 +53,6 @@ if not exist "%PYTHON_DIR%\python.exe" (
 )
 
 echo [Installing] pip...
-REM Download get-pip.py
 powershell -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.py' -OutFile '%~dp0get-pip.py'" 2>nul
 if exist "%~dp0get-pip.py" (
     "%PYTHON_DIR%\python.exe" "%~dp0get-pip.py" --no-warn-script-location
@@ -99,7 +73,6 @@ echo.
 echo [Step 1/2] Creating virtual environment...
 python -m venv "%PYTHON_DIR%" 2>nul
 if %errorlevel% neq 0 (
-    REM Try with portable Python if system Python not available
     "%PYTHON_DIR%\python.exe" -m venv "%PYTHON_DIR%" 2>nul
     if %errorlevel% neq 0 (
         echo [Error] Failed to create virtual environment.
@@ -112,7 +85,6 @@ if %errorlevel% neq 0 (
 echo.
 echo [Step 2/2] Installing dependencies...
 
-REM Use pip from venv
 if exist "%PYTHON_DIR%\Scripts\pip.exe" (
     call "%VENV_ACTIVATE%"
     pip install --upgrade pip >nul 2>&1

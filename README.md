@@ -71,47 +71,6 @@ Exam_v3.2/
 └── dev.bat                # 开发模式
 ```
 
-## 安全修复记录
-
-### P0 - 立即修复
-
-1. **认证授权** - 添加了 Token 认证系统
-   - 默认账号: `admin` / `admin123`
-   - 登录: `POST /auth/login`
-   - 登出: `POST /auth/logout`
-   - Token验证: `GET /auth/verify`
-   
-2. **SQL注入防护** - 代码已使用参数化查询 (SQLite parameterized queries)
-
-3. **自动备份** - 添加了数据库自动备份功能
-   - 手动备份: `POST /backup-api/create`
-   - 列出备份: `GET /backup-api/list`
-   - 恢复备份: `POST /backup-api/restore`
-   - 定时备份: `POST /backup-api/schedule/start`
-
-4. **单元测试** - 添加了基础测试
-   - 运行测试: `python run_unit_tests.py`
-
-### P1 - 本周修复
-
-1. **输入验证** - 添加了输入验证模块
-   - 学生数据验证
-   - 题目数据验证
-   - 字段类型和范围验证
-
-2. **错误分类处理** - 统一错误处理
-   - 认证错误 (401)
-   - 权限错误 (403)
-   - 资源不存在 (404)
-   - 业务逻辑错误 (400)
-   - 服务器错误 (500)
-
-3. **依赖版本锁定** - requirements.txt 已锁定版本
-
-4. **日志系统** - 使用 logging 替代 print
-   - 日志目录: `backend/logs/`
-   - 日志格式: `exam_system_YYYYMMDD.log`
-
 ## API 端点
 
 | 前缀 | 用途 |
@@ -119,8 +78,6 @@ Exam_v3.2/
 | `/exam-api/*` | 考试系统 API |
 | `/api/*` | 题库编辑 API |
 | `/export-api/*` | 导出 API |
-| `/auth/*` | 认证 API |
-| `/backup-api/*` | 备份管理 API |
 
 ## 环境要求
 
@@ -134,8 +91,7 @@ Exam_v3.2/
 3. **题库管理** - 翻译题和专业题管理
 4. **随机抽题** - 支持随机抽取题目
 5. **考试导出** - 导出考试记录和统计数据
-6. **认证授权** - Token 认证保护 API
-7. **Logo设置** - 可自定义学校/学院Logo和系统标题
+6. **Logo设置** - 可自定义学校/学院Logo和系统标题
 
 ## 面试环节
 

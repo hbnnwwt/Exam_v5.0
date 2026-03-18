@@ -81,8 +81,8 @@ echo.
 echo [Installing] Dependencies...
 
 REM Set environment variables
-set PYTHONPATH=%CD%\backend
-set PYTHONHOME=%CD%\%PYTHON_DIR%
+set PYTHONPATH=%~dp0backend
+set PYTHONHOME=%PYTHON_DIR%
 
 REM Use python -m pip instead of pip.exe
 "%PYTHON_EXE%" -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn >nul 2>&1

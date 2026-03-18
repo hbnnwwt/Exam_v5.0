@@ -42,6 +42,9 @@ echo [Starting] Flask server...
 echo [URL] http://localhost:5000
 echo.
 
+REM Open browser
+start http://localhost:5000
+
 "..\python_portable\python.exe" app.py
 
 pause

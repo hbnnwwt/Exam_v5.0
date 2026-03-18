@@ -9,9 +9,14 @@ echo.
 
 cd /d "%~dp0"
 
-REM Check Node.js
+REM Check Node.js (check common installation paths)
+set "NODE_FOUND=0"
 where node >nul 2>&1
-if errorlevel 1 (
+if not errorlevel 1 set "NODE_FOUND=1"
+if exist "C:\Program Files\nodejs\node.exe" set "NODE_FOUND=1"
+if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_FOUND=1"
+
+if "%NODE_FOUND%"=="0" (
     echo [Info] Node.js not found.
     echo [Downloading] Node.js LTS...
     echo.
@@ -30,19 +35,23 @@ if errorlevel 1 (
 
     REM Wait for installation to complete
     timeout /t 15 /nobreak >nul
-
-    REM Refresh environment variables
-    where node >nul 2>&1
-    if errorlevel 1 (
-        echo [Warning] Node.js requires a new terminal session.
-        echo [Info] Please open a new terminal and run build.bat again.
-        pause
-        exit /b 1
-    )
 )
 
-echo [Info] Node.js version:
-node --version
+REM Find node.exe path
+set "NODE_EXE="
+where node >nul 2>&1
+if not errorlevel 1 for /f "delims=" %%i in ('where node') do set "NODE_EXE=%%i"
+if "%NODE_EXE%"=="" if exist "C:\Program Files\nodejs\node.exe" set "NODE_EXE=C:\Program Files\nodejs\node.exe"
+if "%NODE_EXE%"=="" if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_EXE=C:\Program Files (x86)\nodejs\node.exe"
+
+if "%NODE_EXE%"=="" (
+    echo [Error] Node.js installation failed.
+    pause
+    exit /b 1
+)
+
+echo [Info] Node.js found: %NODE_EXE%
+"%NODE_EXE%" --version
 echo.
 
 cd frontend

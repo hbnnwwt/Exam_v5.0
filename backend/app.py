@@ -121,32 +121,32 @@ except ImportError as e:
 @app.route('/uploads/<path:filename>')
 def serve_uploads(filename):
     """服务上传的图片"""
-    uploads_path = os.path.join(current_dir, 'static', 'uploads')
+    uploads_path = os.path.normpath(os.path.join(current_dir, 'static', 'uploads'))
     return send_from_directory(uploads_path, filename)
 
 # 帮助文档截图
 @app.route('/docs/<path:filename>')
 def serve_docs(filename):
     """服务帮助文档截图"""
-    docs_path = os.path.join(current_dir, '..', 'docs')
+    docs_path = os.path.normpath(os.path.join(current_dir, '..', 'docs'))
     return send_from_directory(docs_path, filename)
 
 # 后端静态资源（图片、Logo、数据等）
 @app.route('/backend-assets/<path:filename>')
 def serve_backend_assets(filename):
     """服务后端静态资源"""
-    backend_assets_path = os.path.join(current_dir, 'assets')
+    backend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets'))
     return send_from_directory(backend_assets_path, filename)
 
 # 前端构建的静态资源（CSS、JS等）
 @app.route('/assets/<path:filename>')
 def serve_frontend_assets(filename):
     """服务前端构建的静态资源"""
-    frontend_assets_path = os.path.join(current_dir, 'assets', 'frontend', 'assets')
+    frontend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets', 'frontend', 'assets'))
     if os.path.exists(os.path.join(frontend_assets_path, filename)):
         return send_from_directory(frontend_assets_path, filename)
     # 如果前端资源不存在，返回后端资源
-    backend_assets_path = os.path.join(current_dir, 'assets')
+    backend_assets_path = os.path.normpath(os.path.join(current_dir, 'assets'))
     return send_from_directory(backend_assets_path, filename)
 
 # 前端页面服务（生产环境）
@@ -159,7 +159,7 @@ def serve_frontend(path):
         return {'error': 'Not found'}, 404
 
     # 生产环境：返回前端构建文件
-    frontend_path = os.path.join(current_dir, 'assets', 'frontend')
+    frontend_path = os.path.normpath(os.path.join(current_dir, 'assets', 'frontend'))
     if os.path.exists(frontend_path):
         if path and os.path.exists(os.path.join(frontend_path, path)):
             return send_from_directory(frontend_path, path)

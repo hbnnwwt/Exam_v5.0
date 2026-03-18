@@ -7,6 +7,16 @@ import os
 import sys
 import sqlite3
 
+# 默认考试步骤
+DEFAULT_EXAM_STEPS = [
+    (1, '中文自我介绍', '', 60, 'introduction'),
+    (2, '英文自我介绍', '进行简短的英文自我介绍', 60, 'introduction'),
+    (3, '英文翻译', '阅读并翻译一段英文材料', 240, 'translation'),
+    (4, '专业问题', '回答专业相关问题', 300, 'professional'),
+    (5, '综合问答', '综合问答环节', 540, 'introduction'),
+    (6, '考试结束', '面试结束', 0, 'completion'),
+]
+
 def init_database():
     # 确保目录存在
     db_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'data')
@@ -25,6 +35,14 @@ def init_database():
     conn.execute('CREATE TABLE IF NOT EXISTS translation_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, difficulty TEXT DEFAULT "medium", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS professional_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, subject_id INTEGER, content TEXT NOT NULL, difficulty TEXT DEFAULT "medium", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+
+    # 插入默认考试步骤（如果不存在）
+    for step in DEFAULT_EXAM_STEPS:
+        conn.execute('''
+            INSERT OR IGNORE INTO exam_steps
+            (step_number, title, description, duration, step_type)
+            VALUES (?, ?, ?, ?, ?)
+        ''', step)
 
     conn.commit()
     conn.close()

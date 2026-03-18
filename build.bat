@@ -71,12 +71,13 @@ cd frontend
 REM Check node_modules
 if not exist "node_modules" (
     echo [Step 1] Installing frontend dependencies...
-    if "%NPM_EXE%"=="" (
-        echo [Error] npm not found. Please reinstall Node.js or restart terminal.
+    if not exist "C:\Program Files\nodejs\npm.cmd" (
+        echo [Error] npm not found at C:\Program Files\nodejs\npm.cmd
+        echo [Tip] Please reinstall Node.js or restart terminal.
         pause
         exit /b 1
     )
-    call "%NPM_EXE%" install
+    call "C:\Program Files\nodejs\npm.cmd" install
     if errorlevel 1 (
         echo [Error] Failed to install dependencies
         pause
@@ -86,11 +87,7 @@ if not exist "node_modules" (
 )
 
 echo [Step 2] Building frontend...
-if "%NPM_EXE%"=="" (
-    call npm run build
-) else (
-    call "%NPM_EXE%" run build
-)
+call "C:\Program Files\nodejs\npm.cmd" run build
 if errorlevel 1 (
     echo [Error] Build failed
     pause

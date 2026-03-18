@@ -9,11 +9,14 @@ echo.
 
 set "PYTHON_DIR=%~dp0python_portable"
 set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
-set "USE_PORTABLE=1"
+set "VENV_DIR=%~dp0venv"
+set "VENV_PYTHON=%VENV_DIR%\Scripts\python.exe"
+set "USE_PORTABLE=0"
 
 REM Check if portable Python already exists
 if exist "%PYTHON_EXE%" (
-    echo [Info] Python environment already exists.
+    echo [Info] Portable Python found.
+    set "USE_PORTABLE=1"
     goto :install_deps
 )
 
@@ -23,8 +26,23 @@ if %errorlevel% equ 0 (
     echo [Info] System Python found:
     python --version
     echo.
-    set "PYTHON_EXE=python"
-    set "USE_PORTABLE=0"
+
+    REM Check if venv already exists
+    if exist "%VENV_PYTHON%" (
+        echo [Info] Virtual environment already exists.
+        set "PYTHON_EXE=%VENV_PYTHON%"
+        goto :install_deps
+    )
+
+    REM Create virtual environment
+    echo [Creating] Virtual environment...
+    python -m venv "%VENV_DIR%"
+    if errorlevel 1 (
+        echo [Error] Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
+    set "PYTHON_EXE=%VENV_PYTHON%"
     goto :install_deps
 )
 
@@ -77,6 +95,7 @@ if not exist "%PYTHON_DIR%\Scripts\pip.exe" (
 )
 
 echo [Success] Python installed.
+set "USE_PORTABLE=1"
 echo.
 
 :install_deps

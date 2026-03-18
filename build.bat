@@ -30,11 +30,22 @@ if "%NODE_FOUND%"=="0" (
 
     echo [Installing] Node.js...
     echo [Info] This may take a minute...
-    msiexec /i "%~dp0node.msi" /qn /quiet
-    del "%~dp0node.msi"
 
-    REM Wait for installation to complete
-    timeout /t 15 /nobreak >nul
+    REM Use msiexec with proper parameters
+    msiexec /i "%~dp0node.msi" /qn /norestart
+    if errorlevel 1 (
+        echo [Error] MSI installation failed with code: %errorlevel%
+        del "%~dp0node.msi" 2>nul
+        pause
+        exit /b 1
+    )
+
+    REM Wait for installation to complete (longer wait)
+    echo [Info] Waiting for installation to complete...
+    timeout /t 30 /nobreak >nul
+
+    REM Delete MSI file
+    del "%~dp0node.msi" 2>nul
 )
 
 REM Find node.exe path
@@ -45,7 +56,8 @@ if "%NODE_EXE%"=="" if exist "C:\Program Files\nodejs\node.exe" set "NODE_EXE=C:
 if "%NODE_EXE%"=="" if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_EXE=C:\Program Files (x86)\nodejs\node.exe"
 
 if "%NODE_EXE%"=="" (
-    echo [Error] Node.js installation failed.
+    echo [Error] Node.js installation failed - executable not found.
+    echo [Tip] Try opening a new terminal window and running build.bat again.
     pause
     exit /b 1
 )

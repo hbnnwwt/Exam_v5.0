@@ -8,7 +8,7 @@ echo.
 cd /d "%~dp0"
 
 REM Check Python environment
-if not exist "python_portable\Scripts\python.exe" (
+if not exist "python_portable\python.exe" (
     echo [Error] Python environment not found.
     echo [Info] Please run setup.bat first to create the environment.
     echo.
@@ -42,6 +42,6 @@ echo [Starting] Flask server...
 echo [URL] http://localhost:5000
 echo.
 
-"..\python_portable\Scripts\python.exe" app.py
+"..\python_portable\python.exe" app.py
 
 pause

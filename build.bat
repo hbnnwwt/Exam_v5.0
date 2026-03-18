@@ -1,52 +1,52 @@
 @echo off
 chcp 65001 >nul
 echo ====================================
-echo 研究生复试系统 - 构建
+echo Graduate Interview System - Build
 echo ====================================
 echo.
 
 cd /d "%~dp0"
 
-REM 检查 Node.js
+REM Check Node.js
 where node >nul 2>&1
 if errorlevel 1 (
-    echo [错误] 未检测到 Node.js
-    echo [提示] 请先安装 Node.js: https://nodejs.org/
+    echo [Error] Node.js not found.
+    echo [Info] Please install Node.js first: https://nodejs.org/
     pause
     exit /b 1
 )
 
-echo [信息] Node.js 版本:
+echo [Info] Node.js version:
 node --version
 echo.
 
 cd frontend
 
-REM 检查 node_modules
+REM Check node_modules
 if not exist "node_modules" (
-    echo [步骤 1] 安装前端依赖...
+    echo [Step 1] Installing frontend dependencies...
     call npm install
     if errorlevel 1 (
-        echo [错误] 依赖安装失败
+        echo [Error] Failed to install dependencies
         pause
         exit /b 1
     )
     echo.
 )
 
-echo [步骤 2] 构建前端...
+echo [Step 2] Building frontend...
 call npm run build
 if errorlevel 1 (
-    echo [错误] 构建失败
+    echo [Error] Build failed
     pause
     exit /b 1
 )
 
 echo.
 echo ====================================
-echo [成功] 构建完成！
-echo [输出] backend/assets/frontend/
+echo [Success] Build completed!
+echo [Output] backend/assets/frontend/
 echo ====================================
 echo.
-echo 现在可以运行 run.bat 启动系统
+echo Now you can run run.bat to start the system
 pause

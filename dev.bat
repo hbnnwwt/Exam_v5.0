@@ -1,27 +1,36 @@
 @echo off
 chcp 65001 >nul
 echo ====================================
-echo 研究生复试系统 - 开发模式
+echo Graduate Interview System - Development Mode
 echo ====================================
 echo.
 
 cd /d "%~dp0"
 
-REM 启动后端（后台）
-echo [启动] 后端服务器 (端口 5000)...
-cd backend
-start "" "..\python_portable\python.exe" app.py
+REM Check Python environment
+if not exist "python_portable\Scripts\python.exe" (
+    echo [Error] Python environment not found.
+    echo [Info] Please run setup.bat first to create the environment.
+    echo.
+    pause
+    exit /b 1
+)
 
-REM 等待后端启动
+REM Start backend (background)
+echo [Starting] Backend server (port 5000)...
+cd backend
+start "" "..\python_portable\Scripts\python.exe" app.py
+
+REM Wait for backend to start
 timeout /t 3 /nobreak >nul
 
-REM 启动前端开发服务器
-echo [启动] 前端开发服务器 (端口 3000)...
+REM Start frontend dev server
+echo [Starting] Frontend dev server (port 3000)...
 cd ..\frontend
 
-REM 检查 node_modules
+REM Check node_modules
 if not exist "node_modules" (
-    echo [安装] 首次运行，安装依赖...
+    echo [Installing] Installing dependencies...
     call npm install
 )
 

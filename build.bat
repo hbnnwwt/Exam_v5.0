@@ -35,12 +35,18 @@ if "%NODE_FOUND%"=="0" (
     echo.
 )
 
-REM Find node.exe path
+REM Find node.exe and npm paths
 set "NODE_EXE="
+set "NPM_EXE="
 where node >nul 2>&1
 if not errorlevel 1 for /f "delims=" %%i in ('where node') do set "NODE_EXE=%%i"
 if "%NODE_EXE%"=="" if exist "C:\Program Files\nodejs\node.exe" set "NODE_EXE=C:\Program Files\nodejs\node.exe"
 if "%NODE_EXE%"=="" if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_EXE=C:\Program Files (x86)\nodejs\node.exe"
+
+REM Try to find npm
+if exist "C:\Program Files\nodejs\npm.cmd" set "NPM_EXE=C:\Program Files\nodejs\npm.cmd"
+if "%NPM_EXE%"=="" if exist "C:\Program Files\nodejs\npm.exe" set "NPM_EXE=C:\Program Files\nodejs\npm.exe"
+if "%NPM_EXE%"=="" if exist "%NODE_EXE:\node.exe=npm.cmd%" set "NPM_EXE=%NODE_EXE:\node.exe=npm.cmd%"
 
 if "%NODE_EXE%"=="" (
     echo [Error] Node.js not found after installation.
@@ -51,6 +57,13 @@ if "%NODE_EXE%"=="" (
 
 echo [Info] Node.js found: %NODE_EXE%
 "%NODE_EXE%" --version
+if "%NPM_EXE%"=="" (
+    echo [Warning] npm not found in PATH, trying to locate...
+    if exist "C:\Program Files\nodejs\npm.cmd" (
+        set "NPM_EXE=C:\Program Files\nodejs\npm.cmd"
+        echo [Info] npm found: %NPM_EXE%
+    )
+)
 echo.
 
 cd frontend
@@ -58,7 +71,12 @@ cd frontend
 REM Check node_modules
 if not exist "node_modules" (
     echo [Step 1] Installing frontend dependencies...
-    call npm install
+    if "%NPM_EXE%"=="" (
+        echo [Error] npm not found. Please reinstall Node.js or restart terminal.
+        pause
+        exit /b 1
+    )
+    call "%NPM_EXE%" install
     if errorlevel 1 (
         echo [Error] Failed to install dependencies
         pause
@@ -68,7 +86,11 @@ if not exist "node_modules" (
 )
 
 echo [Step 2] Building frontend...
-call npm run build
+if "%NPM_EXE%"=="" (
+    call npm run build
+) else (
+    call "%NPM_EXE%" run build
+)
 if errorlevel 1 (
     echo [Error] Build failed
     pause

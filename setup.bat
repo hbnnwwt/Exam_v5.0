@@ -102,29 +102,12 @@ if not exist "%~dp0backend\assets\uploads" mkdir "%~dp0backend\assets\uploads"
 if not exist "%~dp0backend\logs" mkdir "%~dp0backend\logs"
 
 echo [Initializing] database...
-"%PYTHON_EXE%" -c "
-import sys
-import os
-sys.path.insert(0, '.')
-os.environ['PYTHONPATH'] = os.path.abspath('backend')
-
-import sqlite3
-db_path = os.path.join('backend', 'assets', 'data', 'interview_system.db')
-os.makedirs(os.path.dirname(db_path), exist_ok=True)
-
-conn = sqlite3.connect(db_path)
-conn.execute('CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY, attribute TEXT UNIQUE, value TEXT)')
-conn.execute('CREATE TABLE IF NOT EXISTS exam_steps (id INTEGER PRIMARY KEY AUTOINCREMENT, step_number INTEGER NOT NULL UNIQUE, title TEXT NOT NULL, description TEXT NOT NULL, duration INTEGER NOT NULL, step_type TEXT NOT NULL, is_active BOOLEAN DEFAULT 1, created_at TEXT DEFAULT CURRENT_TIMESTAMP, updated_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS step_contents (id INTEGER PRIMARY KEY AUTOINCREMENT, step_id INTEGER NOT NULL, content TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS students (id INTEGER PRIMARY KEY AUTOINCREMENT, student_number TEXT UNIQUE, name TEXT NOT NULL, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS exam_records (id INTEGER PRIMARY KEY AUTOINCREMENT, student_id INTEGER, exam_date TEXT, total_score REAL, status TEXT DEFAULT \"pending\", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS translation_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, content TEXT NOT NULL, difficulty TEXT DEFAULT \"medium\", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS professional_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, subject_id INTEGER, content TEXT NOT NULL, difficulty TEXT DEFAULT \"medium\", created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.execute('CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, description TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
-conn.commit()
-conn.close()
-print('Database initialized')
-"
+"%PYTHON_EXE%" "%~dp0backend\init_db.py"
+if errorlevel 1 (
+    echo [Error] Database initialization failed.
+    pause
+    exit /b 1
+)
 
 echo.
 echo ========================================

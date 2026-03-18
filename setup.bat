@@ -33,8 +33,8 @@ echo [Info] Python not found on this system.
 echo [Downloading] Python 3.12 portable...
 echo.
 
-set "PYTHON_ZIP=python-3.12.0-embed-amd64.zip"
-set "DOWNLOAD_URL=https://www.python.org/ftp/python/3.12.0/%PYTHON_ZIP%"
+set "PYTHON_ZIP=python-3.11.9-embed-amd64.zip"
+set "DOWNLOAD_URL=https://www.python.org/ftp/python/3.11.9/%PYTHON_ZIP%"
 
 powershell -Command "Invoke-WebRequest -Uri '%DOWNLOAD_URL%' -OutFile '%~dp0%PYTHON_ZIP%'" 2>nul
 if %errorlevel% neq 0 (

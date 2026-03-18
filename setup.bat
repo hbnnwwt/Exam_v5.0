@@ -9,6 +9,7 @@ echo.
 
 set "PYTHON_DIR=%~dp0python_portable"
 set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
+set "USE_PORTABLE=1"
 
 REM Check if portable Python already exists
 if exist "%PYTHON_EXE%" (
@@ -23,6 +24,7 @@ if %errorlevel% equ 0 (
     python --version
     echo.
     set "PYTHON_EXE=python"
+    set "USE_PORTABLE=0"
     goto :install_deps
 )
 
@@ -80,9 +82,14 @@ echo.
 :install_deps
 echo [Installing] Dependencies...
 
-REM Set environment variables
-set PYTHONPATH=%~dp0backend
-set PYTHONHOME=%PYTHON_DIR%
+REM Set environment variables only for portable Python
+if "%USE_PORTABLE%"=="1" (
+    set "PYTHONPATH=%~dp0backend"
+    set "PYTHONHOME=%PYTHON_DIR%"
+) else (
+    set "PYTHONPATH="
+    set "PYTHONHOME="
+)
 
 REM Use python -m pip instead of pip.exe
 "%PYTHON_EXE%" -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn >nul 2>&1

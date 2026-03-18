@@ -9,7 +9,7 @@ echo.
 
 cd /d "%~dp0"
 
-REM Check Node.js (check common installation paths)
+REM Check Node.js
 set "NODE_FOUND=0"
 where node >nul 2>&1
 if not errorlevel 1 set "NODE_FOUND=1"
@@ -18,34 +18,21 @@ if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_FOUND=1"
 
 if "%NODE_FOUND%"=="0" (
     echo [Info] Node.js not found.
-    echo [Downloading] Node.js LTS...
+    echo [Installing] Node.js LTS via winget...
     echo.
 
-    powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://nodejs.org/dist/v20.11.0/node-v20.11.0-x64.msi' -OutFile '%~dp0node.msi' -UseBasicParsing }" 2>nul
+    REM Use winget to install Node.js LTS
+    winget install OpenJS.NodeJS.LTS -e --source winget --accept-package-agreements --accept-source-agreements
     if errorlevel 1 (
-        echo [Error] Download failed. Please check your internet connection.
+        echo [Error] winget install failed.
+        echo [Tip] Make sure winget is available, or install Node.js manually from https://nodejs.org/
         pause
         exit /b 1
     )
 
-    echo [Installing] Node.js...
-    echo [Info] This may take a minute...
-
-    REM Use msiexec with proper parameters
-    msiexec /i "%~dp0node.msi" /qn /norestart
-    if errorlevel 1 (
-        echo [Error] MSI installation failed with code: %errorlevel%
-        del "%~dp0node.msi" 2>nul
-        pause
-        exit /b 1
-    )
-
-    REM Wait for installation to complete (longer wait)
-    echo [Info] Waiting for installation to complete...
-    timeout /t 30 /nobreak >nul
-
-    REM Delete MSI file
-    del "%~dp0node.msi" 2>nul
+    echo [Info] Node.js installed via winget.
+    echo [Tip] If node is not found, please restart your terminal and run build.bat again.
+    echo.
 )
 
 REM Find node.exe path
@@ -56,8 +43,8 @@ if "%NODE_EXE%"=="" if exist "C:\Program Files\nodejs\node.exe" set "NODE_EXE=C:
 if "%NODE_EXE%"=="" if exist "C:\Program Files (x86)\nodejs\node.exe" set "NODE_EXE=C:\Program Files (x86)\nodejs\node.exe"
 
 if "%NODE_EXE%"=="" (
-    echo [Error] Node.js installation failed - executable not found.
-    echo [Tip] Try opening a new terminal window and running build.bat again.
+    echo [Error] Node.js not found after installation.
+    echo [Tip] Please restart your terminal and run build.bat again.
     pause
     exit /b 1
 )

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库题库编辑器帮助文档</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 40px; 
+            line-height: 1.6; 
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #34495e; 
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+        }
+        code { 
+            background: #f4f4f4; 
+            padding: 2px 6px; 
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        .step-list {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .nav-links {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .button-demo {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-primary { background-color: #007bff; }
+        .btn-success { background-color: #28a745; }
+        .btn-warning { background-color: #ffc107; color: #212529; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-secondary { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ 数据库题库编辑器帮助文档</h1>
+        
+        <div class="nav-links">
+            <strong>快速导航：</strong>
+            <a href="#overview">功能概述</a>
+            <a href="#interface">界面介绍</a>
+            <a href="#translation">翻译题管理</a>
+            <a href="#professional">专业题管理</a>
+            <a href="#subjects">科目管理</a>
+            <a href="#editing">题目编辑</a>
+            <a href="#batch">批量操作</a>
+            <a href="#tips">使用技巧</a>
+        </div>
+
+        <div class="section" id="overview">
+            <h2>🎯 功能概述</h2>
+            <div class="feature-list">
+                <p><strong>数据库题库编辑器</strong>是考试系统的核心组件，专门用于管理考试题目和题库内容。支持翻译题和专业题的分类管理，提供完整的增删改查功能。</p>
+                
+                <h3>主要功能：</h3>
+                <ul>
+                    <li><strong>题目分类管理：</strong>翻译题、专业题分别管理，支持科目分类</li>
+                    <li><strong>多媒体内容：</strong>支持文本和图片混合内容，灵活组合</li>
+                    <li><strong>智能搜索：</strong>支持题目内容搜索和科目筛选</li>
+                    <li><strong>批量操作：</strong>支持批量导入题目，提高效率</li>
+                    <li><strong>分页浏览：</strong>每页显示10道题目，支持翻页浏览</li>
+                    <li><strong>实时保存：</strong>编辑后自动保存到数据库</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="interface">
+            <h2>🖥️ 界面介绍</h2>
+            
+            <div class="screenshot">
+                <img src="database-editor-main.png" alt="数据库编辑器主界面">
+                <div class="screenshot-caption">图1：数据库编辑器主界面（翻译题）</div>
+            </div>
+
+            <h3>界面布局说明：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>顶部导航：</strong>系统标题和返回链接</li>
+                    <li><strong>左侧边栏：</strong>题目类型切换、搜索框、题目列表</li>
+                    <li><strong>右侧编辑区：</strong>题目详细编辑界面</li>
+                    <li><strong>底部工具栏：</strong>添加、导入、刷新等操作按钮</li>
+                    <li><strong>状态栏：</strong>显示题目统计和版本信息</li>
+                </ol>
+            </div>
+
+            <h3>题目类型标签：</h3>
+            <table>
+                <tr>
+                    <th>标签</th>
+                    <th>图标</th>
+                    <th>说明</th>
+                    <th>用途</th>
+                </tr>
+                <tr>
+                    <td>翻译题</td>
+                    <td>🌍</td>
+                    <td>英文翻译题目</td>
+                    <td>考试步骤3使用</td>
+                </tr>
+                <tr>
+                    <td>专业题</td>
+                    <td>🎓</td>
+                    <td>专业课相关题目</td>
+                    <td>考试步骤4使用</td>
+                </tr>
+                <tr>
+                    <td>科目管理</td>
+                    <td>⚙️</td>
+                    <td>专业题科目分类</td>
+                    <td>管理专业题分类</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="translation">
+            <h2>🌍 翻译题管理</h2>
+            
+            <h3>翻译题特点：</h3>
+            <div class="info">
+                翻译题主要用于英文翻译环节，通常包含英文段落和相关图片。题目内容可以是纯文本、纯图片或文本图片混合形式。
+            </div>
+
+            <h3>添加翻译题：</h3>
+            <div class="step-list">
+                <ol>
+                    <li>点击<span class="button-demo btn-primary">🌍 翻译题</span>标签切换到翻译题管理</li>
+                    <li>点击<span class="button-demo btn-success">➕ 添加题目</span>按钮</li>
+                    <li>系统自动分配题目编号（从当前最大编号+1开始）</li>
+                    <li>设置难度级别：简单、中等、困难</li>
+                    <li>添加题目内容（文本和/或图片）</li>
+                    <li>点击<span class="button-demo btn-success">💾 保存</span>完成添加</li>
+                </ol>
+            </div>
+
+            <div class="success">
+                <strong>提示：</strong>翻译题不需要设置科目，系统会自动归类为翻译题类型。
+            </div>
+        </div>
+
+        <div class="section" id="professional">
+            <h2>🎓 专业题管理</h2>
+            
+            <div class="screenshot">
+                <img src="database-editor-professional.png" alt="专业题管理界面">
+                <div class="screenshot-caption">图2：专业题管理界面</div>
+            </div>
+
+            <h3>专业题特点：</h3>
+            <div class="info">
+                专业题按科目分类管理，每道题目必须指定所属科目。考试时会先让考生选择科目，然后从该科目中随机抽取题目。
+            </div>
+
+            <h3>科目筛选：</h3>
+            <div class="step-list">
+                <p>在专业题管理界面，左侧会显示科目筛选下拉框，包含：</p>
+                <ul>
+                    <li><strong>全部科目：</strong>显示所有专业题</li>
+                    <li><strong>具体科目：</strong>只显示该科目的题目</li>
+                </ul>
+            </div>
+
+            <h3>添加专业题：</h3>
+            <div class="step-list">
+                <ol>
+                    <li>点击<span class="button-demo btn-primary">🎓 专业题</span>标签</li>
+                    <li>点击<span class="button-demo btn-success">➕ 添加题目</span>按钮</li>
+                    <li>设置题目编号和难度级别</li>
+                    <li><strong>重要：</strong>必须选择科目分类</li>
+                    <li>添加题目内容</li>
+                    <li>保存题目</li>
+                </ol>
+            </div>
+
+            <div class="warning">
+                <strong>注意：</strong>专业题必须指定科目，否则无法保存。如果需要的科目不存在，请先到科目管理中添加。
+            </div>
+        </div>
+
+        <div class="section" id="subjects">
+            <h2>⚙️ 科目管理</h2>
+            
+            <h3>科目管理功能：</h3>
+            <div class="feature-list">
+                <ul>
+                    <li><strong>添加科目：</strong>为专业题创建新的科目分类</li>
+                    <li><strong>编辑科目：</strong>修改科目名称和描述</li>
+                    <li><strong>删除科目：</strong>删除不需要的科目（需确保该科目下无题目）</li>
+                    <li><strong>科目统计：</strong>查看每个科目下的题目数量</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>当前系统科目：</strong>人工智能导论、会计学、化学、市场营销、数据库系统、数据结构、计算机科学等。
+            </div>
+        </div>
+
+        <div class="section" id="editing">
+            <h2>✏️ 题目编辑</h2>
+            
+            <div class="screenshot">
+                <img src="database-editor-edit.png" alt="题目编辑界面">
+                <div class="screenshot-caption">图3：题目编辑界面</div>
+            </div>
+
+            <h3>编辑界面组成：</h3>
+            <table>
+                <tr>
+                    <th>区域</th>
+                    <th>功能</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>基本信息</td>
+                    <td>题目编号、难度、科目</td>
+                    <td>设置题目的基本属性</td>
+                </tr>
+                <tr>
+                    <td>内容编辑</td>
+                    <td>文本和图片内容</td>
+                    <td>支持多个内容块的组合</td>
+                </tr>
+                <tr>
+                    <td>操作按钮</td>
+                    <td>保存、取消、删除</td>
+                    <td>题目编辑操作</td>
+                </tr>
+            </table>
+
+            <h3>内容编辑功能：</h3>
+            <div class="step-list">
+                <h4>文本内容：</h4>
+                <ul>
+                    <li>点击<span class="button-demo btn-secondary">📝 添加文本</span>添加文本块</li>
+                    <li>在文本框中输入题目内容</li>
+                    <li>支持多行文本和特殊字符</li>
+                </ul>
+
+                <h4>图片内容：</h4>
+                <ul>
+                    <li>点击<span class="button-demo btn-secondary">🖼️ 添加图片</span>添加图片块</li>
+                    <li>选择本地图片文件上传</li>
+                    <li>支持JPG、PNG、GIF格式</li>
+                    <li>建议图片大小不超过2MB</li>
+                </ul>
+
+                <h4>内容排序：</h4>
+                <ul>
+                    <li>使用<span class="button-demo btn-secondary">↑</span>和<span class="button-demo btn-secondary">↓</span>按钮调整内容顺序</li>
+                    <li>使用<span class="button-demo btn-danger">×</span>按钮删除内容块</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="batch">
+            <h2>📥 批量操作</h2>
+            
+            <h3>批量导入功能：</h3>
+            <div class="info">
+                支持批量导入题目，可以快速添加大量题目到题库中。
+            </div>
+
+            <h3>导入步骤：</h3>
+            <div class="step-list">
+                <ol>
+                    <li>点击<span class="button-demo btn-warning">📥 批量导入</span>按钮</li>
+                    <li>选择要导入的题目类型（翻译题或专业题）</li>
+                    <li>按照系统提供的格式准备数据</li>
+                    <li>上传数据文件或粘贴文本内容</li>
+                    <li>系统自动分配题目编号并保存</li>
+                </ol>
+            </div>
+
+            <div class="warning">
+                <strong>注意：</strong>批量导入时，系统会自动从当前最大题目编号+1开始分配新编号，确保编号不重复。
+            </div>
+        </div>
+
+        <div class="section" id="tips">
+            <h2>💡 使用技巧</h2>
+            
+            <h3>题目编号管理：</h3>
+            <div class="success">
+                <ul>
+                    <li>系统自动管理题目编号，无需手动设置</li>
+                    <li>删除题目后，编号不会自动回收，保持历史一致性</li>
+                    <li>新增题目总是从最大编号+1开始</li>
+                </ul>
+            </div>
+
+            <h3>搜索和筛选：</h3>
+            <div class="info">
+                <ul>
+                    <li>使用搜索框可以快速查找包含特定关键词的题目</li>
+                    <li>专业题支持按科目筛选，提高管理效率</li>
+                    <li>搜索结果实时更新，支持模糊匹配</li>
+                </ul>
+            </div>
+
+            <h3>题目状态管理：</h3>
+            <div class="feature-list">
+                <ul>
+                    <li><strong>已保存状态：</strong>显示绿色✓标记，表示题目已成功保存</li>
+                    <li><strong>使用状态：</strong>考试中抽取的题目会被标记为"已使用"</li>
+                    <li><strong>重置状态：</strong>通过系统重置可以清除所有使用标记</li>
+                </ul>
+            </div>
+
+            <h3>图片管理建议：</h3>
+            <div class="warning">
+                <ul>
+                    <li>图片文件建议大小控制在2MB以内</li>
+                    <li>推荐使用JPG格式，平衡质量和文件大小</li>
+                    <li>图片会自动存储到assets/uploads目录</li>
+                    <li>删除题目时，相关图片文件需要手动清理</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🔧 常见问题</h2>
+            
+            <h3>Q: 为什么无法保存专业题？</h3>
+            <div class="info">
+                <strong>可能原因：</strong>
+                <ol>
+                    <li>未选择科目分类</li>
+                    <li>题目内容为空</li>
+                    <li>网络连接问题</li>
+                </ol>
+                <strong>解决方案：</strong>确保所有必填项都已填写，特别是科目选择。
+            </div>
+
+            <h3>Q: 图片上传失败怎么办？</h3>
+            <div class="info">
+                <strong>检查项目：</strong>
+                <ol>
+                    <li>图片格式是否为JPG、PNG或GIF</li>
+                    <li>文件大小是否超过2MB</li>
+                    <li>服务器uploads目录是否有写入权限</li>
+                </ol>
+            </div>
+
+            <h3>Q: 如何批量删除题目？</h3>
+            <div class="warning">
+                <strong>注意：</strong>系统暂不支持批量删除功能，需要逐个删除题目。删除前请确认题目未被使用。
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📞 技术支持</h2>
+            <div class="info">
+                <p><strong>版权所有：</strong>北京石油化工学院(2025)</p>
+                <p><strong>联系邮箱：</strong><a href="mailto:wangwentong@bipt.edu.cn">wangwentong@bipt.edu.cn</a></p>
+                <p><strong>编辑器版本：</strong>v1.0</p>
+                <p><strong>相关文档：</strong><a href="exam-system-help.html">考试系统帮助文档</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

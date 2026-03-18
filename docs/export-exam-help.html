@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考试导出帮助文档</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 40px; 
+            line-height: 1.6; 
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #28a745;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #34495e; 
+            margin-top: 30px;
+            border-left: 4px solid #28a745;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+        }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        .step-list {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .nav-links {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .button-demo {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-primary { background-color: #007bff; }
+        .btn-success { background-color: #28a745; }
+        .btn-warning { background-color: #ffc107; color: #212529; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-secondary { background-color: #6c757d; }
+        .btn-info { background-color: #17a2b8; }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 考试导出帮助文档</h1>
+        
+        <div class="nav-links">
+            <strong>快速导航：</strong>
+            <a href="#overview">功能概述</a>
+            <a href="#interface">界面介绍</a>
+            <a href="#statistics">统计概览</a>
+            <a href="#preview">记录预览</a>
+            <a href="#export">导出功能</a>
+            <a href="#formats">导出格式</a>
+            <a href="#troubleshooting">常见问题</a>
+        </div>
+
+        <div class="section" id="overview">
+            <h2>🎯 功能概述</h2>
+            <div class="feature-list">
+                <p><strong>考试导出系统</strong>是考试管理的重要组成部分，提供完整的考试记录导出和统计分析功能，帮助管理员生成专业的考试报告和档案。</p>
+                
+                <h3>核心功能：</h3>
+                <ul>
+                    <li><strong>统计概览：</strong>显示考试总体统计数据和科目分布</li>
+                    <li><strong>记录预览：</strong>完整展示所有学生的考试记录</li>
+                    <li><strong>多格式导出：</strong>支持HTML和PDF两种导出格式</li>
+                    <li><strong>完整题目：</strong>包含学生抽取的完整题目内容</li>
+                    <li><strong>时间记录：</strong>详细的考试时间和状态信息</li>
+                    <li><strong>图片支持：</strong>正确处理和导出题目中的图片内容</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="interface">
+            <h2>🖥️ 界面介绍</h2>
+            
+            <div class="screenshot">
+                <img src="export-exam-main.png" alt="考试导出主界面">
+                <div class="screenshot-caption">图1：考试导出主界面</div>
+            </div>
+
+            <h3>界面布局说明：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>顶部导航：</strong>页面标题和快捷链接</li>
+                    <li><strong>左侧控制区：</strong>导出选项和统计概览</li>
+                    <li><strong>右侧预览区：</strong>考试记录详细预览</li>
+                    <li><strong>导出按钮：</strong>HTML和PDF导出功能</li>
+                    <li><strong>刷新功能：</strong>更新最新的考试数据</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="statistics">
+            <h2>📈 统计概览</h2>
+            
+            <h3>统计数据类型：</h3>
+            <div class="stat-card">
+                <h4>基础统计：</h4>
+                <ul>
+                    <li><strong>总学生数：</strong>参与考试的学生总数</li>
+                    <li><strong>已完成：</strong>完成考试的学生数量</li>
+                    <li><strong>完成率：</strong>考试完成的百分比</li>
+                </ul>
+            </div>
+
+            <div class="stat-card">
+                <h4>专业科目分布：</h4>
+                <ul>
+                    <li><strong>科目统计：</strong>各专业科目的选择人数</li>
+                    <li><strong>分布比例：</strong>不同科目的学生分布情况</li>
+                    <li><strong>热门科目：</strong>选择人数最多的专业科目</li>
+                </ul>
+            </div>
+
+            <h3>统计数据用途：</h3>
+            <div class="info">
+                <ul>
+                    <li><strong>考试管理：</strong>了解考试进度和完成情况</li>
+                    <li><strong>资源配置：</strong>根据科目分布合理配置考官</li>
+                    <li><strong>数据分析：</strong>为后续考试安排提供参考</li>
+                    <li><strong>报告生成：</strong>为上级部门提供统计报告</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="preview">
+            <h2>👁️ 考试记录预览</h2>
+            
+            <h3>记录内容结构：</h3>
+            <table>
+                <tr>
+                    <th>信息类别</th>
+                    <th>包含内容</th>
+                    <th>数据来源</th>
+                </tr>
+                <tr>
+                    <td>基本信息</td>
+                    <td>学生编号、考试状态</td>
+                    <td>students表</td>
+                </tr>
+                <tr>
+                    <td>时间信息</td>
+                    <td>开始时间、结束时间、考试时长</td>
+                    <td>exam_records表</td>
+                </tr>
+                <tr>
+                    <td>专业信息</td>
+                    <td>选择的专业科目</td>
+                    <td>students表</td>
+                </tr>
+                <tr>
+                    <td>翻译题目</td>
+                    <td>完整题目内容和图片</td>
+                    <td>translation_questions表</td>
+                </tr>
+                <tr>
+                    <td>专业题目</td>
+                    <td>完整题目内容和图片</td>
+                    <td>professional_questions表</td>
+                </tr>
+            </table>
+
+            <h3>题目显示特点：</h3>
+            <div class="feature-list">
+                <ul>
+                    <li><strong>完整内容：</strong>显示学生实际抽取的完整题目</li>
+                    <li><strong>图片支持：</strong>正确显示题目中的图片内容</li>
+                    <li><strong>格式保持：</strong>保持原有的题目格式和布局</li>
+                    <li><strong>编号标识：</strong>显示题目在数据库中的编号</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="export">
+            <h2>📤 导出功能</h2>
+            
+            <h3>导出操作步骤：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>数据检查：</strong>确认预览区显示的数据正确</li>
+                    <li><strong>选择格式：</strong>根据需要选择HTML或PDF格式</li>
+                    <li><strong>执行导出：</strong>点击相应的导出按钮</li>
+                    <li><strong>等待处理：</strong>系统处理导出请求</li>
+                    <li><strong>下载文件：</strong>浏览器自动下载生成的文件</li>
+                </ol>
+            </div>
+
+            <h3>导出按钮说明：</h3>
+            <table>
+                <tr>
+                    <th>按钮</th>
+                    <th>功能</th>
+                    <th>适用场景</th>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-warning">导出HTML</span></td>
+                    <td>生成HTML格式文件</td>
+                    <td>在线查看、网页分享</td>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-info">导出PDF</span></td>
+                    <td>生成PDF格式文件</td>
+                    <td>打印、正式归档</td>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-secondary">刷新预览</span></td>
+                    <td>更新最新数据</td>
+                    <td>数据变更后刷新</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="formats">
+            <h2>📄 导出格式详解</h2>
+            
+            <h3>HTML格式特点：</h3>
+            <div class="success">
+                <ul>
+                    <li><strong>文件大小：</strong>相对较小，加载快速</li>
+                    <li><strong>兼容性：</strong>所有浏览器都能打开</li>
+                    <li><strong>图片处理：</strong>使用相对路径，需要保持文件结构</li>
+                    <li><strong>样式保持：</strong>保持原有的页面样式和布局</li>
+                    <li><strong>适用场景：</strong>在线查看、临时分享、快速预览</li>
+                </ul>
+            </div>
+
+            <h3>PDF格式特点：</h3>
+            <div class="success">
+                <ul>
+                    <li><strong>文件完整：</strong>包含所有内容，无需外部依赖</li>
+                    <li><strong>图片嵌入：</strong>图片直接嵌入PDF文件中</li>
+                    <li><strong>格式固定：</strong>在任何设备上显示效果一致</li>
+                    <li><strong>打印友好：</strong>适合打印和正式文档归档</li>
+                    <li><strong>适用场景：</strong>正式报告、长期保存、打印输出</li>
+                </ul>
+            </div>
+
+            <h3>格式选择建议：</h3>
+            <div class="info">
+                <table>
+                    <tr>
+                        <th>使用目的</th>
+                        <th>推荐格式</th>
+                        <th>理由</th>
+                    </tr>
+                    <tr>
+                        <td>临时查看</td>
+                        <td>HTML</td>
+                        <td>加载快，便于在线浏览</td>
+                    </tr>
+                    <tr>
+                        <td>正式归档</td>
+                        <td>PDF</td>
+                        <td>格式稳定，长期保存</td>
+                    </tr>
+                    <tr>
+                        <td>打印输出</td>
+                        <td>PDF</td>
+                        <td>打印效果好，格式固定</td>
+                    </tr>
+                    <tr>
+                        <td>网络分享</td>
+                        <td>HTML</td>
+                        <td>文件小，传输方便</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="section" id="troubleshooting">
+            <h2>🔧 常见问题</h2>
+            
+            <h3>Q: 导出的文件中图片无法显示？</h3>
+            <div class="info">
+                <strong>HTML格式：</strong>
+                <ol>
+                    <li>确保HTML文件和assets文件夹在同一目录</li>
+                    <li>不要移动或删除assets/uploads文件夹</li>
+                    <li>检查图片文件是否存在</li>
+                </ol>
+                <strong>PDF格式：</strong>
+                <ol>
+                    <li>PDF中图片应该正常显示，如有问题请重新导出</li>
+                    <li>检查原始图片文件是否损坏</li>
+                </ol>
+            </div>
+
+            <h3>Q: 导出时提示"无数据"？</h3>
+            <div class="info">
+                <strong>可能原因：</strong>
+                <ol>
+                    <li>还没有学生完成考试</li>
+                    <li>数据库连接问题</li>
+                    <li>考试记录被清空</li>
+                </ol>
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>确认有学生完成了考试</li>
+                    <li>点击"刷新预览"更新数据</li>
+                    <li>检查数据库连接状态</li>
+                </ol>
+            </div>
+
+            <h3>Q: PDF导出失败或文件损坏？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>检查服务器是否有足够的内存和存储空间</li>
+                    <li>确认所有图片文件都能正常访问</li>
+                    <li>尝试先导出HTML格式测试</li>
+                    <li>重启服务器后重新尝试</li>
+                </ol>
+            </div>
+
+            <h3>Q: 导出的内容不完整？</h3>
+            <div class="info">
+                <strong>检查项目：</strong>
+                <ol>
+                    <li>确认预览区显示的内容完整</li>
+                    <li>检查学生是否完成了所有考试步骤</li>
+                    <li>确认题目内容在数据库中存在</li>
+                    <li>尝试刷新预览后重新导出</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💡 使用技巧</h2>
+            
+            <div class="success">
+                <h3>最佳实践建议：</h3>
+                <ul>
+                    <li><strong>定期导出：</strong>建议每天结束后导出当天的考试记录</li>
+                    <li><strong>备份保存：</strong>重要考试记录建议同时导出HTML和PDF格式</li>
+                    <li><strong>文件命名：</strong>使用有意义的文件名，包含日期和批次信息</li>
+                    <li><strong>存储管理：</strong>建立规范的文件存储和归档制度</li>
+                    <li><strong>权限控制：</strong>确保导出文件的安全性和保密性</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h3>文件管理建议：</h3>
+                <ul>
+                    <li><strong>目录结构：</strong>按日期或批次建立文件夹</li>
+                    <li><strong>命名规范：</strong>如"2025-07-14_研究生复试记录.pdf"</li>
+                    <li><strong>版本控制：</strong>如有修改，保留版本号</li>
+                    <li><strong>备份策略：</strong>重要文件建议多地备份</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📞 技术支持</h2>
+            <div class="info">
+                <p><strong>版权所有：</strong>北京石油化工学院(2025)</p>
+                <p><strong>联系邮箱：</strong><a href="mailto:wangwentong@bipt.edu.cn">wangwentong@bipt.edu.cn</a></p>
+                <p><strong>文档版本：</strong>v1.0</p>
+                <p><strong>相关文档：</strong><a href="index.html">帮助文档中心</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

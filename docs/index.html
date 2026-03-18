@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>研究生复试系统帮助文档中心</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .doc-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .doc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.2);
+        }
+        .doc-card h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+        }
+        .doc-card h2 .icon {
+            font-size: 1.8em;
+            margin-right: 10px;
+        }
+        .doc-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .doc-card .features {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .doc-card .features ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .doc-card .features li {
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            color: white;
+            text-decoration: none;
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+        .system-info {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .system-info h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        .info-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .screenshot-preview {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 6px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .back-link {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .back-link:hover {
+            background: white;
+            transform: translateY(-2px);
+            color: #2c3e50;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <a href="../index.html" class="back-link">🏠 返回主系统</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📚 帮助文档中心</h1>
+            <p>研究生复试流程控制系统完整使用指南</p>
+        </div>
+
+        <div class="docs-grid">
+            <!-- 考试系统帮助文档 -->
+            <div class="doc-card">
+                <h2><span class="icon">🎓</span>考试系统使用指南</h2>
+                <p>详细介绍考试系统主页面的功能和操作方法，包括六步考试流程、操作控制、系统设置等。</p>
+
+                <img src="exam-system-main.png" alt="考试系统主界面" class="screenshot-preview">
+
+                <div class="features">
+                    <strong>主要内容：</strong>
+                    <ul>
+                        <li>系统概述和核心功能</li>
+                        <li>界面布局和组件说明</li>
+                        <li>六步考试流程详解</li>
+                        <li>操作控制和快捷键</li>
+                        <li>系统设置和管理</li>
+                        <li>常见问题解答</li>
+                    </ul>
+                </div>
+
+                <a href="exam-system-help.html" class="btn">📖 查看详细文档</a>
+                <a href="../index.html" class="btn btn-secondary">🚀 打开考试系统</a>
+            </div>
+
+            <!-- 数据库编辑器帮助文档 -->
+            <div class="doc-card">
+                <h2><span class="icon">🗄️</span>题库编辑器使用指南</h2>
+                <p>全面介绍数据库题库编辑器的功能和使用方法，包括翻译题、专业题管理和批量操作。</p>
+
+                <img src="database-editor-main.png" alt="数据库编辑器主界面" class="screenshot-preview">
+
+                <div class="features">
+                    <strong>主要内容：</strong>
+                    <ul>
+                        <li>题库管理功能概述</li>
+                        <li>翻译题和专业题管理</li>
+                        <li>科目分类和筛选</li>
+                        <li>题目编辑和内容管理</li>
+                        <li>批量导入和操作</li>
+                        <li>使用技巧和注意事项</li>
+                    </ul>
+                </div>
+
+                <a href="database-editor-help.html" class="btn">📖 查看详细文档</a>
+                <a href="../database-editor.html" class="btn btn-secondary">🛠️ 打开题库编辑器</a>
+            </div>
+
+            <!-- 顶部设置帮助文档 -->
+            <div class="doc-card">
+                <h2><span class="icon">🎨</span>顶部设置使用指南</h2>
+                <p>详细介绍如何自定义考试系统的顶部显示内容，包括考试标题设置和Logo上传管理。</p>
+
+                <img src="header-setting-main.png" alt="顶部设置主界面" class="screenshot-preview">
+
+                <div class="features">
+                    <strong>主要内容：</strong>
+                    <ul>
+                        <li>考试标题定制设置</li>
+                        <li>学校和学院Logo上传</li>
+                        <li>效果预览和实时显示</li>
+                        <li>文件格式和尺寸要求</li>
+                        <li>操作步骤和最佳实践</li>
+                        <li>常见问题和解决方案</li>
+                    </ul>
+                </div>
+
+                <a href="header-setting-help.html" class="btn">📖 查看详细文档</a>
+                <a href="../header_setting.html" class="btn btn-secondary">🎨 打开顶部设置</a>
+            </div>
+
+            <!-- 步骤内容设置帮助文档 -->
+            <div class="doc-card">
+                <h2><span class="icon">📝</span>步骤内容设置指南</h2>
+                <p>全面介绍如何管理每个考试步骤的指导内容，为考生和考官提供清晰的操作指引。</p>
+
+                <img src="page-content-setting-main.png" alt="步骤内容设置主界面" class="screenshot-preview">
+
+                <div class="features">
+                    <strong>主要内容：</strong>
+                    <ul>
+                        <li>考试步骤内容管理</li>
+                        <li>多内容块编辑和组织</li>
+                        <li>内容状态控制</li>
+                        <li>编辑操作和最佳实践</li>
+                        <li>内容编写建议</li>
+                        <li>管理技巧和注意事项</li>
+                    </ul>
+                </div>
+
+                <a href="page-content-setting-help.html" class="btn">📖 查看详细文档</a>
+                <a href="../page_content_setting.html" class="btn btn-secondary">📝 打开内容设置</a>
+            </div>
+
+            <!-- 考试导出帮助文档 -->
+            <div class="doc-card">
+                <h2><span class="icon">📊</span>考试导出使用指南</h2>
+                <p>详细介绍考试记录导出功能，包括统计分析、记录预览和多格式导出操作。</p>
+
+                <img src="export-exam-main.png" alt="考试导出主界面" class="screenshot-preview">
+
+                <div class="features">
+                    <strong>主要内容：</strong>
+                    <ul>
+                        <li>统计概览和数据分析</li>
+                        <li>考试记录完整预览</li>
+                        <li>HTML和PDF导出功能</li>
+                        <li>导出格式选择建议</li>
+                        <li>文件管理和归档</li>
+                        <li>导出问题排查</li>
+                    </ul>
+                </div>
+
+                <a href="export-exam-help.html" class="btn">📖 查看详细文档</a>
+                <a href="../export_exam.html" class="btn btn-secondary">📊 打开考试导出</a>
+            </div>
+        </div>
+
+        <!-- 系统信息 -->
+        <div class="system-info">
+            <h3>📋 系统信息</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>系统版本</strong>
+                    v3.1
+                </div>
+                <div class="info-item">
+                    <strong>文档版本</strong>
+                    v1.0
+                </div>
+                <div class="info-item">
+                    <strong>最后更新</strong>
+                    2025年7月14日
+                </div>
+                <div class="info-item">
+                    <strong>技术支持</strong>
+                    wangwentong@bipt.edu.cn
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+                <p style="color: #666; margin: 0;">
+                    <strong>版权所有：</strong>北京石油化工学院 &copy; 2026 |
+                    <strong>系统开发：</strong>王文通 |
+                    <strong>联系方式：</strong>wangwentong@bipt.edu.cn
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

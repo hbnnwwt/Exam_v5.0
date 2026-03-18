@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顶部设置帮助文档</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 40px; 
+            line-height: 1.6; 
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #34495e; 
+            margin-top: 30px;
+            border-left: 4px solid #667eea;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+        }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        .step-list {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .nav-links {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        .button-demo {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 4px;
+            border-radius: 4px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .btn-primary { background-color: #007bff; }
+        .btn-success { background-color: #28a745; }
+        .btn-warning { background-color: #ffc107; color: #212529; }
+        .btn-danger { background-color: #dc3545; }
+        .btn-secondary { background-color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 顶部设置帮助文档</h1>
+        
+        <div class="nav-links">
+            <strong>快速导航：</strong>
+            <a href="#overview">功能概述</a>
+            <a href="#interface">界面介绍</a>
+            <a href="#title-setting">标题设置</a>
+            <a href="#logo-upload">Logo上传</a>
+            <a href="#preview">效果预览</a>
+            <a href="#operations">操作指南</a>
+            <a href="#troubleshooting">常见问题</a>
+        </div>
+
+        <div class="section" id="overview">
+            <h2>🎯 功能概述</h2>
+            <div class="feature-list">
+                <p><strong>顶部设置</strong>是考试系统的外观定制功能，允许管理员自定义系统的顶部显示内容，包括考试标题和机构Logo，打造专属的考试界面。</p>
+                
+                <h3>核心功能：</h3>
+                <ul>
+                    <li><strong>考试标题定制：</strong>设置显示在系统顶部的考试名称</li>
+                    <li><strong>学校Logo上传：</strong>上传并显示学校标识</li>
+                    <li><strong>学院Logo上传：</strong>上传并显示学院标识</li>
+                    <li><strong>实时预览：</strong>即时查看设置效果</li>
+                    <li><strong>格式支持：</strong>支持PNG、JPG、JPEG格式图片</li>
+                    <li><strong>自动保存：</strong>设置后自动保存到数据库</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="interface">
+            <h2>🖥️ 界面介绍</h2>
+            
+            <div class="screenshot">
+                <img src="header-setting-main.png" alt="顶部设置主界面">
+                <div class="screenshot-caption">图1：顶部设置主界面</div>
+            </div>
+
+            <h3>界面布局说明：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>页面标题：</strong>显示"顶部设置"和功能说明</li>
+                    <li><strong>考试名称设置：</strong>输入框用于设置系统标题</li>
+                    <li><strong>Logo上传区域：</strong>分别设置学校和学院Logo</li>
+                    <li><strong>效果预览区：</strong>实时显示设置后的效果</li>
+                    <li><strong>操作按钮：</strong>重置、保存、帮助和返回功能</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="title-setting">
+            <h2>📝 考试标题设置</h2>
+            
+            <h3>标题设置功能：</h3>
+            <div class="info">
+                考试标题将显示在系统顶部的中央位置，是考生和考官看到的主要标识信息。
+            </div>
+
+            <h3>设置步骤：</h3>
+            <div class="step-list">
+                <ol>
+                    <li>在"考试系统标题"输入框中输入标题文字</li>
+                    <li>标题会在下方的效果预览区实时显示</li>
+                    <li>建议标题长度控制在30字符以内，确保显示效果</li>
+                    <li>点击"保存设置"按钮保存更改</li>
+                </ol>
+            </div>
+
+            <div class="success">
+                <strong>默认标题：</strong>"北石化研究生复试流程控制系统"<br>
+                <strong>建议格式：</strong>[学校名称] + [考试类型] + [系统名称]
+            </div>
+        </div>
+
+        <div class="section" id="logo-upload">
+            <h2>🖼️ Logo上传管理</h2>
+            
+            <h3>支持的Logo类型：</h3>
+            <table>
+                <tr>
+                    <th>Logo类型</th>
+                    <th>显示位置</th>
+                    <th>建议尺寸</th>
+                    <th>用途说明</th>
+                </tr>
+                <tr>
+                    <td>学校Logo</td>
+                    <td>顶部左侧</td>
+                    <td>200x100px</td>
+                    <td>显示学校标识</td>
+                </tr>
+                <tr>
+                    <td>学院Logo</td>
+                    <td>顶部右侧</td>
+                    <td>200x100px</td>
+                    <td>显示学院标识</td>
+                </tr>
+            </table>
+
+            <h3>上传步骤：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>选择文件：</strong>点击对应的上传区域</li>
+                    <li><strong>文件选择：</strong>从本地选择图片文件</li>
+                    <li><strong>格式检查：</strong>确保文件为PNG、JPG或JPEG格式</li>
+                    <li><strong>预览确认：</strong>上传后在预览区查看效果</li>
+                    <li><strong>保存设置：</strong>点击保存按钮完成设置</li>
+                </ol>
+            </div>
+
+            <h3>文件要求：</h3>
+            <div class="warning">
+                <ul>
+                    <li><strong>格式限制：</strong>仅支持PNG、JPG、JPEG格式</li>
+                    <li><strong>文件大小：</strong>建议不超过2MB</li>
+                    <li><strong>图片尺寸：</strong>建议200x100px，系统会自动调整</li>
+                    <li><strong>图片质量：</strong>建议使用高清图片，确保显示效果</li>
+                </ul>
+            </div>
+
+            <h3>Logo管理操作：</h3>
+            <div class="info">
+                <ul>
+                    <li><strong>上传新Logo：</strong>点击上传区域选择新文件</li>
+                    <li><strong>替换Logo：</strong>重新上传会自动替换原有Logo</li>
+                    <li><strong>移除Logo：</strong>点击"移除"按钮删除当前Logo</li>
+                    <li><strong>预览效果：</strong>所有更改会在预览区实时显示</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="preview">
+            <h2>👁️ 效果预览</h2>
+            
+            <h3>预览功能说明：</h3>
+            <div class="feature-list">
+                <p>效果预览区域会实时显示您的设置效果，包括：</p>
+                <ul>
+                    <li><strong>标题显示：</strong>考试标题的字体和位置</li>
+                    <li><strong>Logo布局：</strong>学校和学院Logo的位置和大小</li>
+                    <li><strong>整体效果：</strong>顶部区域的完整视觉效果</li>
+                    <li><strong>响应式预览：</strong>适配不同屏幕尺寸的显示效果</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <strong>注意：</strong>预览效果与实际系统显示效果完全一致，可以作为最终确认的依据。
+            </div>
+        </div>
+
+        <div class="section" id="operations">
+            <h2>🎮 操作指南</h2>
+            
+            <h3>主要操作按钮：</h3>
+            <table>
+                <tr>
+                    <th>按钮</th>
+                    <th>功能</th>
+                    <th>使用场景</th>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-secondary">🔄 重置</span></td>
+                    <td>恢复到默认设置</td>
+                    <td>需要清除所有自定义设置时</td>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-success">💾 保存设置</span></td>
+                    <td>保存当前所有设置</td>
+                    <td>完成设置后确认保存</td>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-primary">📖 帮助中心</span></td>
+                    <td>打开帮助文档</td>
+                    <td>需要查看使用说明时</td>
+                </tr>
+                <tr>
+                    <td><span class="button-demo btn-primary">🏠 返回主页</span></td>
+                    <td>返回考试系统</td>
+                    <td>设置完成后返回主系统</td>
+                </tr>
+            </table>
+
+            <h3>完整操作流程：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>访问页面：</strong>从考试系统设置中进入顶部设置</li>
+                    <li><strong>设置标题：</strong>在输入框中修改考试标题</li>
+                    <li><strong>上传Logo：</strong>分别上传学校和学院Logo</li>
+                    <li><strong>预览效果：</strong>在预览区查看设置效果</li>
+                    <li><strong>保存设置：</strong>点击保存按钮确认更改</li>
+                    <li><strong>返回系统：</strong>设置完成后返回主系统</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="troubleshooting">
+            <h2>🔧 常见问题</h2>
+            
+            <h3>Q: 上传Logo时提示格式不支持？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>确认文件格式为PNG、JPG或JPEG</li>
+                    <li>检查文件扩展名是否正确</li>
+                    <li>尝试使用图片编辑软件重新保存文件</li>
+                </ol>
+            </div>
+
+            <h3>Q: Logo显示模糊或变形？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>使用建议尺寸200x100px的图片</li>
+                    <li>确保原图片清晰度足够</li>
+                    <li>避免使用过小或过大的图片</li>
+                    <li>保持Logo的宽高比例合适</li>
+                </ol>
+            </div>
+
+            <h3>Q: 设置保存后没有生效？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>确认点击了"保存设置"按钮</li>
+                    <li>刷新考试系统页面查看效果</li>
+                    <li>检查网络连接是否正常</li>
+                    <li>查看浏览器控制台是否有错误信息</li>
+                </ol>
+            </div>
+
+            <h3>Q: 如何恢复默认设置？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>点击"重置"按钮清除所有自定义设置</li>
+                    <li>系统会恢复到默认标题和无Logo状态</li>
+                    <li>点击"保存设置"确认重置操作</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>💡 使用技巧</h2>
+            
+            <div class="success">
+                <h3>最佳实践建议：</h3>
+                <ul>
+                    <li><strong>Logo设计：</strong>使用简洁明了的Logo设计，避免过于复杂的图案</li>
+                    <li><strong>颜色搭配：</strong>确保Logo颜色与系统界面协调</li>
+                    <li><strong>文字清晰：</strong>标题文字要简洁明了，易于理解</li>
+                    <li><strong>定期更新：</strong>根据需要定期更新Logo和标题信息</li>
+                    <li><strong>备份文件：</strong>保留Logo原始文件，便于后续修改</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📞 技术支持</h2>
+            <div class="info">
+                <p><strong>版权所有：</strong>北京石油化工学院(2025)</p>
+                <p><strong>联系邮箱：</strong><a href="mailto:wangwentong@bipt.edu.cn">wangwentong@bipt.edu.cn</a></p>
+                <p><strong>文档版本：</strong>v1.0</p>
+                <p><strong>相关文档：</strong><a href="index.html">帮助文档中心</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

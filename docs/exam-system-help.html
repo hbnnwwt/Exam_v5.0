@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考试系统帮助文档</title>
+    <style>
+        body { 
+            font-family: 'Microsoft YaHei', Arial, sans-serif; 
+            margin: 40px; 
+            line-height: 1.6; 
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 { 
+            color: #34495e; 
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+        }
+        .section { 
+            margin-bottom: 30px; 
+        }
+        .screenshot {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .screenshot-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+        }
+        code { 
+            background: #f4f4f4; 
+            padding: 2px 6px; 
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+        }
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+        }
+        .step-list {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+        }
+        .warning {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+            margin: 15px 0;
+        }
+        .info {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #17a2b8;
+            margin: 15px 0;
+        }
+        .keyboard-shortcut {
+            background: #e9ecef;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .nav-links {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 20px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 研究生复试流程控制系统帮助文档</h1>
+        
+        <div class="nav-links">
+            <strong>快速导航：</strong>
+            <a href="#overview">系统概述</a>
+            <a href="#interface">界面介绍</a>
+            <a href="#workflow">考试流程</a>
+            <a href="#controls">操作控制</a>
+            <a href="#settings">系统设置</a>
+            <a href="#shortcuts">快捷键</a>
+            <a href="#troubleshooting">常见问题</a>
+        </div>
+
+        <div class="section" id="overview">
+            <h2>🎯 系统概述</h2>
+            <div class="feature-list">
+                <p><strong>研究生复试流程控制系统</strong>是一个专为研究生复试面试设计的综合管理平台，提供完整的面试流程控制、题库管理、计时功能和考生记录管理。</p>
+                
+                <h3>核心功能：</h3>
+                <ul>
+                    <li><strong>六步考试流程：</strong>中文自我介绍 → 英文自我介绍 → 英文翻译 → 专业问题 → 综合问答 → 考试结束</li>
+                    <li><strong>智能题库管理：</strong>支持翻译题和专业题的分类管理，包含文本和图片内容</li>
+                    <li><strong>随机抽题功能：</strong>自动随机选择题目，避免重复，确保公平性</li>
+                    <li><strong>精确计时控制：</strong>每个环节独立计时，支持暂停、重置和自定义时长</li>
+                    <li><strong>考生记录管理：</strong>自动记录每位考生的考试进度和抽取题目</li>
+                    <li><strong>系统状态监控：</strong>实时显示数据库连接、当前步骤、计时器状态等</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="interface">
+            <h2>🖥️ 界面介绍</h2>
+            
+            <div class="screenshot">
+                <img src="exam-system-main.png" alt="考试系统主界面">
+                <div class="screenshot-caption">图1：考试系统主界面</div>
+            </div>
+
+            <h3>界面布局说明：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>顶部标题栏：</strong>显示系统标题、学校Logo和当前学生信息</li>
+                    <li><strong>左侧流程面板（20%宽度）：</strong>显示六步考试流程和当前进度</li>
+                    <li><strong>中央内容区：</strong>显示考试内容、题目和指导信息</li>
+                    <li><strong>右侧控制面板（20%宽度）：</strong>包含操作按钮和系统状态</li>
+                    <li><strong>底部状态栏：</strong>显示计时器和版权信息</li>
+                </ol>
+            </div>
+
+            <h3>考试流程面板：</h3>
+            <table>
+                <tr>
+                    <th>步骤</th>
+                    <th>名称</th>
+                    <th>默认时长</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>中文自我介绍</td>
+                    <td>1分钟</td>
+                    <td>考生用中文进行自我介绍</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>英文自我介绍</td>
+                    <td>1分钟</td>
+                    <td>考生用英文进行自我介绍</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>英文翻译</td>
+                    <td>4分钟</td>
+                    <td>随机抽取英文段落进行翻译</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>专业问题</td>
+                    <td>5分钟</td>
+                    <td>按科目随机抽取专业问题回答</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>综合问答</td>
+                    <td>9分钟</td>
+                    <td>考官综合提问环节</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>考试结束</td>
+                    <td>-</td>
+                    <td>总结评分，准备下一位考生</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="workflow">
+            <h2>🔄 考试流程</h2>
+            
+            <h3>开始新考试：</h3>
+            <div class="step-list">
+                <ol>
+                    <li>点击<strong>"开始考试"</strong>按钮或按<span class="keyboard-shortcut">Space</span>键</li>
+                    <li>系统自动生成学生编号并创建考试记录</li>
+                    <li>进入第一步：中文自我介绍</li>
+                    <li>左侧面板显示当前步骤，右侧控制按钮激活</li>
+                </ol>
+            </div>
+
+            <h3>步骤切换：</h3>
+            <div class="info">
+                <strong>自动流程：</strong>使用"下一步"按钮按顺序进行，系统会自动保存进度和状态。<br>
+                <strong>手动跳转：</strong>可以使用"上一步"返回之前的环节，或"完成考试"直接结束。
+            </div>
+
+            <h3>题目抽取（步骤3和4）：</h3>
+            <div class="step-list">
+                <ol>
+                    <li><strong>英文翻译（步骤3）：</strong>点击"抽取题目"自动随机选择翻译题</li>
+                    <li><strong>专业问题（步骤4）：</strong>首先选择科目，然后随机抽取该科目的专业题</li>
+                    <li>抽取的题目会显示在中央内容区，包含文本和图片内容</li>
+                    <li>已抽取的题目会被标记为"已使用"，避免重复</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="section" id="controls">
+            <h2>🎮 操作控制</h2>
+            
+            <h3>主要控制按钮：</h3>
+            <table>
+                <tr>
+                    <th>按钮</th>
+                    <th>快捷键</th>
+                    <th>功能</th>
+                    <th>使用时机</th>
+                </tr>
+                <tr>
+                    <td>开始考试</td>
+                    <td><span class="keyboard-shortcut">Space</span></td>
+                    <td>开始新的考试流程</td>
+                    <td>考试开始前</td>
+                </tr>
+                <tr>
+                    <td>上一步</td>
+                    <td><span class="keyboard-shortcut">←</span></td>
+                    <td>返回上一个考试步骤</td>
+                    <td>需要重新进行某个环节时</td>
+                </tr>
+                <tr>
+                    <td>下一步</td>
+                    <td><span class="keyboard-shortcut">→</span></td>
+                    <td>进入下一个考试步骤</td>
+                    <td>当前环节完成后</td>
+                </tr>
+                <tr>
+                    <td>抽取题目</td>
+                    <td><span class="keyboard-shortcut">D</span></td>
+                    <td>随机抽取考试题目</td>
+                    <td>翻译和专业问题环节</td>
+                </tr>
+                <tr>
+                    <td>开始计时</td>
+                    <td><span class="keyboard-shortcut">T</span></td>
+                    <td>开始当前环节计时</td>
+                    <td>考生开始答题时</td>
+                </tr>
+                <tr>
+                    <td>暂停计时</td>
+                    <td><span class="keyboard-shortcut">P</span></td>
+                    <td>暂停当前计时器</td>
+                    <td>需要中断计时时</td>
+                </tr>
+                <tr>
+                    <td>重置计时</td>
+                    <td><span class="keyboard-shortcut">R</span></td>
+                    <td>重置计时器到初始值</td>
+                    <td>重新开始计时时</td>
+                </tr>
+                <tr>
+                    <td>完成考试</td>
+                    <td><span class="keyboard-shortcut">Ctrl+Enter</span></td>
+                    <td>直接结束当前考试</td>
+                    <td>提前结束考试时</td>
+                </tr>
+            </table>
+
+            <div class="warning">
+                <strong>注意：</strong>快捷键只在对应按钮可用时生效，且不会重复触发。
+            </div>
+        </div>
+
+        <div class="section" id="settings">
+            <h2>⚙️ 系统设置</h2>
+            
+            <div class="screenshot">
+                <img src="exam-system-settings.png" alt="系统设置界面">
+                <div class="screenshot-caption">图2：系统设置界面</div>
+            </div>
+
+            <h3>时间设置：</h3>
+            <div class="info">
+                可以自定义每个考试环节的时长（以秒为单位），设置后立即生效。
+            </div>
+
+            <h3>系统管理功能：</h3>
+            <div class="feature-list">
+                <ul>
+                    <li><strong>题库管理：</strong>打开数据库编辑器，管理翻译题和专业题</li>
+                    <li><strong>步骤内容设置：</strong>设置各考试步骤的指导内容和说明</li>
+                    <li><strong>顶部设置：</strong>自定义系统标题和上传学校、学院Logo</li>
+                    <li><strong>考试导出：</strong>导出所有学生的考试记录和题目信息</li>
+                    <li><strong>系统重置：</strong>清除所有考试记录，恢复初始状态</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section" id="shortcuts">
+            <h2>⌨️ 快捷键参考</h2>
+            
+            <table>
+                <tr>
+                    <th>功能</th>
+                    <th>快捷键</th>
+                    <th>说明</th>
+                </tr>
+                <tr>
+                    <td>开始考试</td>
+                    <td><span class="keyboard-shortcut">Space</span></td>
+                    <td>空格键快速开始</td>
+                </tr>
+                <tr>
+                    <td>上一步</td>
+                    <td><span class="keyboard-shortcut">←</span></td>
+                    <td>左箭头键</td>
+                </tr>
+                <tr>
+                    <td>下一步</td>
+                    <td><span class="keyboard-shortcut">→</span></td>
+                    <td>右箭头键</td>
+                </tr>
+                <tr>
+                    <td>抽取题目</td>
+                    <td><span class="keyboard-shortcut">D</span></td>
+                    <td>Draw的首字母</td>
+                </tr>
+                <tr>
+                    <td>开始计时</td>
+                    <td><span class="keyboard-shortcut">T</span></td>
+                    <td>Timer的首字母</td>
+                </tr>
+                <tr>
+                    <td>暂停计时</td>
+                    <td><span class="keyboard-shortcut">P</span></td>
+                    <td>Pause的首字母</td>
+                </tr>
+                <tr>
+                    <td>重置计时</td>
+                    <td><span class="keyboard-shortcut">R</span></td>
+                    <td>Reset的首字母</td>
+                </tr>
+                <tr>
+                    <td>完成考试</td>
+                    <td><span class="keyboard-shortcut">Ctrl+Enter</span></td>
+                    <td>组合键快速完成</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="troubleshooting">
+            <h2>🔧 常见问题</h2>
+            
+            <h3>Q: 系统显示"数据库连接失败"怎么办？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>确认服务器正常运行（检查控制台是否有错误信息）</li>
+                    <li>刷新页面重新连接</li>
+                    <li>检查数据库文件是否存在于assets/data目录</li>
+                </ol>
+            </div>
+
+            <h3>Q: 抽取题目时显示"无可用题目"？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>进入题库管理，检查是否有足够的题目</li>
+                    <li>确认题目没有全部被标记为"已使用"</li>
+                    <li>可以通过系统重置清除使用状态</li>
+                </ol>
+            </div>
+
+            <h3>Q: 计时器不工作或显示异常？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                <ol>
+                    <li>点击"重置计时"按钮</li>
+                    <li>检查系统设置中的时间配置</li>
+                    <li>刷新页面重新初始化</li>
+                </ol>
+            </div>
+
+            <h3>Q: 如何恢复到某个考生的考试状态？</h3>
+            <div class="info">
+                <strong>解决方案：</strong>
+                系统会自动保存每位考生的进度。刷新页面后，系统会自动恢复到最后一位考生的状态，包括当前步骤和已抽取的题目。
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📞 技术支持</h2>
+            <div class="info">
+                <p><strong>版权所有：</strong>北京石油化工学院(2025)</p>
+                <p><strong>联系邮箱：</strong><a href="mailto:wangwentong@bipt.edu.cn">wangwentong@bipt.edu.cn</a></p>
+                <p><strong>系统版本：</strong>v3.1</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

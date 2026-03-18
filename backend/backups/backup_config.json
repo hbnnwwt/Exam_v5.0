@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "interval_hours": 12,
+  "max_backups": 7,
+  "auto_cleanup": true
+}

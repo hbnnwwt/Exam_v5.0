@@ -1,0 +1,20 @@
+# 研究生复试系统 - 后端依赖
+# 锁定版本以确保稳定性
+
+# Web框架
+flask==3.0.0
+flask-cors==4.0.0
+
+# WSGI服务器
+werkzeug==3.0.1
+gunicorn==21.2.0
+
+# 数据验证
+jsonschema==4.20.0
+
+# 测试框架
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# 日志
+colorlog==6.8.0

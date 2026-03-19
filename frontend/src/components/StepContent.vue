@@ -121,7 +121,7 @@
               v-for="(q, index) in questions"
               :key="q.id"
               class="question-item"
-              :style="{ backgroundColor: getQuestionColor(q, selectedQuestionId) }"
+              :class="getQuestionClass(q)"
               :data-question-id="q.id"
               :data-index="index"
             >
@@ -349,7 +349,7 @@ const closeImagePreview = () => {
   previewImageUrl.value = ''
 }
 
-// 开始抽取 - 扫描动画版
+// 开始抽取 - 转圈动画版（参考旧版 + 速度递增 + 弹跳效果）
 const startDraw = async () => {
   const availableQuestions = questions.value.filter(q => !q.is_used)
   if (availableQuestions.length === 0) {
@@ -359,21 +359,11 @@ const startDraw = async () => {
 
   if (isDrawing.value) return  // 防止重复点击
 
-  // 1. 立即开始扫描动画
+  // 1. 立即发起API请求
   isDrawing.value = true
   const questionList = questions.value
-  const totalDuration = 2500  // 固定2.5秒
+  const targetIndex = questionList.findIndex(q => !q.is_used)
 
-  // 动态计算间隔：确保扫描完所有题目，总时长约2.5秒
-  const interval = Math.max(100, Math.floor(totalDuration / questionList.length))
-
-  let scanIndex = 0
-  animationTimer.value = setInterval(() => {
-    tempHighlightId.value = questionList[scanIndex].id
-    scanIndex = (scanIndex + 1) % questionList.length
-  }, interval)
-
-  // 2. 同时发起API请求
   let url = `/exam-api/questions/${currentQuestionType.value}/random?exclude_used=true`
   if (currentQuestionType.value === 'professional' && selectedSubject.value) {
     url += `&subject=${selectedSubject.value}`
@@ -382,32 +372,31 @@ const startDraw = async () => {
   try {
     const response = await api.get(url)
 
-    // 3. API返回后，动画继续运行，但停在被抽取的题目上
     if (!response.success || !response.data) {
       throw new Error('没有可用的题目')
     }
 
     const selectedQuestion = response.data
 
-    // 停止扫描动画，停在被抽取的题目上（显示为待抽取状态）
-    if (animationTimer.value) {
-      clearInterval(animationTimer.value)
-      animationTimer.value = null
-    }
-    // 停在被抽取的题目上，保持浅绿色高亮
+    // 找到目标题目在列表中的索引
+    const targetQuestionIndex = questionList.findIndex(q => q.id === selectedQuestion.id)
+
+    // 2. 开始转圈动画（3圈，速度递增）
+    await runSelectionAnimation(questionList, targetQuestionIndex)
+
+    // 3. 动画结束后，触发弹跳效果
     tempHighlightId.value = selectedQuestion.id
 
-    // 等待500ms，让用户看到最终停在哪个题目上
+    // 等待弹跳效果
     await new Promise(resolve => setTimeout(resolve, 500))
 
-    // 4. 然后变成"已抽取"状态（高亮绿色+放大）
+    // 4. 变成"已抽取"状态
     tempHighlightId.value = null
     selectedQuestionId.value = selectedQuestion.id
 
     // 更新题目状态
-    const qIndex = questionList.findIndex(q => q.id === selectedQuestion.id)
-    if (qIndex !== -1) {
-      questionList[qIndex].is_used = true
+    if (targetQuestionIndex !== -1) {
+      questionList[targetQuestionIndex].is_used = true
     }
 
     // 更新 usedQuestionIds 到 store
@@ -416,7 +405,7 @@ const startDraw = async () => {
     }
 
     // 计算题目编号
-    const questionNumber = qIndex + 1
+    const questionNumber = targetQuestionIndex + 1
 
     // 保存题目到store
     const questionContent = selectedQuestion.content || selectedQuestion.question_data
@@ -428,7 +417,7 @@ const startDraw = async () => {
       examStore.currentProfessionalQuestionId = selectedQuestion.id
     }
 
-    // 保存题目ID到后端（同时更新 students 和 exam_records 表）
+    // 保存题目ID到后端
     if (examStore.currentStudent) {
       try {
         const updateData = {}
@@ -444,9 +433,7 @@ const startDraw = async () => {
             : JSON.stringify(selectedQuestion.content || selectedQuestion.question_data)
           updateData.professionalSubject = selectedSubject.value
         }
-        // 更新 students 表
         await api.put(`/exam-api/students/${examStore.currentStudent}`, updateData)
-        // 更新 exam_records 表（用于加载进度时正确显示已抽取题目）
         await examStore.saveProgress()
       } catch (error) {
         console.error('保存题目ID失败:', error)
@@ -457,7 +444,6 @@ const startDraw = async () => {
     isDrawing.value = false
 
   } catch (error) {
-    // 错误处理：停止动画，显示错误
     if (animationTimer.value) {
       clearInterval(animationTimer.value)
       animationTimer.value = null
@@ -468,23 +454,92 @@ const startDraw = async () => {
   }
 }
 
-// 获取题目颜色 - 优先显示选中题目，其次显示已使用题目，最后显示可用题目
-// 获取题目颜色 - 优先显示: 选中 > 扫描中 > 已使用 > 可用
-const getQuestionColor = (question, selectedId) => {
-  // 1. 选中的题目 - 高亮橙红色（最明显）
-  if (selectedId === question.id) {
-    return '#fd7e14 !important'
+// 转圈动画函数 - 3圈，速度递增
+const runSelectionAnimation = (questionList, targetIndex) => {
+  return new Promise((resolve) => {
+    const maxRounds = 3
+    const totalQuestions = questionList.length
+
+    // 速度递增：100ms -> 80ms -> 60ms
+    const speeds = [100, 80, 60]
+
+    let currentRound = 0
+    let currentIndex = 0
+    let animationCount = 0
+    const totalAnimations = maxRounds * totalQuestions + targetIndex
+
+    // 使用递进速度
+    const runRound = (roundIndex) => {
+      if (roundIndex >= maxRounds) {
+        // 动画完成，停在目标位置
+        tempHighlightId.value = questionList[targetIndex].id
+        resolve()
+        return
+      }
+
+      const interval = speeds[Math.min(roundIndex, speeds.length - 1)]
+
+      const roundTimer = setInterval(() => {
+        // 移除之前的高亮
+        tempHighlightId.value = null
+
+        // 高亮当前项
+        tempHighlightId.value = questionList[currentIndex].id
+
+        animationCount++
+        currentIndex = (currentIndex + 1) % totalQuestions
+
+        // 检查是否完成当前圈
+        if (currentIndex === 0) {
+          currentRound++
+          clearInterval(roundTimer)
+
+          // 如果达到目标位置，提前结束
+          if (animationCount >= totalAnimations) {
+            tempHighlightId.value = questionList[targetIndex].id
+            resolve()
+          } else {
+            // 继续下一圈
+            runRound(roundIndex + 1)
+          }
+        }
+
+        // 如果已经达到目标位置
+        if (animationCount >= totalAnimations) {
+          clearInterval(roundTimer)
+          tempHighlightId.value = questionList[targetIndex].id
+          resolve()
+        }
+      }, interval)
+    }
+
+    // 开始第一圈
+    runRound(0)
+  })
+}
+
+// 获取题目样式类
+const getQuestionClass = (question) => {
+  const classes = []
+
+  // 1. 选中的题目 - 橙色高亮 + 弹跳
+  if (selectedQuestionId.value === question.id) {
+    classes.push('selected')
   }
-  // 2. 扫描中高亮 - 浅橙色
-  if (tempHighlightId.value === question.id) {
-    return '#fed7aa !important'
+  // 2. 扫描中高亮 - 黄色脉冲
+  else if (tempHighlightId.value === question.id && isDrawing.value) {
+    classes.push('animating')
   }
   // 3. 已使用题目 - 灰色
-  if (question.is_used) {
-    return '#6c757d !important'
+  else if (question.is_used) {
+    classes.push('used')
   }
   // 4. 可用题目 - 绿色
-  return '#28a745 !important'
+  else {
+    classes.push('available')
+  }
+
+  return classes.join(' ')
 }
 
 // 渲染题目内容
@@ -841,6 +896,33 @@ const renderQuestion = (questionData) => {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(253, 126, 20, 0.6);
   border: 2px solid #fff;
+  animation: bounce 0.5s ease-out;
+}
+
+/* 扫描中高亮 - 脉冲动画 */
+.question-item.animating {
+  background: #fff3cd !important;
+  color: #856404 !important;
+  border: 2px solid #ffc107 !important;
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+  animation: pulse 0.15s ease-in-out;
+}
+
+/* 脉冲动画 */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1.1); }
+}
+
+/* 弹跳动画 */
+@keyframes bounce {
+  0% { transform: scale(1.1); }
+  25% { transform: scale(1.25); }
+  50% { transform: scale(1.05); }
+  75% { transform: scale(1.15); }
+  100% { transform: scale(1.1); }
 }
 
 .question-item.selected .question-status {

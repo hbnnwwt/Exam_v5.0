@@ -21,3 +21,6 @@ colorlog==6.8.0
 
 # 图片处理
 Pillow==10.1.0
+
+# PDF生成
+reportlab==4.0.7

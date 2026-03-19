@@ -30,6 +30,9 @@ export const useExamStore = defineStore('exam', {
     
     // 已使用题目ID列表
     usedQuestionIds: [],
+    // 分别存储翻译题和专业题的已使用ID，避免ID冲突
+    usedTranslationQuestionIds: [],
+    usedProfessionalQuestionIds: [],
 
     // 步骤时间配置（秒）- 从API加载，备用默认值为0
     stepTimes: {
@@ -188,10 +191,17 @@ export const useExamStore = defineStore('exam', {
           }
 
           return true
-        } else if (response.success && response.data && response.data.allUsedQuestionIds && response.data.allUsedQuestionIds.length > 0) {
+        } else if (response.success && response.data && (response.data.allUsedTranslationIds?.length > 0 || response.data.allUsedProfessionalIds?.length > 0)) {
           // 没有进行中的考试，但有已使用题目ID（新考生时使用）
-          console.log('[DEBUG] Setting usedQuestionIds from allUsedQuestionIds:', response.data.allUsedQuestionIds)
-          this.usedQuestionIds = response.data.allUsedQuestionIds || []
+          // 分别处理翻译题和专业题的ID，避免ID冲突
+          const translationIds = response.data.allUsedTranslationIds || []
+          const professionalIds = response.data.allUsedProfessionalIds || []
+          console.log('[DEBUG] Setting usedQuestionIds: translationIds=', translationIds, ', professionalIds=', professionalIds)
+          // 合并两个列表，前端会根据题目类型过滤
+          this.usedQuestionIds = [...translationIds, ...professionalIds]
+          // 保存按类型分类的ID
+          this.usedTranslationQuestionIds = translationIds
+          this.usedProfessionalQuestionIds = professionalIds
 
           // 检查最后一个考生是否已完成考试
           // 如果 examStatus 是 'completed'，说明考生已完成考试，需要手动点击"开始考试"

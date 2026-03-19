@@ -573,17 +573,33 @@ def load_exam_progress():
         else:
             # 没有进行中的考试，返回下一个考生编号
             # 同时获取所有已使用题目ID（用于新考生时标记已使用题目）
+            # 修复：分别获取翻译题和专业题的已使用ID，避免ID冲突
             import json
-            all_used_ids = set()
+            all_translation_ids = set()
+            all_professional_ids = set()
+
+            # 从 translation_question_id 和 professional_question_id 字段获取
             cursor = conn.execute('''
-                SELECT used_question_ids FROM exam_records
+                SELECT translation_question_id, professional_question_id FROM exam_records
+                WHERE translation_question_id IS NOT NULL OR professional_question_id IS NOT NULL
+            ''')
+            for row in cursor.fetchall():
+                if row['translation_question_id']:
+                    all_translation_ids.add(row['translation_question_id'])
+                if row['professional_question_id']:
+                    all_professional_ids.add(row['professional_question_id'])
+
+            # 旧格式兼容：从 used_question_ids 字段解析
+            cursor = conn.execute('''
+                SELECT translation_question_id, professional_question_id, used_question_ids FROM exam_records
                 WHERE used_question_ids IS NOT NULL AND used_question_ids != ''
             ''')
             for row in cursor.fetchall():
                 try:
                     ids = json.loads(row['used_question_ids'])
                     if isinstance(ids, list):
-                        all_used_ids.update(ids)
+                        # 旧数据格式，只有一个ID列表，无法区分类型，忽略
+                        pass
                 except:
                     pass
 
@@ -617,9 +633,11 @@ def load_exam_progress():
                 'remainingTime': 0,
                 'examStatus': result_exam_status,
                 'startTime': None,
-                'allUsedQuestionIds': list(all_used_ids)  # 所有已使用的题目ID
+                'allUsedQuestionIds': list(all_translation_ids) + list(all_professional_ids),
+                'allUsedTranslationIds': list(all_translation_ids),
+                'allUsedProfessionalIds': list(all_professional_ids)
             }
-            print(f'[DEBUG] load_exam_progress: hasProgress=False, examStatus={result_exam_status}, allUsedQuestionIds={list(all_used_ids)}', flush=True)
+            print(f'[DEBUG] load_exam_progress: hasProgress=False, examStatus={result_exam_status}, allTranslationIds={list(all_translation_ids)}, allProfessionalIds={list(all_professional_ids)}', flush=True)
         
         conn.close()
         

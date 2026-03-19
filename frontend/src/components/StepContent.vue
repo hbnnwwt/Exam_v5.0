@@ -287,9 +287,11 @@ const openQuestionSelection = async (type) => {
     if (response.success && response.data) {
       questions.value = response.data
 
-      // 根据 usedQuestionIds 标记已使用的题目
-      const usedIds = examStore.usedQuestionIds || []
-      console.log('[DEBUG] Marking used questions, usedIds:', usedIds)
+      // 根据题目类型使用对应的已使用ID列表，避免ID冲突
+      const usedIds = type === 'translation'
+        ? (examStore.usedTranslationQuestionIds || [])
+        : (examStore.usedProfessionalQuestionIds || [])
+      console.log('[DEBUG] Marking used questions for', type, ', usedIds:', usedIds)
       questions.value.forEach(q => {
         if (usedIds.includes(q.id)) {
           q.is_used = true

@@ -41,7 +41,7 @@ http://localhost:5000
 ## 项目结构
 
 ```
-Exam_v3.2/
+Exam_v5.0/
 ├── frontend/              # Vue 3 前端
 │   ├── src/
 │   │   ├── api/           # API 调用层

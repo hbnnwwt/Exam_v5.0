@@ -38,6 +38,9 @@ register_error_handlers(app)
 @app.errorhandler(Exception)
 def handle_global_exception(e):
     """全局异常处理器，记录错误到日志"""
+    import traceback
+    print(f"[GLOBAL ERROR] {str(e)}")
+    print(traceback.format_exc())
     logger.error(
         f"Unhandled Exception: {str(e)} - "
         f"Path: {request.path} - "

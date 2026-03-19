@@ -595,7 +595,6 @@ def load_exam_progress():
             next_number = (max_result['max_number'] or 0) + 1
 
             # 检查最后一个考生是否已完成考试（从 students 表查询）
-            # 直接获取 students 表中最后一个考生
             cursor = conn.execute('''
                 SELECT student_number, exam_status FROM students
                 ORDER BY CAST(student_number AS INTEGER) DESC LIMIT 1

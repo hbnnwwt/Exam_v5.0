@@ -66,6 +66,6 @@ echo.
 REM Open browser
 start http://localhost:5000
 
-"%PYTHON_EXE%" app.py
+"%PYTHON_EXE%" -u app.py
 
 pause

@@ -527,7 +527,8 @@ def export_students():
                 s.end_time,
                 s.total_duration,
                 s.created_at,
-                er.exam_status as record_status
+                er.exam_status as record_status,
+                er.created_at as record_created_at
             FROM students s
             LEFT JOIN exam_records er ON s.student_number = er.student_number
             ORDER BY CAST(s.student_number AS INTEGER)
@@ -997,7 +998,8 @@ def export_bundle():
                 s.end_time,
                 s.total_duration,
                 s.created_at,
-                er.exam_status as record_status
+                er.exam_status as record_status,
+                er.created_at as record_created_at
             FROM students s
             LEFT JOIN exam_records er ON s.student_number = er.student_number
             ORDER BY CAST(s.student_number AS INTEGER)
@@ -1086,7 +1088,8 @@ def export_html():
                 s.end_time,
                 s.total_duration,
                 s.created_at,
-                er.exam_status as record_status
+                er.exam_status as record_status,
+                er.created_at as record_created_at
             FROM students s
             LEFT JOIN exam_records er ON s.student_number = er.student_number
             ORDER BY CAST(s.student_number AS INTEGER)
@@ -1508,7 +1511,8 @@ def export_pdf():
                 s.end_time,
                 s.total_duration,
                 s.created_at,
-                er.exam_status as record_status
+                er.exam_status as record_status,
+                er.created_at as record_created_at
             FROM students s
             LEFT JOIN exam_records er ON s.student_number = er.student_number
             ORDER BY CAST(s.student_number AS INTEGER)
@@ -1855,6 +1859,9 @@ def export_pdf():
         return response
 
     except Exception as e:
+        import traceback
+        print(f"[PDF Export Error] {str(e)}")
+        print(traceback.format_exc())
         return format_response(
             success=False,
             error=f"导出PDF失败: {str(e)}",

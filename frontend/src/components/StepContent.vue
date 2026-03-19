@@ -3,13 +3,13 @@
     <!-- 步骤 1 -->
     <div v-if="step === 1" class="step-intro">
       <h3>{{ currentStepInfo.title || `步骤 ${step}` }}</h3>
-      <p>{{ currentStepInfo.description || '请考生进行自我介绍' }}</p>
+      <p class="step-description">{{ currentStepInfo.description || '请考生进行自我介绍' }}</p>
     </div>
 
     <!-- 步骤 2 -->
     <div v-if="step === 2" class="step-intro">
       <h3>{{ currentStepInfo.title || `步骤 ${step}` }}</h3>
-      <p>{{ currentStepInfo.description || 'Please introduce yourself' }}</p>
+      <p class="step-description">{{ currentStepInfo.description || 'Please introduce yourself' }}</p>
     </div>
 
     <!-- 步骤 3: 英文翻译 -->
@@ -51,13 +51,13 @@
     <!-- 步骤 5: 综合问答 -->
     <div v-if="step === 5" class="step-qna">
       <h3>{{ currentStepInfo.title || `步骤 ${step}` }}</h3>
-      <p>{{ currentStepInfo.description || '考官可进行综合提问' }}</p>
+      <p class="step-description">{{ currentStepInfo.description || '考官可进行综合提问' }}</p>
     </div>
 
     <!-- 步骤 6: 考试结束 -->
     <div v-if="step === 6" class="step-complete">
       <h3>{{ currentStepInfo.title || `步骤 ${step}` }}</h3>
-      <p>{{ currentStepInfo.description || '感谢考生的配合！' }}</p>
+      <p class="step-description">{{ currentStepInfo.description || '感谢考生的配合！' }}</p>
     </div>
 
     <!-- 科目选择弹窗 - 新增 -->
@@ -600,6 +600,11 @@ const renderQuestion = (questionData) => {
 .step-complete h3 {
   font-size: 1.5rem;
   margin-bottom: 15px;
+}
+
+.step-description {
+  white-space: pre-line;
+  line-height: 1.6;
 }
 
 .question-display {

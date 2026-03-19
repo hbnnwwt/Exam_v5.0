@@ -4,6 +4,7 @@
 from enum import Enum
 from flask import jsonify
 from functools import wraps
+from datetime import datetime
 
 class ErrorCode(Enum):
     """错误代码枚举"""
@@ -152,6 +153,19 @@ def register_error_handlers(app):
     
     @app.errorhandler(Exception)
     def handle_exception(error):
+        import traceback
+        import os
+        log_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'logs', 'error.log')
+        try:
+            os.makedirs(os.path.dirname(log_path), exist_ok=True)
+            with open(log_path, 'a', encoding='utf-8') as f:
+                f.write(f"[{datetime.now().isoformat()}] Exception: {str(error)}\n")
+                f.write(traceback.format_exc())
+                f.write("\n")
+        except:
+            pass
+        print(f"[ERROR HANDLER Exception] {str(error)}")
+        print(traceback.format_exc())
         return handle_generic_error(error)
 
 

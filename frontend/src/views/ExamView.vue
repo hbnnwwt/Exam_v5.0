@@ -78,10 +78,10 @@
             </button>
             <button
               @click="nextStep"
-              :disabled="examStore.currentStep >= examStore.totalSteps"
+              :disabled="examStore.currentStep >= examStore.totalSteps || isProcessing"
               class="control-btn next"
             >
-              下一步 ▶
+              {{ isProcessing ? '处理中...' : '下一步 ▶' }}
             </button>
           </div>
 
@@ -226,8 +226,17 @@ const prevStep = () => {
 }
 
 const nextStep = () => {
+  if (isProcessing.value) return  // 防止重复点击
+
+  isProcessing.value = true  // 禁用按钮
+
   examStore.nextStep()
   examStore.saveProgress()
+
+  // 1秒后恢复按钮状态
+  setTimeout(() => {
+    isProcessing.value = false
+  }, 1000)
 }
 
 const completeExam = async () => {

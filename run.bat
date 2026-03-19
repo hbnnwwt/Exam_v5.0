@@ -14,8 +14,10 @@ set "VENV_PYTHON=%VENV_DIR%\Scripts\python.exe"
 
 REM Check Python environment priority: portable > venv > system
 set "PYTHON_EXE="
-if exist "%PYTHON_EXE%" (
-    set "PYTHON_EXE=%PYTHON_EXE%"
+
+REM Check python_portable first
+if exist "%PYTHON_DIR%\python.exe" (
+    set "PYTHON_EXE=%PYTHON_DIR%\python.exe"
     goto :check_frontend
 )
 

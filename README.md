@@ -1,17 +1,34 @@
-# 研究生复试系统 - Vue 3 版本
+# 研究生复试系统
 
-基于 Vue 3 + Flask 的前后端分离架构。
+基于 Vue 3 + Flask 的前后端分离架构的研究生复试面试系统。
+
+## 下载版本
+
+### [Exam_v5.0-release.zip](releases/Exam_v5.0-release.zip) (15MB)
+- 需先运行 `setup.bat` 安装依赖
+- 需要 Node.js 18+ 构建前端
+- 适合有 Python 环境的用户
+
+### [Exam_v5.0-portable.zip](releases/Exam_v5.0-portable.zip) (53MB)
+- **解压即用**，无需安装任何环境
+- 包含便携版 Python
+- 适合追求开箱即用的用户
 
 ## 快速开始
 
-### 首次运行（需要先安装 Python 环境）
+### Portable 版（推荐）
 
 ```bash
-# 1. 创建 Python 虚拟环境并安装依赖
-setup.bat
+# 解压后直接运行
+run.bat
+```
 
-# 2. 构建前端（首次运行需要）
-build.bat
+### Release 版
+
+```bash
+# 1. 解压
+# 2. 安装依赖
+setup.bat
 
 # 3. 启动系统
 run.bat
@@ -35,8 +52,8 @@ http://localhost:5000
 
 ### 环境要求
 
-- **Python**: 3.8+ (用于后端)
-- **Node.js**: 18+ (用于前端开发，仅开发模式需要)
+- **Release 版**: Python 3.8+、Node.js 18+
+- **Portable 版**: 无需额外安装
 
 ## 项目结构
 
@@ -63,11 +80,12 @@ Exam_v5.0/
 │   ├── config.py          # 配置模块
 │   └── requirements.txt   # 依赖版本锁定
 │
-├── python_portable/       # 便携式 Python
+├── python_portable/       # 便携式 Python (仅 Portable 版)
 ├── docs/                 # 文档
 │
-├── run.bat                # 生产启动
-├── build.bat              # 构建脚本
+├── run.bat                # 启动系统
+├── build.bat              # 构建前端
+├── build-releases.bat     # 构建发布版本
 └── dev.bat                # 开发模式
 ```
 
@@ -78,11 +96,6 @@ Exam_v5.0/
 | `/exam-api/*` | 考试系统 API |
 | `/api/*` | 题库编辑 API |
 | `/export-api/*` | 导出 API |
-
-## 环境要求
-
-- **运行**: 无需额外安装（便携式 Python 已包含）
-- **开发**: Node.js 18+ （用于前端开发）
 
 ## 核心功能
 

@@ -22,6 +22,19 @@ from apis.common.utils import format_response
 
 export_bp = Blueprint('export', __name__)
 
+def get_subject_map():
+    """从数据库动态获取科目映射"""
+    subject_map = {}
+    try:
+        conn = get_db_connection()
+        cursor = conn.execute('SELECT code, name FROM subjects')
+        for row in cursor.fetchall():
+            subject_map[row['code']] = row['name']
+        conn.close()
+    except Exception as e:
+        print(f"获取科目映射失败: {e}")
+    return subject_map
+
 def get_image_source(item_content, prefer_thumbnail=False):
     if isinstance(item_content, dict):
         if prefer_thumbnail:
@@ -157,13 +170,7 @@ def generate_subject_stats_html(students):
     """生成专业科目统计的HTML"""
     # 统计不同专业科目的学生数
     subject_counts = {}
-    subject_map = {
-        'computer_science': '计算机科学',
-        'software_engineering': '软件工程',
-        'information_security': '信息安全',
-        'data_science': '数据科学',
-        'artificial_intelligence': '人工智能'
-    }
+    subject_map = get_subject_map()
 
     for student in students:
         if student.get('professionalSubject'):
@@ -611,14 +618,8 @@ def export_students():
             }
             
             # 专业科目映射
-            subject_map = {
-                'computer_science': '计算机科学',
-                'software_engineering': '软件工程',
-                'information_security': '信息安全',
-                'data_science': '数据科学',
-                'artificial_intelligence': '人工智能'
-            }
-            
+            subject_map = get_subject_map()
+
             export_data.append({
                 'studentNumber': student['student_number'],
                 'name': student['name'] or '',
@@ -786,10 +787,13 @@ def export_preview():
             if student['professional_question_id']:
                 prof_info = professional_questions.get(student['professional_question_id'])
                 if prof_info:
+                    # 科目映射
+                    subject_map = get_subject_map()
+                    subject_code = prof_info['subject']
                     professional_info = {
                         'questionNumber': prof_info['question_index'],
                         'questionContent': student['professional_question'] or prof_info['question_data'],
-                        'subject': prof_info['subject']
+                        'subject': subject_map.get(subject_code, subject_code) if subject_code else None
                     }
 
             # 计算考试时长
@@ -828,13 +832,7 @@ def export_preview():
             }
 
             # 专业科目映射
-            subject_map = {
-                'computer_science': '计算机科学',
-                'software_engineering': '软件工程',
-                'information_security': '信息安全',
-                'data_science': '数据科学',
-                'artificial_intelligence': '人工智能'
-            }
+            subject_map = get_subject_map()
 
             # 直接传递原始题目内容，让前端处理格式化
             # 不在后端进行格式化，保持原始数据结构
@@ -929,13 +927,7 @@ def export_statistics():
                 'subjectStats': [
                     {
                         'subject': row['professional_subject'],
-                        'subjectName': {
-                            'computer_science': '计算机科学',
-                            'software_engineering': '软件工程',
-                            'information_security': '信息安全',
-                            'data_science': '数据科学',
-                            'artificial_intelligence': '人工智能'
-                        }.get(row['professional_subject'], row['professional_subject']),
+                        'subjectName': get_subject_map().get(row['professional_subject'], row['professional_subject']),
                         'count': row['count']
                     }
                     for row in subject_stats
@@ -1136,10 +1128,13 @@ def export_html():
             if student['professional_question_id']:
                 prof_info = professional_questions.get(student['professional_question_id'])
                 if prof_info:
+                    # 科目映射
+                    subject_map = get_subject_map()
+                    subject_code = prof_info['subject']
                     professional_info = {
                         'questionNumber': prof_info['question_index'],
                         'questionContent': student['professional_question'] or prof_info['question_data'],
-                        'subject': prof_info['subject']
+                        'subject': subject_map.get(subject_code, subject_code) if subject_code else None
                     }
 
             # 计算考试时长
@@ -1178,13 +1173,7 @@ def export_html():
             }
 
             # 专业科目映射
-            subject_map = {
-                'computer_science': '计算机科学',
-                'software_engineering': '软件工程',
-                'information_security': '信息安全',
-                'data_science': '数据科学',
-                'artificial_intelligence': '人工智能'
-            }
+            subject_map = get_subject_map()
 
             students.append({
                 'studentNumber': student['student_number'],
@@ -1559,10 +1548,13 @@ def export_pdf():
             if student['professional_question_id']:
                 prof_info = professional_questions.get(student['professional_question_id'])
                 if prof_info:
+                    # 科目映射
+                    subject_map = get_subject_map()
+                    subject_code = prof_info['subject']
                     professional_info = {
                         'questionNumber': prof_info['question_index'],
                         'questionContent': student['professional_question'] or prof_info['question_data'],
-                        'subject': prof_info['subject']
+                        'subject': subject_map.get(subject_code, subject_code) if subject_code else None
                     }
 
             # 计算考试时长
@@ -1601,13 +1593,7 @@ def export_pdf():
             }
 
             # 专业科目映射
-            subject_map = {
-                'computer_science': '计算机科学',
-                'software_engineering': '软件工程',
-                'information_security': '信息安全',
-                'data_science': '数据科学',
-                'artificial_intelligence': '人工智能'
-            }
+            subject_map = get_subject_map()
 
             students.append({
                 'studentNumber': student['student_number'],
@@ -1730,13 +1716,7 @@ def export_pdf():
 
         # 添加专业科目分布
         subject_counts = {}
-        subject_map = {
-            'computer_science': '计算机科学',
-            'software_engineering': '软件工程',
-            'information_security': '信息安全',
-            'data_science': '数据科学',
-            'artificial_intelligence': '人工智能'
-        }
+        subject_map = get_subject_map()
 
         for student in students:
             if student.get('professionalSubject'):

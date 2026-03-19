@@ -47,3 +47,6 @@ logs/
 # Environment
 .env
 .env.local
+
+# Frontend build artifacts
+backend/assets/frontend/

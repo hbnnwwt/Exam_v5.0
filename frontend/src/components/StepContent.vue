@@ -361,8 +361,9 @@ const startDraw = async () => {
 
   // 1. 立即发起API请求
   isDrawing.value = true
-  const questionList = questions.value
-  const targetIndex = questionList.findIndex(q => !q.is_used)
+
+  // 只对可用题目进行动画扫描
+  const questionList = availableQuestions
 
   let url = `/exam-api/questions/${currentQuestionType.value}/random?exclude_used=true`
   if (currentQuestionType.value === 'professional' && selectedSubject.value) {
@@ -378,7 +379,7 @@ const startDraw = async () => {
 
     const selectedQuestion = response.data
 
-    // 找到目标题目在列表中的索引
+    // 找到目标题目在可用题目列表中的索引
     const targetQuestionIndex = questionList.findIndex(q => q.id === selectedQuestion.id)
 
     // 2. 开始转圈动画（3圈，速度递增）
@@ -526,13 +527,13 @@ const getQuestionClass = (question) => {
   if (selectedQuestionId.value === question.id) {
     classes.push('selected')
   }
-  // 2. 扫描中高亮 - 黄色脉冲
-  else if (tempHighlightId.value === question.id && isDrawing.value) {
-    classes.push('animating')
-  }
-  // 3. 已使用题目 - 灰色
+  // 2. 已使用题目 - 灰色（优先级高于扫描中）
   else if (question.is_used) {
     classes.push('used')
+  }
+  // 3. 扫描中高亮 - 黄色脉冲（只对可用题目生效）
+  else if (tempHighlightId.value === question.id && isDrawing.value) {
+    classes.push('animating')
   }
   // 4. 可用题目 - 绿色
   else {

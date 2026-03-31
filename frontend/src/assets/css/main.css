@@ -8,16 +8,21 @@
      颜色系统 - Color Palette
      ======================================== */
 
-  /* 品牌色 */
-  --color-primary: #007bff;
-  --color-primary-hover: #0056b3;
-  --color-primary-light: #e7f1ff;
-  --color-primary-dark: #004085;
+  /* 品牌色 - 庄重面试风 */
+  --color-primary: #0f172a;        /* 深石板灰，替代蓝色 */
+  --color-primary-hover: #1e293b;
+  --color-primary-light: #f1f5f9;
+  --color-primary-dark: #020617;
+
+  /* 强调色 - 金色 */
+  --color-accent: #d97706;
+  --color-accent-hover: #b45309;
+  --color-accent-light: #fef3c7;
 
   /* 语义色 */
-  --color-success: #28a745;
-  --color-success-hover: #218838;
-  --color-success-light: #d4edda;
+  --color-success: #059669;        /* 翡翠绿 */
+  --color-success-hover: #047857;
+  --color-success-light: #d1fae5;
 
   --color-warning: #ffc107;
   --color-warning-hover: #e0a800;

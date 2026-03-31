@@ -344,8 +344,8 @@ onMounted(() => {
 
 /* 顶部栏 */
 .header {
-  background: #0f172a;
-  border-bottom: none;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   padding: 15px 20px;
   flex-shrink: 0;
 }
@@ -370,7 +370,7 @@ onMounted(() => {
 
 .header-title {
   font-size: 1.8rem;
-  color: #f8fafc;
+  color: #0f172a;
   margin: 0;
   font-family: var(--font-serif, "Noto Serif SC", serif);
 }
@@ -388,17 +388,17 @@ onMounted(() => {
 
 .nav-btn {
   padding: 8px 16px;
-  background: rgba(255, 255, 255, 0.1);
-  color: #f8fafc;
+  background: #f1f5f9;
+  color: #0f172a;
   text-decoration: none;
   border-radius: 6px;
   font-size: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: #e2e8f0;
 }
 
 /* 主内容区 */

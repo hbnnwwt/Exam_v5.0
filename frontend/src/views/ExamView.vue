@@ -825,9 +825,6 @@ onMounted(() => {
   color: #6b7280;
   font-size: 14px;
 }
-</style>
-  padding: 15px;
-}
 
 .panel-content h3 {
   margin: 0 0 15px;

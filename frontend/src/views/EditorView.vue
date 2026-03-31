@@ -44,8 +44,7 @@
         <!-- 科目筛选（仅专业题目时显示） -->
         <div class="sidebar-section" v-if="currentTab === 'professional'">
           <h3>科目筛选</h3>
-          <label for="subject-filter" class="sr-only">按科目筛选</label>
-          <select id="subject-filter" v-model="selectedSubject" class="subject-select">
+          <select v-model="selectedSubject" class="subject-select">
             <option value="">全部科目</option>
             <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
               {{ subject.label }}
@@ -71,9 +70,7 @@
       <!-- 题目列表 -->
       <section class="content" v-if="currentTab !== 'subjects'">
         <div class="toolbar">
-          <label for="search-keyword" class="sr-only">搜索题目</label>
           <input
-            id="search-keyword"
             v-model="searchKeyword"
             type="text"
             placeholder="搜索题目..."
@@ -211,43 +208,27 @@
     </main>
 
     <!-- 科目编辑弹窗 -->
-    <div
-      v-if="showSubjectModal"
-      class="modal-overlay"
-      @click="closeSubjectModal"
-      @keydown.escape="closeSubjectModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="subject-modal-title"
-    >
+    <div v-if="showSubjectModal" class="modal-overlay" @click="closeSubjectModal">
       <div class="modal" @click.stop>
         <div class="modal-header">
-          <h3 id="subject-modal-title">{{ isEditingSubject ? '编辑科目' : '添加科目' }}</h3>
-          <button
-            class="modal-close"
-            @click="closeSubjectModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>{{ isEditingSubject ? '编辑科目' : '添加科目' }}</h3>
+          <button class="modal-close" @click="closeSubjectModal">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="subject-code">科目代码</label>
+            <label>科目代码</label>
             <input
-              id="subject-code"
               v-model="subjectForm.code"
               type="text"
               class="form-input"
               placeholder="例如: c_language"
               :disabled="isEditingSubject"
-              aria-describedby="subject-code-hint"
             >
-            <small id="subject-code-hint" class="form-hint">科目代码用于系统内部识别，建议使用英文和下划线</small>
+            <small class="form-hint">科目代码用于系统内部识别，建议使用英文和下划线</small>
           </div>
           <div class="form-group">
-            <label for="subject-name">科目名称</label>
+            <label>科目名称</label>
             <input
-              id="subject-name"
               v-model="subjectForm.name"
               type="text"
               class="form-input"
@@ -255,9 +236,8 @@
             >
           </div>
           <div class="form-group">
-            <label for="subject-desc">描述</label>
+            <label>描述</label>
             <textarea
-              id="subject-desc"
               v-model="subjectForm.description"
               rows="3"
               class="form-textarea"
@@ -265,44 +245,31 @@
             ></textarea>
           </div>
           <div class="form-group" v-if="isEditingSubject">
-            <label class="checkbox-label">
-              <input id="subject-active" v-model="subjectForm.is_active" type="checkbox">
-              <span>启用此科目</span>
+            <label>
+              <input v-model="subjectForm.is_active" type="checkbox">
+              启用此科目
             </label>
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="closeSubjectModal" class="cancel-btn" type="button">取消</button>
-          <button @click="saveSubject" class="save-btn" type="button">保存</button>
+          <button @click="closeSubjectModal" class="cancel-btn">取消</button>
+          <button @click="saveSubject" class="save-btn">保存</button>
         </div>
       </div>
     </div>
 
     <!-- 批量修改科目弹窗 -->
-    <div
-      v-if="showBatchSubjectModal"
-      class="modal-overlay"
-      @click="showBatchSubjectModal = false"
-      @keydown.escape="showBatchSubjectModal = false"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="batch-subject-modal-title"
-    >
+    <div v-if="showBatchSubjectModal" class="modal-overlay" @click="showBatchSubjectModal = false">
       <div class="modal" @click.stop>
         <div class="modal-header">
-          <h3 id="batch-subject-modal-title">批量修改科目</h3>
-          <button
-            class="modal-close"
-            @click="showBatchSubjectModal = false"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>批量修改科目</h3>
+          <button class="modal-close" @click="showBatchSubjectModal = false">&times;</button>
         </div>
         <div class="modal-body">
-          <p class="batch-info" role="status">已选择 {{ selectedQuestions.length }} 道题目</p>
+          <p class="batch-info">已选择 {{ selectedQuestions.length }} 道题目</p>
           <div class="form-group">
-            <label for="batch-new-subject">新科目</label>
-            <select id="batch-new-subject" v-model="batchSubjectForm.subject" class="form-select">
+            <label>新科目</label>
+            <select v-model="batchSubjectForm.subject" class="form-select">
               <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
                 {{ subject.label }}
               </option>
@@ -310,36 +277,23 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="showBatchSubjectModal = false" class="cancel-btn" type="button">取消</button>
-          <button @click="batchUpdateSubject" class="save-btn" type="button">确认修改</button>
+          <button @click="showBatchSubjectModal = false" class="cancel-btn">取消</button>
+          <button @click="batchUpdateSubject" class="save-btn">确认修改</button>
         </div>
       </div>
     </div>
 
     <!-- 添加/编辑题目弹窗 -->
-    <div
-      v-if="showModal"
-      class="modal-overlay"
-      @click="closeModal"
-      @keydown.escape="closeModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="question-modal-title"
-    >
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal" @click.stop>
         <div class="modal-header">
-          <h3 id="question-modal-title">{{ isEditing ? '编辑题目' : '添加题目' }}</h3>
-          <button
-            class="modal-close"
-            @click="closeModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>{{ isEditing ? '编辑题目' : '添加题目' }}</h3>
+          <button class="modal-close" @click="closeModal">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group" v-if="currentType === 'professional'">
-            <label for="question-subject">科目</label>
-            <select id="question-subject" v-model="formData.subject" class="form-select">
+            <label>科目</label>
+            <select v-model="formData.subject" class="form-select">
               <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
                 {{ subject.label }}
               </option>
@@ -347,8 +301,8 @@
           </div>
 
           <div class="form-group" v-if="currentType === 'professional'">
-            <label for="question-difficulty">难度</label>
-            <select id="question-difficulty" v-model="formData.difficulty" class="form-select">
+            <label>难度</label>
+            <select v-model="formData.difficulty" class="form-select">
               <option value="easy">简单</option>
               <option value="medium">中等</option>
               <option value="hard">困难</option>
@@ -396,37 +350,24 @@
     </div>
 
     <!-- 批量导入弹窗 -->
-    <div
-      v-if="showBatchImportModal"
-      class="modal-overlay"
-      @click="closeBatchImportModal"
-      @keydown.escape="closeBatchImportModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="batch-import-modal-title"
-    >
+    <div v-if="showBatchImportModal" class="modal-overlay" @click="closeBatchImportModal">
       <div class="modal modal-large" @click.stop>
         <div class="modal-header">
-          <h3 id="batch-import-modal-title">批量导入题目</h3>
-          <button
-            class="modal-close"
-            @click="closeBatchImportModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>批量导入题目</h3>
+          <button class="modal-close" @click="closeBatchImportModal">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="import-type">题目类型</label>
-            <select id="import-type" v-model="batchImportData.type" class="form-select">
+            <label>题目类型</label>
+            <select v-model="batchImportData.type" class="form-select">
               <option value="translation">翻译题</option>
               <option value="professional">专业题</option>
             </select>
           </div>
 
           <div class="form-group" v-if="batchImportData.type === 'professional'">
-            <label for="import-subject">科目</label>
-            <select id="import-subject" v-model="batchImportData.subject" class="form-select">
+            <label>科目</label>
+            <select v-model="batchImportData.subject" class="form-select">
               <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
                 {{ subject.label }}
               </option>
@@ -434,8 +375,8 @@
           </div>
 
           <div class="form-group" v-if="batchImportData.type === 'professional'">
-            <label for="import-difficulty">难度</label>
-            <select id="import-difficulty" v-model="batchImportData.difficulty" class="form-select">
+            <label>难度</label>
+            <select v-model="batchImportData.difficulty" class="form-select">
               <option value="easy">简单</option>
               <option value="medium">中等</option>
               <option value="hard">困难</option>
@@ -443,9 +384,8 @@
           </div>
 
           <div class="form-group">
-            <label for="import-content">题目内容（用空行分隔不同题目）</label>
+            <label>题目内容（用空行分隔不同题目）</label>
             <textarea
-              id="import-content"
               v-model="batchImportData.content"
               rows="12"
               class="form-textarea"
@@ -501,37 +441,24 @@
     </div>
 
     <!-- 批量导出弹窗 -->
-    <div
-      v-if="showBatchExportModal"
-      class="modal-overlay"
-      @click="closeBatchExportModal"
-      @keydown.escape="closeBatchExportModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="batch-export-modal-title"
-    >
+    <div v-if="showBatchExportModal" class="modal-overlay" @click="closeBatchExportModal">
       <div class="modal modal-large" @click.stop>
         <div class="modal-header">
-          <h3 id="batch-export-modal-title">批量导出题目</h3>
-          <button
-            class="modal-close"
-            @click="closeBatchExportModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>批量导出题目</h3>
+          <button class="modal-close" @click="closeBatchExportModal">&times;</button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="export-type">题目类型</label>
-            <select id="export-type" v-model="batchExportData.type" class="form-select" @change="loadExportContent">
+            <label>题目类型</label>
+            <select v-model="batchExportData.type" class="form-select" @change="loadExportContent">
               <option value="translation">翻译题</option>
               <option value="professional">专业题</option>
             </select>
           </div>
 
           <div class="form-group" v-if="batchExportData.type === 'professional'">
-            <label for="export-subject">科目筛选（可选）</label>
-            <select id="export-subject" v-model="batchExportData.subject" class="form-select" @change="loadExportContent">
+            <label>科目筛选（可选）</label>
+            <select v-model="batchExportData.subject" class="form-select" @change="loadExportContent">
               <option value="">全部科目</option>
               <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
                 {{ subject.label }}
@@ -539,21 +466,18 @@
             </select>
           </div>
 
-          <div class="export-info" v-if="batchExportData.count > 0" role="status" aria-live="polite">
+          <div class="export-info" v-if="batchExportData.count > 0">
             <span>共 {{ batchExportData.count }} 道题目</span>
           </div>
 
           <div class="form-group">
-            <label for="export-content">导出的题目内容</label>
+            <label>导出的题目内容</label>
             <textarea
-              id="export-content"
               v-model="batchExportData.content"
               rows="15"
               class="form-textarea"
               readonly
-              aria-describedby="export-hint"
             ></textarea>
-            <small id="export-hint" class="form-hint">可点击下方按钮复制内容</small>
           </div>
         </div>
         <div class="modal-footer">
@@ -2544,206 +2468,5 @@ onUnmounted(() => {
   border-top: 1px solid #e5e7eb;
   color: #6b7280;
   font-size: 14px;
-}
-
-/* ========================================
-   响应式设计 - 移动端适配
-   ======================================== */
-
-/* 平板设备 */
-@media (max-width: 1024px) {
-  .sidebar {
-    width: 220px;
-  }
-
-  .modal-large {
-    max-width: 95vw;
-  }
-}
-
-/* 移动设备 */
-@media (max-width: 768px) {
-  .header {
-    flex-wrap: wrap;
-    padding: 12px 15px;
-    gap: 10px;
-  }
-
-  .header h1 {
-    font-size: 18px;
-    order: 1;
-    width: 100%;
-    text-align: center;
-  }
-
-  .header-left,
-  .header-right {
-    order: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .main-content {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    max-height: 40vh;
-    border-right: none;
-    border-bottom: 1px solid #dee2e6;
-    padding: 15px;
-  }
-
-  .content {
-    padding: 15px;
-  }
-
-  .tab-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .tab-btn {
-    flex: 1;
-    min-width: calc(50% - 4px);
-    text-align: center;
-  }
-
-  /* 题目列表适配 */
-  .question-item {
-    flex-wrap: wrap;
-    padding: 12px;
-  }
-
-  .question-index {
-    width: 32px;
-    height: 32px;
-    font-size: 14px;
-  }
-
-  .question-actions {
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #eee;
-  }
-
-  /* 模态框适配 */
-  .modal-overlay {
-    padding: 10px;
-  }
-
-  .modal {
-    width: 100%;
-    max-height: 90vh;
-  }
-
-  .modal-header {
-    padding: 12px 15px;
-  }
-
-  .modal-body {
-    padding: 15px;
-  }
-
-  .modal-footer {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .btn-cancel,
-  .btn-save,
-  .btn-import,
-  .btn-copy {
-    width: 100%;
-  }
-
-  /* 批量操作工具栏适配 */
-  .batch-toolbar {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .batch-actions {
-    width: 100%;
-    justify-content: flex-start;
-    margin-left: 0;
-    margin-top: 8px;
-  }
-
-  /* 科目管理适配 */
-  .subject-item {
-    flex-wrap: wrap;
-    padding: 15px;
-  }
-
-  .subject-stats {
-    width: 100%;
-    margin-right: 0;
-    margin-bottom: 10px;
-  }
-
-  .subject-actions {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  /* 分页适配 */
-  .pagination {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .page-btn {
-    flex: 1;
-    min-width: 80px;
-  }
-}
-
-/* 小屏手机 */
-@media (max-width: 480px) {
-  .header {
-    padding: 10px;
-  }
-
-  .header h1 {
-    font-size: 16px;
-  }
-
-  .nav-btn {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-
-  .sidebar {
-    padding: 10px;
-  }
-
-  .tab-btn {
-    padding: 8px 10px;
-    font-size: 13px;
-  }
-
-  .question-item {
-    padding: 10px;
-  }
-
-  .action-btn {
-    padding: 4px 8px;
-    font-size: 11px;
-  }
-
-  /* 触摸目标优化 */
-  .btn-cancel,
-  .btn-save,
-  .btn-import,
-  .btn-copy,
-  .page-btn,
-  .action-btn {
-    min-height: 44px;
-  }
 }
 </style>

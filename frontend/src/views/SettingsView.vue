@@ -54,9 +54,8 @@
             <div class="settings-editor">
               <!-- 步骤标题 -->
               <div class="form-group">
-                <label for="step-title">步骤标题</label>
+                <label>步骤标题</label>
                 <input
-                  id="step-title"
                   v-model="currentStepSettings.title"
                   type="text"
                   class="form-input"
@@ -66,9 +65,8 @@
 
               <!-- 步骤描述 -->
               <div class="form-group">
-                <label for="step-description">步骤描述</label>
+                <label>步骤描述</label>
                 <textarea
-                  id="step-description"
                   v-model="currentStepSettings.description"
                   rows="2"
                   class="form-textarea"
@@ -78,26 +76,24 @@
 
               <!-- 时间限制 -->
               <div class="form-group">
-                <label for="step-duration">时间限制（秒）</label>
+                <label>时间限制（秒）</label>
                 <div class="time-input-group">
                   <input
-                    id="step-duration"
                     v-model.number="currentStepSettings.duration"
                     type="number"
                     min="0"
                     max="3600"
                     class="form-input"
-                    aria-describedby="step-duration-hint"
                   >
-                  <span class="time-display" aria-live="polite">({{ formatTime(currentStepSettings.duration) }})</span>
+                  <span class="time-display">({{ formatTime(currentStepSettings.duration) }})</span>
                 </div>
-                <small id="step-duration-hint" class="form-hint">设置为0表示无时间限制</small>
+                <small class="form-hint">设置为0表示无时间限制</small>
               </div>
 
               <!-- 步骤类型 -->
               <div class="form-group">
-                <label for="step-type">步骤类型</label>
-                <select id="step-type" v-model="currentStepSettings.step_type" class="form-select">
+                <label>步骤类型</label>
+                <select v-model="currentStepSettings.step_type" class="form-select">
                   <option value="introduction">自我介绍</option>
                   <option value="translation">英文翻译</option>
                   <option value="professional">专业问题</option>
@@ -106,20 +102,19 @@
                 </select>
               </div>
 
-              <button @click="saveStepSettings" class="save-btn" type="button">保存设置</button>
+              <button @click="saveStepSettings" class="save-btn">保存设置</button>
             </div>
           </template>
 
           <!-- Logo设置 -->
           <template v-if="activeSection === 'header'">
-            <h3 id="header-settings-title">Logo设置</h3>
+            <h3>Logo设置</h3>
 
-            <div class="settings-editor" aria-labelledby="header-settings-title">
+            <div class="settings-editor">
               <!-- 系统标题 -->
               <div class="form-group">
-                <label for="system-title">系统标题</label>
+                <label>系统标题</label>
                 <input
-                  id="system-title"
                   v-model="headerSettings.title"
                   type="text"
                   placeholder="例如：研究生复试流程控制系统"
@@ -129,49 +124,39 @@
 
               <!-- 学校Logo（第一个） -->
               <div class="form-group">
-                <label for="institute-logo">学校Logo</label>
+                <label>学校Logo</label>
                 <div class="logo-upload">
                   <input
                     type="file"
                     accept="image/*"
                     @change="(e) => handleLogoUpload(e, 'instituteLogo')"
                     class="file-input"
-                    id="institute-logo"
+                    id="instituteLogoInput"
                   >
-                  <label for="institute-logo" class="file-label">选择图片</label>
+                  <label for="instituteLogoInput" class="file-label">选择图片</label>
                 </div>
                 <div v-if="headerSettings.instituteLogo" class="logo-preview">
                   <img :src="headerSettings.instituteLogo" alt="学校Logo预览">
-                  <button
-                    @click="removeLogo('instituteLogo')"
-                    class="remove-btn"
-                    aria-label="移除学校Logo"
-                    type="button"
-                  >×</button>
+                  <button @click="removeLogo('instituteLogo')" class="remove-btn">×</button>
                 </div>
               </div>
 
               <!-- 学院Logo（第二个） -->
               <div class="form-group">
-                <label for="college-logo">学院Logo</label>
+                <label>学院Logo</label>
                 <div class="logo-upload">
                   <input
                     type="file"
                     accept="image/*"
                     @change="(e) => handleLogoUpload(e, 'collegeLogo')"
                     class="file-input"
-                    id="college-logo"
+                    id="collegeLogoInput"
                   >
-                  <label for="college-logo" class="file-label">选择图片</label>
+                  <label for="collegeLogoInput" class="file-label">选择图片</label>
                 </div>
                 <div v-if="headerSettings.collegeLogo" class="logo-preview">
                   <img :src="headerSettings.collegeLogo" alt="学院Logo预览">
-                  <button
-                    @click="removeLogo('collegeLogo')"
-                    class="remove-btn"
-                    aria-label="移除学院Logo"
-                    type="button"
-                  >×</button>
+                  <button @click="removeLogo('collegeLogo')" class="remove-btn">×</button>
                 </div>
               </div>
 
@@ -743,133 +728,5 @@ const loadFooterSettings = async () => {
   border-top: 1px solid #e5e7eb;
   color: #6b7280;
   font-size: 14px;
-}
-
-/* ========================================
-   响应式设计 - 移动端适配
-   ======================================== */
-
-@media (max-width: 768px) {
-  .header {
-    flex-wrap: wrap;
-    padding: 12px 15px;
-    gap: 10px;
-  }
-
-  .header h1 {
-    font-size: 18px;
-    order: 1;
-    width: 100%;
-    text-align: center;
-  }
-
-  .header-right {
-    order: 2;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .settings-container {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .sidebar {
-    width: 100%;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .sidebar-section {
-    flex: 1;
-    min-width: 200px;
-  }
-
-  .steps-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .step-item {
-    flex: 1;
-    min-width: calc(50% - 4px);
-  }
-
-  .content-section {
-    padding: 15px;
-  }
-
-  /* Logo 上传区域适配 */
-  .logo-upload {
-    flex-wrap: wrap;
-  }
-
-  .file-label {
-    width: 100%;
-    text-align: center;
-  }
-
-  .preview-section {
-    padding: 15px;
-  }
-
-  .header-preview {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-  }
-
-  /* 表单适配 */
-  .form-group label {
-    font-size: 14px;
-  }
-
-  .form-input,
-  .form-select,
-  .form-textarea {
-    font-size: 16px; /* 防止 iOS 自动缩放 */
-  }
-
-  .time-input-group {
-    flex-wrap: wrap;
-  }
-
-  .time-input-group .form-input {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .header {
-    padding: 10px;
-  }
-
-  .header h1 {
-    font-size: 16px;
-  }
-
-  .nav-btn {
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-
-  .step-item {
-    min-width: 100%;
-    padding: 10px;
-  }
-
-  .step-number {
-    width: 28px;
-    height: 28px;
-  }
-
-  .save-btn {
-    width: 100%;
-    min-height: 44px;
-  }
 }
 </style>

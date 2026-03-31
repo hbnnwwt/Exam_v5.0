@@ -80,6 +80,7 @@ export const useExamStore = defineStore('exam', {
               this.stepTimes[step.step_number] = step.duration || 0
             }
           })
+          console.log('步骤设置已加载:', this.stepTimes, '总步骤数:', this.totalSteps)
         }
       } catch (error) {
         console.error('加载步骤设置失败:', error)
@@ -157,6 +158,7 @@ export const useExamStore = defineStore('exam', {
           usedQuestionIds: this.usedQuestionIds,
           examStatus: this.examStatus
         })
+        console.log('考试进度已自动保存')
       } catch (error) {
         console.error('保存考试进度失败:', error)
       }
@@ -166,6 +168,7 @@ export const useExamStore = defineStore('exam', {
     async loadProgress() {
       try {
         const response = await api.get('/exam-api/progress/load')
+        console.log('[DEBUG] loadProgress response:', response.data)
         if (response.success && response.data.hasProgress) {
           const data = response.data
           this.currentStudent = data.studentNumber
@@ -193,6 +196,7 @@ export const useExamStore = defineStore('exam', {
           // 分别处理翻译题和专业题的ID，避免ID冲突
           const translationIds = response.data.allUsedTranslationIds || []
           const professionalIds = response.data.allUsedProfessionalIds || []
+          console.log('[DEBUG] Setting usedQuestionIds: translationIds=', translationIds, ', professionalIds=', professionalIds)
           // 合并两个列表，前端会根据题目类型过滤
           this.usedQuestionIds = [...translationIds, ...professionalIds]
           // 保存按类型分类的ID
@@ -214,6 +218,7 @@ export const useExamStore = defineStore('exam', {
           return false
         } else {
           // 数据库没有进度记录时，清空前端状态，防止自动保存创建新记录
+          console.log('[DEBUG] No progress or allUsedQuestionIds, clearing state. allUsedQuestionIds:', response.data?.allUsedQuestionIds)
           this.currentStudent = null
           this.currentStudentInfo = null
           this.currentStep = 1

@@ -61,41 +61,25 @@
     </div>
 
     <!-- 科目选择弹窗 - 新增 -->
-    <div
-      v-if="showSubjectModal"
-      class="modal-overlay"
-      @click="closeSubjectModal"
-      @keydown.escape="closeSubjectModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="subject-modal-title"
-    >
+    <div v-if="showSubjectModal" class="modal-overlay" @click="closeSubjectModal">
       <div class="modal subject-modal" @click.stop>
         <div class="modal-header">
-          <h3 id="subject-modal-title">选择专业科目</h3>
-          <button
-            class="modal-close"
-            @click="closeSubjectModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>选择专业科目</h3>
+          <button class="modal-close" @click="closeSubjectModal">&times;</button>
         </div>
-        <div class="subject-grid" role="listbox" aria-label="科目列表">
+        <div class="subject-grid">
           <button
             v-for="subject in subjects"
             :key="subject.code"
             :class="['subject-item', { selected: selectedSubject === subject.code }]"
             @click="selectedSubject = subject.code"
-            :aria-selected="selectedSubject === subject.code"
-            role="option"
-            type="button"
           >
             {{ subject.name }}
           </button>
         </div>
         <div class="modal-footer">
-          <button @click="closeSubjectModal" class="cancel-btn" type="button">取消</button>
-          <button @click="confirmSubject" class="confirm-btn" :disabled="!selectedSubject" type="button">
+          <button @click="closeSubjectModal" class="cancel-btn">取消</button>
+          <button @click="confirmSubject" class="confirm-btn" :disabled="!selectedSubject">
             确定
           </button>
         </div>
@@ -103,73 +87,36 @@
     </div>
 
     <!-- 图片预览弹窗 -->
-    <div
-      v-if="showImagePreview"
-      class="image-preview-overlay"
-      @click="closeImagePreview"
-      @keydown.escape="closeImagePreview"
-      role="dialog"
-      aria-modal="true"
-      aria-label="图片预览"
-    >
+    <div v-if="showImagePreview" class="image-preview-overlay" @click="closeImagePreview">
       <div class="image-preview-content" @click.stop>
-        <button
-          class="image-preview-close"
-          @click="closeImagePreview"
-          aria-label="关闭图片预览"
-          type="button"
-        >&times;</button>
-        <img :src="previewImageUrl" alt="题目图片大图预览" class="image-preview-img">
+        <button class="image-preview-close" @click="closeImagePreview">&times;</button>
+        <img :src="previewImageUrl" alt="图片预览" class="image-preview-img">
       </div>
     </div>
 
     <!-- 题目选择弹窗 -->
-    <div
-      v-if="showQuestionModal"
-      class="modal-overlay"
-      @click="closeModal"
-      @keydown.escape="closeModal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="question-modal-title"
-    >
+    <div v-if="showQuestionModal" class="modal-overlay" @click="closeModal">
       <div class="modal question-modal" @click.stop>
         <div class="modal-header">
-          <h3 id="question-modal-title">{{ modalTitle }}</h3>
-          <button
-            class="modal-close"
-            @click="closeModal"
-            aria-label="关闭弹窗"
-            type="button"
-          >&times;</button>
+          <h3>{{ modalTitle }}</h3>
+          <button class="modal-close" @click="closeModal">&times;</button>
         </div>
 
         <!-- 加载状态 -->
-        <div v-if="loading" class="loading-state" aria-busy="true" role="status">
-          <div class="spinner" aria-hidden="true"></div>
+        <div v-if="loading" class="loading-state">
+          <div class="spinner"></div>
           <p>正在加载题目...</p>
         </div>
 
         <!-- 题目选择区域 -->
         <div class="question-grid-container">
-          <!-- 状态图例说明 -->
-          <div class="status-legend" role="region" aria-label="状态说明">
-            <span class="legend-item"><span class="legend-color available"></span><span class="legend-icon">○</span> 可用题目</span>
-            <span class="legend-item"><span class="legend-color used"></span><span class="legend-icon">✗</span> 已使用</span>
-            <span class="legend-item"><span class="legend-color selected"></span><span class="legend-icon">✓</span> 已抽取</span>
-          </div>
-
-          <div class="question-stats" role="status" aria-live="polite">
-            <span class="stat-item"><span class="stat-icon available-icon" aria-hidden="true">○</span> 可用: {{ availableCount }}</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-item"><span class="stat-icon used-icon" aria-hidden="true">✗</span> 已使用: {{ usedCount }}</span>
-            <span class="stat-divider">|</span>
-            <span class="stat-item"><span class="stat-icon total-icon" aria-hidden="true">#</span> 总计: {{ questions.length }}</span>
-            <span v-if="selectedQuestionId" class="selected-hint"><span aria-hidden="true">✓</span> 已抽取</span>
+          <div class="question-stats">
+            总计: {{ questions.length }} | 已使用: {{ usedCount }} | 可用: {{ availableCount }}
+            <span v-if="selectedQuestionId" class="selected-hint">（已抽取）</span>
           </div>
 
           <!-- 题目网格（始终显示，抽取时禁用交互） -->
-          <div class="question-grid" :class="{ drawing: isDrawing }" role="list" aria-label="题目列表">
+          <div class="question-grid" :class="{ drawing: isDrawing }">
             <div
               v-for="(q, index) in questions"
               :key="q.id"
@@ -177,20 +124,17 @@
               :class="getQuestionClass(q)"
               :data-question-id="q.id"
               :data-index="index"
-              role="listitem"
-              :aria-label="`题目 ${index + 1}: ${selectedQuestionId === q.id ? '已抽取' : (q.is_used ? '已使用' : '可用')}`"
             >
-              <span class="question-number" aria-hidden="true">{{ index + 1 }}</span>
+              <span class="question-number">{{ index + 1 }}</span>
               <span class="question-status">
-                <span class="status-icon" aria-hidden="true">{{ selectedQuestionId === q.id ? '✓' : (q.is_used ? '✗' : '○') }}</span>
-                <span class="status-text">{{ selectedQuestionId === q.id ? '已抽取' : (q.is_used ? '已使用' : '可用') }}</span>
+                {{ selectedQuestionId === q.id ? '已抽取' : (q.is_used ? '已使用' : '可用') }}
               </span>
             </div>
           </div>
 
           <!-- 抽取动画（叠加在网格上方） -->
-          <div v-if="isDrawing" class="drawing-overlay" role="status" aria-live="polite">
-            <div class="drawing-spinner" aria-hidden="true"></div>
+          <div v-if="isDrawing" class="drawing-overlay">
+            <div class="drawing-spinner"></div>
             <p class="drawing-text">正在抽取题目...</p>
           </div>
           <div class="modal-footer">
@@ -200,7 +144,6 @@
               @click="startDraw"
               :disabled="availableCount === 0 || isDrawing"
               class="draw-btn"
-              type="button"
             >
               开始抽取
             </button>
@@ -208,7 +151,6 @@
               v-else
               @click="closeModal"
               class="confirm-btn"
-              type="button"
             >
               确定
             </button>
@@ -349,14 +291,14 @@ const openQuestionSelection = async (type) => {
       const usedIds = type === 'translation'
         ? (examStore.usedTranslationQuestionIds || [])
         : (examStore.usedProfessionalQuestionIds || [])
-      // Mark questions as used based on stored IDs
+      console.log('[DEBUG] Marking used questions for', type, ', usedIds:', usedIds)
       questions.value.forEach(q => {
         if (usedIds.includes(q.id)) {
           q.is_used = true
         }
       })
 
-      // Questions loaded successfully
+      console.log('获取题目数据:', questions.value.slice(0, 3))
 
       // 检查当前考生是否已经抽取过题目
       if (type === 'professional' && examStore.currentProfessionalQuestionId) {
@@ -699,7 +641,7 @@ const renderQuestion = (questionData) => {
 <style scoped>
 .step-content-wrapper {
   padding: 20px;
-  background: var(--color-surface);
+  background: #fff;
   border-radius: 12px;
   min-height: 300px;
 }
@@ -725,7 +667,7 @@ const renderQuestion = (questionData) => {
 
 .question-display {
   padding: 20px;
-  background: var(--color-gray-100);
+  background: #f8f9fa;
   border-radius: 8px;
 }
 
@@ -740,8 +682,8 @@ const renderQuestion = (questionData) => {
 
 .select-btn {
   padding: 12px 30px;
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: #007bff;
+  color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -750,7 +692,7 @@ const renderQuestion = (questionData) => {
 }
 
 .select-btn:hover {
-  background: var(--color-primary-hover);
+  background: #0056b3;
   transform: scale(1.02);
 }
 
@@ -761,7 +703,7 @@ const renderQuestion = (questionData) => {
 
 .subject-selection p {
   margin-bottom: 20px;
-  color: var(--color-text-secondary);
+  color: #666;
 }
 
 .subject-buttons {
@@ -773,18 +715,18 @@ const renderQuestion = (questionData) => {
 
 .subject-btn {
   padding: 10px 20px;
-  background: var(--color-surface);
-  border: 2px solid var(--color-primary);
+  background: #fff;
+  border: 2px solid #007bff;
   border-radius: 8px;
-  color: var(--color-primary);
+  color: #007bff;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .subject-btn:hover {
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: #007bff;
+  color: white;
 }
 
 /* 弹窗样式 */
@@ -817,7 +759,7 @@ const renderQuestion = (questionData) => {
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid #dee2e6;
 }
 
 .modal-header h3 {
@@ -829,7 +771,7 @@ const renderQuestion = (questionData) => {
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: var(--color-gray-500);
+  color: #999;
   line-height: 1;
 }
 
@@ -841,8 +783,8 @@ const renderQuestion = (questionData) => {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid var(--color-gray-100);
-  border-top: 4px solid var(--color-primary);
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -860,96 +802,18 @@ const renderQuestion = (questionData) => {
   position: relative;
 }
 
-/* 状态图例 */
-.status-legend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 8px 12px;
-  background: #f8f9fa;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  font-size: 13px;
-  color: #495057;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.legend-color {
-  width: 16px;
-  height: 16px;
-  border-radius: 4px;
-}
-
-.legend-color.available {
-  background: var(--color-success);
-}
-
-.legend-color.used {
-  background: var(--color-gray-600);
-}
-
-.legend-color.selected {
-  background: var(--color-orange);
-}
-
-.legend-icon {
-  font-size: 12px;
-  font-weight: bold;
-}
-
 .question-stats {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 8px;
+  text-align: center;
   padding: 10px;
-  color: var(--color-text-secondary);
+  color: #666;
   font-size: 14px;
   margin-bottom: 15px;
 }
 
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.stat-icon {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.available-icon {
-  color: var(--color-success);
-}
-
-.used-icon {
-  color: var(--color-gray-600);
-}
-
-.total-icon {
-  color: var(--color-primary);
-}
-
-.stat-divider {
-  color: var(--color-border);
-  margin: 0 4px;
-}
-
 .question-stats .selected-hint {
-  color: var(--color-success);
+  color: #28a745;
   font-weight: bold;
   margin-left: 10px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
 }
 
 /* 抽取动画 - 叠加在网格上方 */
@@ -972,15 +836,15 @@ const renderQuestion = (questionData) => {
 .drawing-spinner {
   width: 50px;
   height: 50px;
-  border: 5px solid var(--color-gray-200);
-  border-top: 5px solid var(--color-primary);
+  border: 5px solid #e9ecef;
+  border-top: 5px solid #007bff;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
 
 .drawing-text {
   margin-top: 15px;
-  color: var(--color-primary);
+  color: #007bff;
   font-size: 16px;
   font-weight: 500;
 }
@@ -1013,34 +877,34 @@ const renderQuestion = (questionData) => {
 
 /* 未抽题目 - 绿色 */
 .question-item.available {
-  background: var(--color-success) !important;
-  color: var(--color-text-on-success) !important;
+  background: #28a745 !important;
+  color: white !important;
   cursor: pointer;
 }
 
 /* 已抽过题目 - 灰色 */
 .question-item.used {
-  background: var(--color-gray-600) !important;
-  color: var(--color-white) !important;
+  background: #6c757d !important;
+  color: white !important;
   opacity: 0.5;
 }
 
 /* 当前选中题目 - 高亮橙红色 */
 .question-item.selected {
-  background: var(--color-orange) !important;
-  color: var(--color-white) !important;
+  background: #fd7e14 !important;
+  color: white !important;
   opacity: 1 !important;
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(253, 126, 20, 0.6);
-  border: 2px solid var(--color-white);
+  border: 2px solid #fff;
   animation: bounce 0.5s ease-out;
 }
 
 /* 扫描中高亮 - 脉冲动画 */
 .question-item.animating {
-  background: var(--color-warning-light) !important;
-  color: var(--color-warning-text) !important;
-  border: 2px solid var(--color-warning) !important;
+  background: #fff3cd !important;
+  color: #856404 !important;
+  border: 2px solid #ffc107 !important;
   transform: scale(1.1);
   box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
   animation: pulse 0.15s ease-in-out;
@@ -1080,31 +944,18 @@ const renderQuestion = (questionData) => {
 .question-status {
   font-size: 12px;
   margin-top: 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.status-icon {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.status-text {
-  font-size: 11px;
 }
 
 .modal-footer {
   padding: 15px 20px;
-  border-top: 1px solid var(--color-border);
+  border-top: 1px solid #dee2e6;
   text-align: center;
 }
 
 .draw-btn {
   padding: 12px 40px;
-  background: var(--color-success);
-  color: var(--color-text-on-success);
+  background: #28a745;
+  color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -1113,11 +964,11 @@ const renderQuestion = (questionData) => {
 }
 
 .draw-btn:hover:not(:disabled) {
-  background: var(--color-success-hover);
+  background: #218838;
 }
 
 .draw-btn:disabled {
-  background: var(--color-gray-400);
+  background: #ccc;
   cursor: not-allowed;
 }
 
@@ -1130,15 +981,15 @@ const renderQuestion = (questionData) => {
 }
 
 .completed-text {
-  color: var(--color-success);
+  color: #28a745;
   font-size: 16px;
   font-weight: bold;
 }
 
 .confirm-btn {
   padding: 12px 40px;
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: #007bff;
+  color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
@@ -1147,7 +998,7 @@ const renderQuestion = (questionData) => {
 }
 
 .confirm-btn:hover {
-  background: var(--color-primary-hover);
+  background: #0056b3;
 }
 
 .drawing-state {
@@ -1160,7 +1011,7 @@ const renderQuestion = (questionData) => {
 .drawing-text {
   text-align: center;
   font-size: 18px;
-  color: var(--color-primary);
+  color: #007bff;
   margin-bottom: 20px;
 }
 
@@ -1190,7 +1041,7 @@ const renderQuestion = (questionData) => {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: var(--color-surface);
+  background: #fff;
 }
 
 /* 图片预览弹窗 */
@@ -1262,8 +1113,8 @@ const renderQuestion = (questionData) => {
 
 .subject-item {
   padding: 20px;
-  background: var(--color-gray-100);
-  border: 2px solid var(--color-border);
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
@@ -1271,36 +1122,36 @@ const renderQuestion = (questionData) => {
 }
 
 .subject-item:hover {
-  background: var(--color-gray-200);
-  border-color: var(--color-gray-500);
+  background: #e9ecef;
+  border-color: #adb5bd;
 }
 
 .subject-item.selected {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: #e7f5ff;
+  border-color: #007bff;
+  color: #007bff;
   font-weight: bold;
 }
 
 .cancel-btn {
   padding: 10px 20px;
-  background: var(--color-gray-600);
-  color: var(--color-white);
+  background: #6c757d;
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .cancel-btn:hover {
-  background: var(--color-gray-700);
+  background: #5a6268;
 }
 /* 子题目样式 */
 .sub-question {
   margin-bottom: 20px;
   padding: 15px;
-  background: var(--color-surface);
+  background: #fff;
   border-radius: 8px;
-  border-left: 4px solid var(--color-primary);
+  border-left: 4px solid #007bff;
 }
 
 .sub-question:last-child {
@@ -1309,7 +1160,7 @@ const renderQuestion = (questionData) => {
 
 .sub-question-label {
   font-weight: bold;
-  color: var(--color-primary);
+  color: #007bff;
   margin-bottom: 10px;
   font-size: 16px;
 }
@@ -1341,25 +1192,5 @@ const renderQuestion = (questionData) => {
   border-radius: 6px;
   object-fit: contain;
   display: block;
-}
-
-/* 尊重用户的动画偏好设置 - WCAG 2.3.3 */
-@media (prefers-reduced-motion: reduce) {
-  .question-item.animating,
-  .question-item.selected,
-  .drawing-spinner,
-  .spinner {
-    animation: none !important;
-    transition: none !important;
-  }
-
-  .question-item.selected {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(253, 126, 20, 0.6);
-  }
-
-  .question-item.animating {
-    transform: scale(1.05);
-  }
 }
 </style>

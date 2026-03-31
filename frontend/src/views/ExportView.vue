@@ -319,13 +319,16 @@ if (typeof window !== 'undefined') {
 
 const loadStats = async () => {
   try {
+    console.log('[DEBUG] Loading stats...')
     const response = await api.get('/exam-api/stats/overview')
+    console.log('[DEBUG] Stats response:', response)
     if (response.success && response.data) {
       stats.totalStudents = response.data.students?.total || 0
       stats.completedExams = response.data.exams?.completed || 0
       stats.inProgressExams = response.data.exams?.inProgress || 0
       stats.translationQuestions = response.data.questions?.translation?.total || 0
       stats.professionalQuestions = response.data.questions?.professional?.total || 0
+      console.log('[DEBUG] Loaded stats:', stats)
     }
   } catch (error) {
     console.error('加载统计失败:', error)

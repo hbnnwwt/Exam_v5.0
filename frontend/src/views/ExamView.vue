@@ -1,18 +1,15 @@
 <template>
   <div class="exam-page">
-    <!-- 跳过链接 - 无障碍访问 -->
-    <a href="#main-content" class="skip-link">跳过导航</a>
-
     <!-- 顶部栏 -->
-    <header class="header" role="banner">
+    <header class="header">
       <div class="header-content">
         <div class="header-logos">
-          <img v-if="settings.instituteLogo" :src="settings.instituteLogo" class="logo" alt="学院校徽">
-          <img v-if="settings.collegeLogo" :src="settings.collegeLogo" class="logo" alt="学校校徽">
+          <img v-if="settings.instituteLogo" :src="settings.instituteLogo" class="logo" alt="学院Logo">
+          <img v-if="settings.collegeLogo" :src="settings.collegeLogo" class="logo" alt="学校Logo">
         </div>
         <h1 class="header-title">{{ settings.title }}</h1>
         <div class="header-controls">
-          <span v-if="examStore.currentStudent" class="current-student" aria-live="polite">
+          <span v-if="examStore.currentStudent" class="current-student">
             当前考生: {{ examStore.currentStudent }}
           </span>
           <a href="/editor" target="_blank" class="nav-btn">题库管理</a>
@@ -24,32 +21,22 @@
     </header>
 
     <!-- 主内容区 -->
-    <main id="main-content" class="main-content" role="main">
+    <main class="main-content">
       <!-- 左侧面板 - 考试流程 -->
-      <aside class="left-panel" :class="{ collapsed: leftPanelCollapsed }" aria-label="面试流程面板">
-        <button
-          class="panel-toggle"
-          @click="leftPanelCollapsed = !leftPanelCollapsed"
-          :aria-label="leftPanelCollapsed ? '展开面试流程面板' : '收起面试流程面板'"
-          :aria-expanded="!leftPanelCollapsed"
-          type="button"
-        >
-          <span aria-hidden="true">{{ leftPanelCollapsed ? '▶' : '◀' }}</span>
+      <aside class="left-panel" :class="{ collapsed: leftPanelCollapsed }">
+        <button class="panel-toggle" @click="leftPanelCollapsed = !leftPanelCollapsed">
+          {{ leftPanelCollapsed ? '▶' : '◀' }}
         </button>
         <div v-if="!leftPanelCollapsed" class="panel-content">
           <h3>面试流程</h3>
-          <div class="step-list" role="list">
+          <div class="step-list">
             <div
               v-for="step in steps"
               :key="step.id"
               :class="['step-item', { active: examStore.currentStep === step.id, completed: examStore.currentStep > step.id }]"
               @click="goToStep(step.id)"
-              role="listitem"
-              :aria-current="examStore.currentStep === step.id ? 'step' : null"
-              tabindex="0"
-              @keydown.enter="goToStep(step.id)"
             >
-              <span class="step-number" aria-hidden="true">{{ step.id }}</span>
+              <span class="step-number">{{ step.id }}</span>
               <span class="step-name">{{ step.name }}</span>
             </div>
           </div>
@@ -57,7 +44,7 @@
       </aside>
 
       <!-- 中间内容区 -->
-      <section class="center-panel" aria-label="考试内容区域">
+      <section class="center-panel">
         <!-- 考生输入区 / 开始考试 -->
         <div v-if="!examStore.currentStudent" class="student-input-area">
           <h2>研究生复试面试</h2>
@@ -109,27 +96,21 @@
       </section>
 
       <!-- 右侧面板 - 控制面板 -->
-      <aside class="right-panel" :class="{ collapsed: rightPanelCollapsed }" aria-label="控制面板">
-        <button
-          class="panel-toggle"
-          @click="rightPanelCollapsed = !rightPanelCollapsed"
-          :aria-label="rightPanelCollapsed ? '展开控制面板' : '收起控制面板'"
-          :aria-expanded="!rightPanelCollapsed"
-          type="button"
-        >
-          <span aria-hidden="true">{{ rightPanelCollapsed ? '◀' : '▶' }}</span>
+      <aside class="right-panel" :class="{ collapsed: rightPanelCollapsed }">
+        <button class="panel-toggle" @click="rightPanelCollapsed = !rightPanelCollapsed">
+          {{ rightPanelCollapsed ? '◀' : '▶' }}
         </button>
         <div v-if="!rightPanelCollapsed" class="panel-content">
           <h3>控制面板</h3>
           <div class="control-section">
             <h4>考试状态</h4>
-            <p :class="['status-badge', examStore.examStatus]" role="status" aria-live="polite">
+            <p :class="['status-badge', examStore.examStatus]">
               {{ statusText }}
             </p>
           </div>
           <div class="control-section">
             <h4>快速操作</h4>
-            <button @click="resetExam" class="quick-btn danger" type="button">重置考试</button>
+            <button @click="resetExam" class="quick-btn danger">重置考试</button>
           </div>
         </div>
       </aside>
@@ -408,7 +389,7 @@ onMounted(() => {
   overflow: hidden;
 }
 
-/* 侧边栏 - 响应式设计 */
+/* 侧边栏 */
 .left-panel,
 .right-panel {
   width: clamp(180px, 20vw, 250px);
@@ -431,7 +412,6 @@ onMounted(() => {
   border-left: 1px solid #e2e8f0;
 }
 
-/* 面板切换按钮 - 符合触摸目标最小 44x44px */
 .panel-toggle {
   position: absolute;
   top: 50%;
@@ -480,11 +460,11 @@ onMounted(() => {
     max-height: 30vh;
     border-right: none;
     border-left: none;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e2e8f0;
   }
 
   .right-panel {
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #e2e8f0;
     border-bottom: none;
   }
 
@@ -643,7 +623,7 @@ onMounted(() => {
 .student-input {
   padding: 12px 20px;
   font-size: 18px;
-  border: 2px solid #e5e7eb;
+  border: 2px solid #e2e8f0;
   border-radius: 8px;
   width: 300px;
   outline: none;
@@ -651,10 +631,10 @@ onMounted(() => {
 }
 
 .student-input:focus {
-  border-color: var(--primary-color, #007bff);
+  border-color: var(--color-primary, #0f172a);
 }
 
-.load-btn {
+.start-btn, .load-btn {
   padding: 14px 48px;
   background: var(--color-primary, #0f172a);
   color: white;
@@ -666,13 +646,13 @@ onMounted(() => {
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.load-btn:hover {
+.start-btn:hover, .load-btn:hover {
   background: var(--color-primary-hover, #1e293b);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
 }
 
-.load-btn:active {
+.start-btn:active, .load-btn:active {
   transform: scale(0.98);
 }
 
@@ -767,6 +747,293 @@ onMounted(() => {
 }
 
 .control-btn.next {
+  background: var(--color-primary, #0f172a);
+  color: white;
+}
+
+.control-btn.complete {
+  background: var(--color-success, #059669);
+  color: white;
+}
+
+.control-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* 控制面板 */
+.control-section {
+  margin-bottom: 20px;
+}
+
+.control-section h4 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge.ready {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.in_progress {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-badge.completed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.quick-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.quick-btn.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.quick-btn.danger:hover {
+  background: #fecaca;
+}
+
+/* 底部 */
+.footer {
+  text-align: center;
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 14px;
+}
+</style>
+  padding: 15px;
+}
+
+.panel-content h3 {
+  margin: 0 0 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* 步骤列表 */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.step-item:hover {
+  background: #f3f4f6;
+}
+
+.step-item.active {
+  background: var(--primary-color, #007bff);
+  color: white;
+}
+
+.step-item.completed {
+  background: #d1fae5;
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.step-item.active .step-number {
+  background: white;
+  color: var(--primary-color, #007bff);
+}
+
+.step-item.completed .step-number {
+  background: #10b981;
+  color: white;
+}
+
+.step-name {
+  font-size: 14px;
+}
+
+/* 中间内容区 */
+.center-panel {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.student-input-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+}
+
+.student-input-area h2 {
+  color: #1f2937;
+  margin-bottom: 10px;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.student-input {
+  padding: 12px 20px;
+  font-size: 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  width: 300px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.student-input:focus {
+  border-color: var(--primary-color, #007bff);
+}
+
+.load-btn {
+  padding: 12px 30px;
+  background: var(--primary-color, #007bff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.load-btn:hover {
+  background: #0056b3;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* 下一个考生按钮 */
+.next-student-section {
+  margin-top: 20px;
+  padding: 20px;
+  background: #e8f5e9;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.next-tip {
+  color: #2e7d32;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.next-student-btn {
+  padding: 12px 30px;
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.next-student-btn:hover {
+  background: #388e3c;
+}
+
+/* 考试内容区 */
+.exam-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.step-header h2 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.step-content {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.step-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 20px;
+  margin-top: auto;
+}
+
+.control-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control-btn.prev {
+  background: #6c757d;
+  color: white;
+}
+
+.control-btn.next {
   background: var(--primary-color, #007bff);
   color: white;
 }
@@ -793,9 +1060,9 @@ onMounted(() => {
 }
 
 .status-badge {
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
 }
 

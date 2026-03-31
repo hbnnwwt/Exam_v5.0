@@ -30,23 +30,23 @@ const iconMap = {
 <style scoped>
 .toast-container {
   position: fixed;
-  top: var(--spacing-5);
-  right: var(--spacing-5);
-  z-index: var(--z-toast);
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: 10px;
 }
 
 .toast {
-  padding: var(--spacing-3) var(--spacing-5);
-  border-radius: var(--radius-lg);
+  padding: 12px 20px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: 10px;
   cursor: pointer;
-  box-shadow: var(--shadow-lg);
-  transition: var(--transition-all);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
   min-width: 200px;
 }
 
@@ -55,28 +55,28 @@ const iconMap = {
 }
 
 .toast-success {
-  background: var(--color-success);
-  color: var(--color-text-on-success);
+  background: #28a745;
+  color: white;
 }
 
 .toast-error {
-  background: var(--color-danger);
-  color: var(--color-text-on-danger);
+  background: #dc3545;
+  color: white;
 }
 
 .toast-warning {
-  background: var(--color-warning);
-  color: var(--color-text-on-warning);
+  background: #ffc107;
+  color: #333;
 }
 
 .toast-info {
-  background: var(--color-info);
-  color: var(--color-white);
+  background: #17a2b8;
+  color: white;
 }
 
 .toast-enter-active,
 .toast-leave-active {
-  transition: var(--transition-all);
+  transition: all 0.3s ease;
 }
 
 .toast-enter-from {

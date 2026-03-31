@@ -1,8 +1,8 @@
 <template>
-  <div class="timer" :class="{ 'timer-warning': isWarning, 'timer-danger': isDanger }" role="timer" aria-live="polite">
+  <div class="timer" :class="{ 'timer-warning': isWarning, 'timer-danger': isDanger }">
     <div class="timer-display">
-      <span class="timer-icon" aria-hidden="true">⏱</span>
-      <span class="timer-time" aria-label="剩余时间">{{ examStore.formattedTime }}</span>
+      <span class="timer-icon">⏱</span>
+      <span class="timer-time">{{ examStore.formattedTime }}</span>
     </div>
     <div class="timer-controls">
       <button
@@ -10,27 +10,18 @@
         class="timer-btn start"
         @click="start"
         :disabled="examStore.timer.remainingTime === 0"
-        aria-label="开始计时"
-        type="button"
       >
-        <span aria-hidden="true">▶</span> 开始
+        ▶ 开始
       </button>
       <button
         v-else
         class="timer-btn pause"
         @click="pause"
-        aria-label="暂停计时"
-        type="button"
       >
-        <span aria-hidden="true">⏸</span> 暂停
+        ⏸ 暂停
       </button>
-      <button
-        class="timer-btn reset"
-        @click="reset"
-        aria-label="重置计时器"
-        type="button"
-      >
-        <span aria-hidden="true">↺</span> 重置
+      <button class="timer-btn reset" @click="reset">
+        ↺ 重置
       </button>
     </div>
   </div>
@@ -99,24 +90,24 @@ onUnmounted(() => {
 
 <style scoped>
 .timer {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-3) var(--spacing-5);
+  background: #fff;
+  border-radius: 12px;
+  padding: 15px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 280px;
 }
 
 .timer-warning {
-  background: var(--color-warning-light);
-  border: 2px solid var(--color-warning);
+  background: #fff3cd;
+  border: 2px solid #ffc107;
 }
 
 .timer-danger {
-  background: var(--color-danger-light);
-  border: 2px solid var(--color-danger);
+  background: #f8d7da;
+  border: 2px solid #dc3545;
   animation: pulse 1s infinite;
 }
 
@@ -128,32 +119,31 @@ onUnmounted(() => {
 .timer-display {
   display: flex;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: 10px;
 }
 
 .timer-icon {
-  font-size: var(--font-size-2xl);
+  font-size: 24px;
 }
 
 .timer-time {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  font-family: var(--font-family-mono);
+  font-size: 28px;
+  font-weight: bold;
+  font-family: monospace;
 }
 
 .timer-controls {
   display: flex;
-  gap: var(--spacing-2);
+  gap: 8px;
 }
 
 .timer-btn {
-  padding: var(--spacing-2) var(--spacing-4);
+  padding: 8px 16px;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: 6px;
   cursor: pointer;
-  font-size: var(--font-size-sm);
-  transition: var(--transition-all);
-  min-height: var(--touch-target-min);
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
 .timer-btn:disabled {
@@ -162,33 +152,22 @@ onUnmounted(() => {
 }
 
 .timer-btn.start {
-  background: var(--color-success);
-  color: var(--color-text-on-success);
-}
-
-.timer-btn.start:hover:not(:disabled) {
-  background: var(--color-success-hover);
+  background: #28a745;
+  color: white;
 }
 
 .timer-btn.pause {
-  background: var(--color-warning);
-  color: var(--color-text-on-warning);
-}
-
-.timer-btn.pause:hover:not(:disabled) {
-  background: var(--color-warning-hover);
+  background: #ffc107;
+  color: #333;
 }
 
 .timer-btn.reset {
-  background: var(--color-gray-600);
-  color: var(--color-white);
-}
-
-.timer-btn.reset:hover:not(:disabled) {
-  background: var(--color-gray-700);
+  background: #6c757d;
+  color: white;
 }
 
 .timer-btn:hover:not(:disabled) {
+  opacity: 0.9;
   transform: scale(1.02);
 }
 </style>

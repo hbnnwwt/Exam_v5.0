@@ -4,15 +4,18 @@
 
 ## 下载版本
 
-### [Exam_v5.0-release.zip](releases/Exam_v5.0-release.zip) (15MB)
+### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-portable.zip) (42MB)
+- **解压即用**，无需安装任何环境
+- 包含便携版 Python
+- 适合追求开箱即用的用户
+
+### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-release.zip) (2MB)
 - 需先运行 `setup.bat` 安装依赖
 - 需要 Node.js 18+ 构建前端
 - 适合有 Python 环境的用户
 
-### [Exam_v5.0-portable.zip](releases/Exam_v5.0-portable.zip) (53MB)
-- **解压即用**，无需安装任何环境
-- 包含便携版 Python
-- 适合追求开箱即用的用户
+### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-Source.zip) (14MB)
+- 完整源码
 
 ## 快速开始
 
@@ -105,6 +108,15 @@ Exam_v5.0/
 4. **随机抽题** - 支持随机抽取题目
 5. **考试导出** - 导出考试记录和统计数据
 6. **Logo设置** - 可自定义学校/学院Logo和系统标题
+7. **庄重面试风 UI** - 专业、沉稳的视觉设计
+
+## 更新日志
+
+### v1.0.7 (2026-04-01)
+- 考生面试界面全新设计
+- 庄重面试风 UI 配色
+- 金色高亮步骤卡片
+- 平滑过渡动画效果
 
 ## 面试环节
 

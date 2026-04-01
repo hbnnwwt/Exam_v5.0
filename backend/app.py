@@ -115,6 +115,14 @@ try:
 except ImportError as e:
     print(f"FAIL - auth API registration failed: {e}")
 
+# 注册 AI 蓝图
+try:
+    from apis.ai import ai_bp
+    app.register_blueprint(ai_bp)
+    print("OK - AI API registered")
+except ImportError as e:
+    print(f"FAIL - AI API registration failed: {e}")
+
 # 注册备份管理蓝图
 try:
     from apis.common.backup import get_backup_blueprint

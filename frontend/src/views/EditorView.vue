@@ -38,6 +38,12 @@
             >
               科目管理
             </button>
+            <button
+              :class="['tab-btn', { active: currentTab === 'import' }]"
+              @click="switchTab('import')"
+            >
+              AI 批量导入
+            </button>
           </div>
         </div>
 
@@ -205,6 +211,43 @@
           </div>
         </div>
       </section>
+
+      <!-- AI 批量导入内容 -->
+      <section class="content" v-if="currentTab === 'import'">
+        <div class="import-panel">
+          <h3>AI 批量生成题目</h3>
+
+          <div class="form-group">
+            <label>AI Provider</label>
+            <select v-model="importConfig.provider" class="form-select">
+              <option value="">选择 Provider</option>
+              <option v-for="p in enabledProviders" :key="p.id" :value="p.id">
+                {{ p.name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>题目类型</label>
+            <select v-model="importConfig.type" class="form-select">
+              <option value="translation">翻译题</option>
+              <option value="professional">专业题</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>知识点 (用逗号分隔)</label>
+            <input v-model="importConfig.knowledge" type="text" class="form-input" placeholder="计算机网络, 操作系统, 数据结构">
+          </div>
+
+          <div class="form-group">
+            <label>生成数量</label>
+            <input v-model.number="importConfig.count" type="number" class="form-input" min="1" max="100">
+          </div>
+
+          <button @click="previewGenerated" class="preview-btn">预览生成结果</button>
+        </div>
+      </section>
     </main>
 
     <!-- 科目编辑弹窗 -->
@@ -322,6 +365,11 @@
                 class="form-textarea"
                 placeholder="请输入题目内容..."
               ></textarea>
+              <div class="ai-generation" v-if="currentTab !== 'subjects'">
+                <button @click="generateWithAI" class="ai-btn" type="button">
+                  🤖 AI 生成
+                </button>
+              </div>
               <!-- 子题图片列表 -->
               <div class="sub-question-images">
                 <div v-for="(img, imgIndex) in getSubQuestionImages(sub.contentItems)" :key="imgIndex" class="image-preview">
@@ -505,6 +553,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { useToastStore } from '@/stores/toast'
 import api from '@/api'
+import { generateQuestion, getAiProviders, batchGenerateQuestions } from '@/api/ai'
 
 const toast = useToastStore()
 
@@ -524,7 +573,7 @@ const loadFooterCopyright = async () => {
 }
 
 // 状态
-const currentTab = ref('translation')  // 当前Tab: translation, professional, subjects
+const currentTab = ref('translation')  // 当前Tab: translation, professional, subjects, import
 const selectedSubject = ref('')
 const searchKeyword = ref('')
 const questions = ref([])
@@ -566,6 +615,51 @@ const switchTab = (tab) => {
   } else if (tab === 'subjects') {
     loadSubjectList()
   }
+}
+
+// 加载启用的 Provider
+const loadEnabledProviders = async () => {
+  try {
+    const result = await getAiProviders()
+    enabledProviders.value = result.data.filter(p => p.enabled)
+    if (enabledProviders.value.length > 0 && !importConfig.value.provider) {
+      importConfig.value.provider = enabledProviders.value[0].id
+    }
+  } catch (error) {
+    console.error('加载 Provider 失败:', error)
+  }
+}
+
+// 预览生成结果
+const previewGenerated = async () => {
+  if (!importConfig.value.provider) {
+    alert('请选择 AI Provider')
+    return
+  }
+  if (!importConfig.value.knowledge) {
+    alert('请输入知识点')
+    return
+  }
+
+  try {
+    const result = await batchGenerateQuestions({
+      provider: importConfig.value.provider,
+      type: importConfig.value.type,
+      knowledge: importConfig.value.knowledge,
+      count: importConfig.value.count
+    })
+    generatedQuestions.value = result.data.questions || []
+    showPreviewModal.value = true
+  } catch (error) {
+    console.error('批量生成失败:', error)
+    alert('批量生成失败')
+  }
+}
+
+// 导入选中的题目
+const importSelectedQuestions = async () => {
+  // TODO: 实现导入逻辑
+  alert('导入功能待实现')
 }
 
 // 加载科目列表
@@ -715,6 +809,18 @@ const batchExportData = ref({
   content: '',
   count: 0
 })
+
+// 导入配置
+const importConfig = ref({
+  provider: '',
+  type: 'professional',
+  knowledge: '',
+  count: 20
+})
+
+const enabledProviders = ref([])
+const generatedQuestions = ref([])
+const showPreviewModal = ref(false)
 
 const formData = ref({
   question_index: '',
@@ -1434,11 +1540,55 @@ const copyExportContent = async () => {
   }
 }
 
+// 当前科目（用于AI生成）
+const currentSubject = computed(() => {
+  return selectedSubject.value || formData.value.subject || ''
+})
+
+// AI 生成单题
+const generateWithAI = async () => {
+  try {
+    const providers = await getAiProviders()
+    const enabled = providers.data.find(p => p.enabled)
+    if (!enabled) {
+      alert('请先在设置中配置 AI Provider')
+      return
+    }
+
+    const result = await generateQuestion({
+      provider: enabled.id,
+      type: currentType.value,
+      context: currentSubject.value,
+      source_text: subQuestions.value[0]?.text || ''
+    })
+
+    if (result.data.candidates && result.data.candidates.length > 0) {
+      showAiCandidates(result.data.candidates)
+    }
+  } catch (error) {
+    console.error('AI 生成失败:', error)
+    alert('AI 生成失败，请检查配置')
+  }
+}
+
+// 显示 AI 候选
+const showAiCandidates = (candidates) => {
+  const options = candidates.map((c, i) => `${i+1}. ${c}`).join('\n')
+  const selected = prompt(`AI 生成候选:\n${options}\n\n请输入要使用的编号(1-${candidates.length}):`)
+  if (selected) {
+    const idx = parseInt(selected) - 1
+    if (idx >= 0 && idx < candidates.length) {
+      subQuestions.value[0].text = candidates[idx]
+    }
+  }
+}
+
 // 初始化
 onMounted(() => {
   loadQuestions()
   loadSubjects()
   loadFooterCopyright()
+  loadEnabledProviders()
   window.addEventListener('keydown', handleKeydown)
 })
 
@@ -2438,6 +2588,27 @@ onUnmounted(() => {
   background: #218838;
 }
 
+.ai-generation {
+  margin-top: 10px;
+}
+
+.ai-btn {
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.ai-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -2468,5 +2639,36 @@ onUnmounted(() => {
   border-top: 1px solid #e5e7eb;
   color: #6b7280;
   font-size: 14px;
+}
+
+/* AI 批量导入面板 */
+.import-panel {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 600px;
+}
+
+.import-panel h3 {
+  margin: 0 0 20px 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.preview-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.preview-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 </style>

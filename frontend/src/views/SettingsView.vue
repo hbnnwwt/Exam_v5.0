@@ -42,6 +42,10 @@
               <span class="system-icon">🎨</span>
               <span class="system-label">Logo设置</span>
             </div>
+            <div class="system-card" @click="$router.push('/settings/ai')">
+              <span class="system-icon">🤖</span>
+              <span class="system-label">AI 配置</span>
+            </div>
           </div>
         </div>
 

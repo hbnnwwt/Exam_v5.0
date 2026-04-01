@@ -124,6 +124,14 @@ try:
 except ImportError as e:
     print(f"FAIL - backup API registration failed: {e}")
 
+# 注册 AI 蓝图
+try:
+    from apis.ai import ai_bp
+    app.register_blueprint(ai_bp)
+    print("OK - AI API registered")
+except ImportError as e:
+    print(f"FAIL - AI API registration failed: {e}")
+
 # 图片上传目录静态文件服务
 @app.route('/uploads/<path:filename>')
 def serve_uploads(filename):

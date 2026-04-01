@@ -7,6 +7,8 @@
       </div>
       <div class="header-right">
         <button @click="openBatchImportModal" class="nav-btn batch-btn">批量导入</button>
+        <button @click="switchToAiImport" class="nav-btn batch-btn">AI批量导入</button>
+        <router-link to="/settings/ai" class="nav-btn">AI设置</router-link>
         <button @click="openBatchExportModal" class="nav-btn batch-btn">批量导出</button>
         <router-link to="/" class="nav-btn">返回考试</router-link>
         <router-link to="/help" class="nav-btn">帮助</router-link>
@@ -235,17 +237,41 @@
             </select>
           </div>
 
+          <div class="form-group" v-if="importConfig.type === 'professional'">
+            <label>科目</label>
+            <select v-model="importConfig.subject" class="form-select">
+              <option value="">选择科目</option>
+              <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
+                {{ subject.label }}
+              </option>
+            </select>
+          </div>
+
           <div class="form-group">
-            <label>知识点 (用逗号分隔)</label>
+            <label>知识点（用逗号分隔）</label>
             <input v-model="importConfig.knowledge" type="text" class="form-input" placeholder="计算机网络, 操作系统, 数据结构">
           </div>
 
           <div class="form-group">
             <label>生成数量</label>
-            <input v-model.number="importConfig.count" type="number" class="form-input" min="1" max="100">
+            <input v-model.number="importConfig.count" type="number" class="form-input" min="1" max="100" />
           </div>
 
-          <button @click="previewGenerated" class="preview-btn">预览生成结果</button>
+          <button @click="batchGenerateWithAI" class="ai-btn" :disabled="!importConfig.provider || generating">
+            {{ generating ? '生成中...' : '🤖 开始生成' }}
+          </button>
+
+          <div v-if="generatedQuestions.length > 0" class="generated-preview">
+            <h4>生成的题目（共 {{ generatedQuestions.length }} 道）</h4>
+            <div v-for="(q, idx) in generatedQuestions" :key="idx" class="generated-item">
+              <div class="generated-index">{{ idx + 1 }}</div>
+              <div class="generated-content">{{ q }}</div>
+            </div>
+            <div class="generated-actions">
+              <button @click="importAllQuestions" class="btn-save">导入全部</button>
+              <button @click="clearGenerated" class="btn-cancel">清空</button>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -368,6 +394,9 @@
               <div class="ai-generation" v-if="currentTab !== 'subjects'">
                 <button @click="generateWithAI" class="ai-btn" type="button">
                   🤖 AI 生成
+                </button>
+                <button @click="regenerateWithAI" class="ai-btn" type="button">
+                  🔄 重新生成
                 </button>
               </div>
               <!-- 子题图片列表 -->
@@ -553,7 +582,7 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { useToastStore } from '@/stores/toast'
 import api from '@/api'
-import { generateQuestion, getAiProviders, batchGenerateQuestions } from '@/api/ai'
+import { getAiProviders, generateQuestion, batchGenerateQuestions } from '@/api/ai'
 
 const toast = useToastStore()
 
@@ -617,6 +646,11 @@ const switchTab = (tab) => {
   }
 }
 
+// 跳转到AI批量导入
+const switchToAiImport = () => {
+  currentTab.value = 'import'
+}
+
 // 加载启用的 Provider
 const loadEnabledProviders = async () => {
   try {
@@ -630,8 +664,8 @@ const loadEnabledProviders = async () => {
   }
 }
 
-// 预览生成结果
-const previewGenerated = async () => {
+// AI 批量生成
+const batchGenerateWithAI = async () => {
   if (!importConfig.value.provider) {
     alert('请选择 AI Provider')
     return
@@ -642,6 +676,7 @@ const previewGenerated = async () => {
   }
 
   try {
+    generating.value = true
     const result = await batchGenerateQuestions({
       provider: importConfig.value.provider,
       type: importConfig.value.type,
@@ -649,17 +684,103 @@ const previewGenerated = async () => {
       count: importConfig.value.count
     })
     generatedQuestions.value = result.data.questions || []
-    showPreviewModal.value = true
   } catch (error) {
     console.error('批量生成失败:', error)
     alert('批量生成失败')
+  } finally {
+    generating.value = false
   }
 }
 
-// 导入选中的题目
-const importSelectedQuestions = async () => {
-  // TODO: 实现导入逻辑
-  alert('导入功能待实现')
+// 导入全部生成的题目
+const importAllQuestions = async () => {
+  if (generatedQuestions.value.length === 0) return
+
+  try {
+    for (const question of generatedQuestions.value) {
+      await api.post('/api/questions', {
+        type: importConfig.value.type,
+        subject: importConfig.value.subject,
+        content: question,
+        difficulty: 'medium'
+      })
+    }
+    toast.success(`成功导入 ${generatedQuestions.value.length} 道题目`)
+    clearGenerated()
+    loadQuestions()
+  } catch (error) {
+    console.error('导入失败:', error)
+    alert('导入失败')
+  }
+}
+
+// 清空生成的题目
+const clearGenerated = () => {
+  generatedQuestions.value = []
+}
+
+// AI 生成单题
+const generateWithAI = async () => {
+  try {
+    const providers = await getAiProviders()
+    const enabled = providers.data.find(p => p.enabled)
+    if (!enabled) {
+      alert('请先在设置中配置 AI Provider')
+      return
+    }
+
+    const result = await generateQuestion({
+      provider: enabled.id,
+      type: currentType.value,
+      context: currentSubject.value,
+      source_text: subQuestions.value[0]?.text || ''
+    })
+
+    if (result.data.candidates && result.data.candidates.length > 0) {
+      showAiCandidates(result.data.candidates)
+    }
+  } catch (error) {
+    console.error('AI 生成失败:', error)
+    alert('AI 生成失败，请检查配置')
+  }
+}
+
+// 显示 AI 候选
+const showAiCandidates = (candidates) => {
+  const options = candidates.map((c, i) => `${i+1}. ${c}`).join('\n')
+  const selected = prompt(`AI 生成候选:\n${options}\n\n请输入要使用的编号(1-${candidates.length}):`)
+  if (selected) {
+    const idx = parseInt(selected) - 1
+    if (idx >= 0 && idx < candidates.length) {
+      subQuestions.value[0].text = candidates[idx]
+    }
+  }
+}
+
+// 重新生成（使用相同知识点）
+const regenerateWithAI = async () => {
+  try {
+    const providers = await getAiProviders()
+    const enabled = providers.data.find(p => p.enabled)
+    if (!enabled) {
+      alert('请先在设置中配置 AI Provider')
+      return
+    }
+
+    const result = await generateQuestion({
+      provider: enabled.id,
+      type: currentType.value,
+      context: currentSubject.value,
+      source_text: subQuestions.value[0]?.text || ''
+    })
+
+    if (result.data.candidates && result.data.candidates.length > 0) {
+      showAiCandidates(result.data.candidates)
+    }
+  } catch (error) {
+    console.error('AI重新生成失败:', error)
+    alert('AI生成失败，请检查配置')
+  }
 }
 
 // 加载科目列表
@@ -810,24 +931,23 @@ const batchExportData = ref({
   count: 0
 })
 
-// 导入配置
-const importConfig = ref({
-  provider: '',
-  type: 'professional',
-  knowledge: '',
-  count: 20
-})
-
-const enabledProviders = ref([])
-const generatedQuestions = ref([])
-const showPreviewModal = ref(false)
-
 const formData = ref({
   question_index: '',
   subject: '',
   difficulty: 'medium',
   content: ''
 })
+
+// AI 导入相关状态
+const importConfig = ref({
+  provider: '',
+  type: 'professional',
+  knowledge: '',
+  count: 20
+})
+const enabledProviders = ref([])
+const generatedQuestions = ref([])
+const generating = ref(false)
 
 // 计算属性
 const filteredQuestions = computed(() => {
@@ -1537,49 +1657,6 @@ const copyExportContent = async () => {
     toast.success('已复制到剪贴板')
   } catch (error) {
     toast.error('复制失败，请手动复制')
-  }
-}
-
-// 当前科目（用于AI生成）
-const currentSubject = computed(() => {
-  return selectedSubject.value || formData.value.subject || ''
-})
-
-// AI 生成单题
-const generateWithAI = async () => {
-  try {
-    const providers = await getAiProviders()
-    const enabled = providers.data.find(p => p.enabled)
-    if (!enabled) {
-      alert('请先在设置中配置 AI Provider')
-      return
-    }
-
-    const result = await generateQuestion({
-      provider: enabled.id,
-      type: currentType.value,
-      context: currentSubject.value,
-      source_text: subQuestions.value[0]?.text || ''
-    })
-
-    if (result.data.candidates && result.data.candidates.length > 0) {
-      showAiCandidates(result.data.candidates)
-    }
-  } catch (error) {
-    console.error('AI 生成失败:', error)
-    alert('AI 生成失败，请检查配置')
-  }
-}
-
-// 显示 AI 候选
-const showAiCandidates = (candidates) => {
-  const options = candidates.map((c, i) => `${i+1}. ${c}`).join('\n')
-  const selected = prompt(`AI 生成候选:\n${options}\n\n请输入要使用的编号(1-${candidates.length}):`)
-  if (selected) {
-    const idx = parseInt(selected) - 1
-    if (idx >= 0 && idx < candidates.length) {
-      subQuestions.value[0].text = candidates[idx]
-    }
   }
 }
 
@@ -2588,27 +2665,6 @@ onUnmounted(() => {
   background: #218838;
 }
 
-.ai-generation {
-  margin-top: 10px;
-}
-
-.ai-btn {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.ai-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
 .checkbox-label {
   display: flex;
   align-items: center;
@@ -2639,36 +2695,5 @@ onUnmounted(() => {
   border-top: 1px solid #e5e7eb;
   color: #6b7280;
   font-size: 14px;
-}
-
-/* AI 批量导入面板 */
-.import-panel {
-  background: white;
-  border-radius: 8px;
-  padding: 30px;
-  max-width: 600px;
-}
-
-.import-panel h3 {
-  margin: 0 0 20px 0;
-  color: #333;
-  font-size: 20px;
-}
-
-.preview-btn {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.preview-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 </style>

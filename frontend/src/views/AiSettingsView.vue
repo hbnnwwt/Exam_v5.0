@@ -40,6 +40,15 @@
             </div>
           </div>
 
+          <!-- MiniMax -->
+          <div class="provider-card" :class="{ active: activeProvider === 'minimax' }" @click="selectProvider('minimax')">
+            <div class="provider-icon">🟠</div>
+            <div class="provider-name">MiniMax</div>
+            <div class="provider-status" :class="{ configured: isConfigured('minimax') }">
+              {{ isConfigured('minimax') ? '已配置' : '未配置' }}
+            </div>
+          </div>
+
           <!-- 自定义添加 -->
           <div class="provider-card add-card" @click="showAddModal = true">
             <div class="provider-icon">➕</div>
@@ -209,7 +218,7 @@ import api from '@/api'
 const toast = useToastStore()
 
 // 内置提供商列表
-const builtInProviders = ['openai', 'claude', 'gemini']
+const builtInProviders = ['openai', 'claude', 'gemini', 'minimax']
 
 // 当前选中的提供商
 const activeProvider = ref(null)
@@ -253,7 +262,8 @@ const getProviderDisplayName = (provider) => {
   const names = {
     openai: 'OpenAI',
     claude: 'Claude',
-    gemini: 'Gemini'
+    gemini: 'Gemini',
+    minimax: 'MiniMax'
   }
   if (names[provider]) return names[provider]
   return allProviders.value[provider]?.name || provider
@@ -264,7 +274,8 @@ const getDefaultBaseUrl = (provider) => {
   const urls = {
     openai: 'https://api.openai.com/v1',
     claude: 'https://api.anthropic.com',
-    gemini: 'https://generativelanguage.googleapis.com/v1'
+    gemini: 'https://generativelanguage.googleapis.com/v1',
+    minimax: 'https://api.minimax.chat/v1'
   }
   return urls[provider] || ''
 }
@@ -274,7 +285,8 @@ const getAvailableModels = (provider) => {
   const models = {
     openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
     claude: ['claude-sonnet-4-20250514', 'claude-sonnet-3-5-20250501', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'],
-    gemini: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash']
+    gemini: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+    minimax: ['abab6.5s-chat', 'abab6.5g-chat']
   }
   return models[provider] || []
 }

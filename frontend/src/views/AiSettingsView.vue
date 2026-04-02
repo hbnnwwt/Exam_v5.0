@@ -415,7 +415,7 @@ const getAvailableModels = (provider) => {
     gemini: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'],
     minimax: ['MiniMax-M2.5', 'abab6.5s-chat', 'abab6.5g-chat'],
     modelscope: ['qwen3.5-397b', 'qwen-turbo', 'qwen-plus', 'qwen-max'],
-    siliconflow: ['deepseek-ai/DeepSeek-R1-0528-Qwen3-8B', 'Qwen/Qwen3-8B', 'Qwen/Qwen2.5-7B-Instruct']
+    siliconflow: ['Qwen/Qwen3-8B', 'deepseek-ai/DeepSeek-R1-0528-Qwen3-8B', 'Qwen/Qwen2.5-7B-Instruct']
   }
   return models[provider] || []
 }

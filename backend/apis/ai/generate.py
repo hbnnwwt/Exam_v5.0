@@ -1,9 +1,13 @@
 import json
 import os
+import logging
 import requests
 from flask import jsonify, request
 from . import ai_bp
 from .api_keys import load_api_key
+
+# 配置日志
+logger = logging.getLogger(__name__)
 
 def get_subject_name(subject_code):
     """根据科目代码获取科目名称"""
@@ -18,7 +22,7 @@ def get_subject_name(subject_code):
         if row:
             return row['name']
     except Exception as e:
-        print(f"获取科目名称失败: {e}")
+        logger.warning(f"获取科目名称失败: {e}")
     return subject_code  # 如果查不到，返回原代码
 
 def call_minimax(provider_config, messages):
@@ -318,7 +322,7 @@ def generate_question():
                 candidates = [s.strip() for s in result.split('\n') if s.strip()]
                 return jsonify({'candidates': candidates[:3]})
         except Exception as e:
-            print(f"MiniMax API error: {e}")
+            logger.warning(f"MiniMax API error: {e}")
             pass
 
     # ModelScope API
@@ -329,7 +333,7 @@ def generate_question():
                 candidates = [s.strip() for s in result.split('\n') if s.strip()]
                 return jsonify({'candidates': candidates[:3]})
         except Exception as e:
-            print(f"ModelScope API error: {e}")
+            logger.warning(f"ModelScope API error: {e}")
             pass
 
     # 硅基流动 API (OpenAI 兼容格式)
@@ -340,7 +344,7 @@ def generate_question():
                 candidates = [s.strip() for s in result.split('\n') if s.strip()]
                 return jsonify({'candidates': candidates[:3]})
         except Exception as e:
-            print(f"SiliconFlow API error: {e}")
+            logger.warning(f"SiliconFlow API error: {e}")
             pass
 
     # Anthropic/Claude API (内置 provider 或自定义 provider 明确指定 anthropic 格式)
@@ -352,7 +356,7 @@ def generate_question():
                 candidates = [s.strip() for s in result.split('\n') if s.strip()]
                 return jsonify({'candidates': candidates[:3]})
         except Exception as e:
-            print(f"Anthropic API error: {e}")
+            logger.warning(f"Anthropic API error: {e}")
             pass
 
     # OpenAI 兼容 API (默认)
@@ -362,7 +366,7 @@ def generate_question():
             candidates = [s.strip() for s in result.split('\n') if s.strip()]
             return jsonify({'candidates': candidates[:3]})
     except Exception as e:
-        print(f"OpenAI API error: {e}")
+        logger.warning(f"OpenAI API error: {e}")
 
     # 失败时返回模拟候选（确保3个）
     if question_type == 'translation':
@@ -492,20 +496,20 @@ TCP和UDP协议的主要区别是什么？
                 # 先清理结果，移除常见的 Markdown 代码块标记
                 cleaned_result = result.replace('```', '').strip()
                 sets = cleaned_result.split('---')
-                print(f"解析套题：找到 {len(sets)} 个分隔段，需要 {count} 套")
+                logger.debug(f"解析套题：找到 {len(sets)} 个分隔段，需要 {count} 套")
                 
                 for i, set_content in enumerate(sets[:count]):
                     set_content = set_content.strip()
                     if not set_content:
-                        print(f"套题 {i+1} 内容为空，跳过")
+                        logger.debug(f"套题 {i+1} 内容为空，跳过")
                         continue
                     
-                    print(f"解析套题 {i+1}，内容长度: {len(set_content)}")
+                    logger.debug(f"解析套题 {i+1}，内容长度: {len(set_content)}")
                     
                     # 解析每套题的子题
                     sub_questions = []
                     lines = [line.strip() for line in set_content.split('\n') if line.strip()]
-                    print(f"套题 {i+1} 找到 {len(lines)} 行内容")
+                    logger.debug(f"套题 {i+1} 找到 {len(lines)} 行内容")
                     
                     for line in lines:
                         # 跳过空行和分隔线
@@ -531,7 +535,7 @@ TCP和UDP协议的主要区别是什么？
                                 
                         if question_text and len(question_text) > 5:  # 至少5个字符才算有效题目
                             sub_questions.append(question_text)
-                            print(f"  添加子题: {question_text[:30]}...")
+                            logger.debug(f"  添加子题: {question_text[:30]}...")
                             if len(sub_questions) >= questions_per_set:
                                 break
                     
@@ -539,7 +543,7 @@ TCP和UDP协议的主要区别是什么？
                     while len(sub_questions) < questions_per_set:
                         topic = topics[len(questions) % len(topics)]
                         sub_questions.append(f"请简述 {topic} 的基本概念。")
-                        print(f"  补充默认子题")
+                        logger.debug(f"  补充默认子题")
                     
                     # 只取前 questions_per_set 个子题
                     sub_questions = sub_questions[:questions_per_set]
@@ -553,7 +557,7 @@ TCP和UDP协议的主要区别是什么？
                         'subject': topics[i % len(topics)],
                         'is_set': True
                     })
-                    print(f"套题 {i+1} 解析完成，共 {len(sub_questions)} 道子题")
+                    logger.debug(f"套题 {i+1} 解析完成，共 {len(sub_questions)} 道子题")
             else:
                 # 单题模式：每行一题
                 lines = [line.strip() for line in result.split('\n') if line.strip()]
@@ -602,9 +606,7 @@ TCP和UDP协议的主要区别是什么？
         return jsonify({'questions': questions})
 
     except Exception as e:
-        import traceback
-        print(f"AI 批量生成失败: {e}")
-        print(traceback.format_exc())
+        logger.error(f"AI 批量生成失败: {e}", exc_info=True)
         # 失败时返回模拟数据
         questions = []
         for i in range(count):

@@ -2,12 +2,15 @@
 考试流程控制模块 - 处理考试的开始、步骤更新、完成等流程控制
 """
 
+import logging
 from flask import request
 from datetime import datetime
 from ..common.database import get_db_connection
 from ..common.utils import format_response, validate_request
 from ..common.operation_logger import log_operation, OPERATION_COMPLETE_EXAM, OPERATION_RESET_SYSTEM, OPERATION_NEXT_STEP
 from . import exam_bp
+
+logger = logging.getLogger(__name__)
 
 @exam_bp.route('/current-student', methods=['GET'])
 def get_current_student():
@@ -538,7 +541,7 @@ def load_exam_progress():
     """加载考试进度"""
     try:
         import sys
-        print('[DEBUG] load_exam_progress called', flush=True)
+        logger.debug('load_exam_progress called')
         sys.stdout.flush()
         conn = get_db_connection()
         
@@ -558,7 +561,7 @@ def load_exam_progress():
         if record:
             import json
             used_ids = json.loads(record['used_question_ids']) if record['used_question_ids'] else []
-            print(f'[DEBUG] load_exam_progress: hasProgress=True, usedQuestionIds={used_ids}', flush=True)
+            logger.debug(f'load_exam_progress: hasProgress=True, usedQuestionIds={used_ids}')
             result = {
                 'hasProgress': True,
                 'studentNumber': record['student_number'],
@@ -619,7 +622,7 @@ def load_exam_progress():
             last_student_num = last_student['student_number'] if last_student else None
             last_exam_status = last_student['exam_status'] if last_student else None
 
-            print(f'[DEBUG] last_student_num={last_student_num}, last_exam_status={last_exam_status}', flush=True)
+            logger.debug(f'last_student_num={last_student_num}, last_exam_status={last_exam_status}')
 
             # 如果最后一个考生已完成考试，需要手动开始新的考试
             result_exam_status = 'ready'
@@ -637,7 +640,7 @@ def load_exam_progress():
                 'allUsedTranslationIds': list(all_translation_ids),
                 'allUsedProfessionalIds': list(all_professional_ids)
             }
-            print(f'[DEBUG] load_exam_progress: hasProgress=False, examStatus={result_exam_status}, allTranslationIds={list(all_translation_ids)}, allProfessionalIds={list(all_professional_ids)}', flush=True)
+            logger.debug(f'load_exam_progress: hasProgress=False, examStatus={result_exam_status}')
         
         conn.close()
         

@@ -82,7 +82,7 @@ def get_providers():
 @ai_bp.route('/providers', methods=['POST'])
 def save_provider():
     """保存提供商配置到数据库"""
-    from .api_keys import save_to_db, get_default_provider_id
+    from .api_keys import save_to_db
 
     data = request.json
     provider_id = data.get('provider') or data.get('id')
@@ -92,7 +92,7 @@ def save_provider():
         api_key=data.get('apiKey', ''),
         base_url=data.get('baseUrl', ''),
         default_model=data.get('defaultModel', ''),
-        is_default=1 if get_default_provider_id() == provider_id else 0
+        is_default=0
     )
 
     return jsonify({'success': True})
@@ -126,34 +126,35 @@ def delete_provider(provider_id):
 @ai_bp.route('/default-provider', methods=['GET'])
 def get_default_provider():
     """获取默认provider"""
-    config = load_config()
-    default_id = config.get('defaultProvider')
+    from .api_keys import get_default_provider_id, load_from_db
+
+    default_id = get_default_provider_id()
     if not default_id:
         return jsonify({'id': None})
-    # 验证默认provider是否存在且已配置（有apiKey）
-    providers = config.get('providers', [])
-    provider = next((p for p in providers if p.get('id') == default_id and p.get('apiKey')), None)
-    if provider:
-        return jsonify({'id': provider.get('id'), 'name': provider.get('name', provider.get('id'))})
+
+    db_row = load_from_db(default_id)
+    if db_row:
+        return jsonify({'id': db_row.get('id'), 'name': db_row.get('name', default_id)})
     return jsonify({'id': None})
 
 @ai_bp.route('/default-provider', methods=['POST'])
 def set_default_provider():
     """设置默认provider"""
+    from .api_keys import set_default_provider as db_set_default, load_from_db
+
     data = request.json
     provider_id = data.get('provider')
 
-    config = load_config()
-
+    # 验证provider是否存在
     if provider_id:
-        # 验证provider是否存在且有apiKey
-        providers = config.get('providers', [])
-        provider = next((p for p in providers if p.get('id') == provider_id), None)
-        if not provider:
-            return jsonify({'error': 'Provider not found'}), 404
-        if not provider.get('apiKey'):
-            return jsonify({'error': 'Provider is not configured'}), 400
+        db_row = load_from_db(provider_id)
+        if not db_row:
+            # provider 不在 DB 中，检查 JSON 模板
+            json_config = _load_json_config()
+            json_providers = json_config.get('providers', [])
+            provider = next((p for p in json_providers if p.get('id') == provider_id), None)
+            if not provider:
+                return jsonify({'error': 'Provider not found'}), 404
 
-    config['defaultProvider'] = provider_id
-    save_config(config)
+    db_set_default(provider_id)
     return jsonify({'success': True, 'id': provider_id})

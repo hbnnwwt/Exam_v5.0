@@ -48,5 +48,8 @@ logs/
 .env
 .env.local
 
+# API Config (contains sensitive keys)
+backend/apis/config/ai_providers.json
+
 # Frontend build artifacts
 backend/assets/frontend/

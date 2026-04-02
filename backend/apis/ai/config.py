@@ -106,8 +106,16 @@ def update_provider(provider_id):
         api_key=request.json.get('apiKey', ''),
         base_url=request.json.get('baseUrl', ''),
         default_model=request.json.get('defaultModel', ''),
+        is_default=0,
     )
-    return jsonify(request.json)
+    return jsonify({
+        'id': provider_id,
+        'name': request.json.get('name', provider_id),
+        'baseUrl': request.json.get('baseUrl', ''),
+        'defaultModel': request.json.get('defaultModel', ''),
+        'apiFormat': request.json.get('apiFormat', 'openai'),
+        'hasApiKey': bool(request.json.get('apiKey', '')),
+    })
 
 @ai_bp.route('/providers/<provider_id>', methods=['DELETE'])
 def delete_provider(provider_id):

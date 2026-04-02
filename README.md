@@ -4,17 +4,17 @@
 
 ## 下载版本
 
-### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-portable.zip) (42MB)
+### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.8/Exam_v5.0-portable.zip) (54MB)
 - **解压即用**，无需安装任何环境
 - 包含便携版 Python
 - 适合追求开箱即用的用户
 
-### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-release.zip) (2MB)
+### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.8/Exam_v5.0-release.zip) (2MB)
 - 需先运行 `setup.bat` 安装依赖
 - 需要 Node.js 18+ 构建前端
 - 适合有 Python 环境的用户
 
-### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.7/Exam_v5.0-Source.zip) (14MB)
+### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.8/Exam_v5.0-Source.zip) (67MB)
 - 完整源码
 
 ## 快速开始
@@ -104,13 +104,22 @@ Exam_v5.0/
 
 1. **面试流程控制** - 可配置的面试流程（默认6个步骤）
 2. **计时器** - 每个步骤独立计时
-3. **题库管理** - 翻译题和专业题管理
+3. **题库管理** - 翻译题和专业题管理，支持批量导入
 4. **随机抽题** - 支持随机抽取题目
-5. **考试导出** - 导出考试记录和统计数据
+5. **考试导出** - 导出考试记录和统计数据（Excel / PDF / HTML）
 6. **Logo设置** - 可自定义学校/学院Logo和系统标题
-7. **庄重面试风 UI** - 专业、沉稳的视觉设计
+7. **AI 智能出题** - 基于 AI 自动生成翻译题和专业问题，支持套题模式和批量生成
+8. **多 AI Provider** - 支持 OpenAI / Claude / Gemini / MiniMax / ModelScope / SiliconFlow 等
+9. **庄重面试风 UI** - 专业、沉稳的视觉设计，深石板灰 + 金色强调色
 
 ## 更新日志
+
+### v1.0.8 (2026-04-02)
+- **安全修复**：移除所有硬编码 API Key，配置文件不再包含敏感信息
+- **AI 智能出题**：支持单题生成、套题生成、批量生成三种模式
+- **AI 候选结果**：生成多个候选答案，标注差异（基础 / 应用 / 深度）
+- **多 Provider 管理**：支持配置多个 AI 服务商，一键切换默认 Provider
+- **UI 全面优化**：AI 设置页 / 导出页 / 设置页统一使用设计令牌系统
 
 ### v1.0.7 (2026-04-01)
 - 考生面试界面全新设计

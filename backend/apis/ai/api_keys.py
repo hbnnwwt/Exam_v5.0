@@ -20,7 +20,9 @@ def _get_db_path():
     return os.environ.get('DATABASE_PATH', DB_PATH)
 
 def _get_conn():
-    os.makedirs(os.path.dirname(_get_db_path()), exist_ok=True)
+    db_dir = os.path.dirname(_get_db_path())
+    if db_dir:
+        os.makedirs(db_dir, exist_ok=True)
     conn = sqlite3.connect(_get_db_path())
     conn.row_factory = sqlite3.Row
     return conn

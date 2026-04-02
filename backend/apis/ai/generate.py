@@ -334,6 +334,17 @@ def generate_question():
             print(f"ModelScope API error: {e}")
             pass
 
+    # 硅基流动 API (OpenAI 兼容格式)
+    if provider_id == 'siliconflow' or 'siliconflow' in provider.get('baseUrl', ''):
+        try:
+            result = call_openai_compatible(provider, messages)
+            if result:
+                candidates = [s.strip() for s in result.split('\n') if s.strip()]
+                return jsonify({'candidates': candidates[:3]})
+        except Exception as e:
+            print(f"SiliconFlow API error: {e}")
+            pass
+
     # Anthropic/Claude API (内置 provider 或自定义 provider 明确指定 anthropic 格式)
     api_format = provider.get('apiFormat', 'openai')
     if provider_id in ['claude', 'anthropic'] or 'anthropic' in provider.get('baseUrl', '') or api_format == 'anthropic':
@@ -466,6 +477,9 @@ TCP和UDP协议的主要区别是什么？
             result = call_minimax(provider, messages)
         elif provider_id == 'modelscope' or 'modelscope' in provider.get('baseUrl', '') or 'modelscope.cn' in provider.get('baseUrl', ''):
             result = call_modelscope(provider, messages)
+        elif provider_id == 'siliconflow' or 'siliconflow' in provider.get('baseUrl', ''):
+            # 硅基流动使用 OpenAI 兼容格式
+            result = call_openai_compatible(provider, messages)
         elif provider_id in ['claude', 'anthropic'] or 'anthropic' in provider.get('baseUrl', '') or api_format == 'anthropic':
             result = call_anthropic(provider, messages)
         else:

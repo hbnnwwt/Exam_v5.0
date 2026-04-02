@@ -65,6 +65,16 @@
               </span>
             </button>
 
+            <!-- 硅基流动 -->
+            <button type="button" class="provider-card" :class="{ active: activeProvider === 'siliconflow', configured: isConfigured('siliconflow') }" @click="selectProvider('siliconflow')" :aria-pressed="activeProvider === 'siliconflow'">
+              <span class="provider-icon">Silicon</span>
+              <span class="provider-name">硅基流动</span>
+              <span class="provider-model">{{ getProviderModel('siliconflow') }}</span>
+              <span class="provider-badge" :class="isConfigured('siliconflow') ? 'badge-success' : 'badge-muted'">
+                {{ isConfigured('siliconflow') ? '已配置' : '未配置' }}
+              </span>
+            </button>
+
             <!-- 自定义 Provider -->
             <button
               v-for="providerId in customProviderIds"
@@ -293,7 +303,7 @@ const toast = useToastStore()
 const defaultProvider = ref('')
 
 // 内置提供商列表
-const builtInProviders = ['openai', 'claude', 'gemini', 'minimax', 'modelscope']
+const builtInProviders = ['openai', 'claude', 'gemini', 'minimax', 'modelscope', 'siliconflow']
 
 // 自定义提供商列表
 const customProviderIds = computed(() => {
@@ -377,7 +387,8 @@ const getProviderDisplayName = (provider) => {
     claude: 'Claude',
     gemini: 'Gemini',
     minimax: 'MiniMax',
-    modelscope: 'ModelScope'
+    modelscope: 'ModelScope',
+    siliconflow: '硅基流动'
   }
   if (names[provider]) return names[provider]
   return allProviders.value[provider]?.name || provider
@@ -390,7 +401,8 @@ const getDefaultBaseUrl = (provider) => {
     claude: 'https://api.anthropic.com',
     gemini: 'https://generativelanguage.googleapis.com/v1',
     minimax: 'https://api.minimaxi.com/anthropic',
-    modelscope: 'https://api-inference.modelscope.cn'
+    modelscope: 'https://api-inference.modelscope.cn',
+    siliconflow: 'https://api.siliconflow.cn/v1'
   }
   return urls[provider] || ''
 }
@@ -402,7 +414,8 @@ const getAvailableModels = (provider) => {
     claude: ['claude-sonnet-4-20250514', 'claude-sonnet-3-5-20250501', 'claude-3-opus-20240229', 'claude-3-sonnet-20240229'],
     gemini: ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'],
     minimax: ['MiniMax-M2.5', 'abab6.5s-chat', 'abab6.5g-chat'],
-    modelscope: ['qwen3.5-397b', 'qwen-turbo', 'qwen-plus', 'qwen-max']
+    modelscope: ['qwen3.5-397b', 'qwen-turbo', 'qwen-plus', 'qwen-max'],
+    siliconflow: ['deepseek-ai/DeepSeek-R1-0528-Qwen3-8B', 'Qwen/Qwen3-8B', 'Qwen/Qwen2.5-7B-Instruct']
   }
   return models[provider] || []
 }

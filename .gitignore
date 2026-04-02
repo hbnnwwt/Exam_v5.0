@@ -53,3 +53,4 @@ backend/apis/config/ai_providers.json
 
 # Frontend build artifacts
 backend/assets/frontend/
+releases/

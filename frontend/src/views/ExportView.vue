@@ -1,12 +1,29 @@
 <template>
   <div class="export-page">
-    <header class="header">
+    <header class="export-header">
       <div class="header-left">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
         <h1>数据导出</h1>
       </div>
       <div class="header-right">
-        <router-link to="/" class="nav-btn">返回考试</router-link>
-        <router-link to="/help" class="nav-btn">帮助</router-link>
+        <router-link to="/" class="header-btn header-btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          返回考试
+        </router-link>
+        <router-link to="/help" class="header-btn header-btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          帮助
+        </router-link>
       </div>
     </header>
 
@@ -43,22 +60,49 @@
           <div class="export-section">
             <h3>导出选项</h3>
             <div class="export-options">
-              <div class="export-card">
-                <h4>考生列表 Excel</h4>
-                <p>导出所有考生的基本信息与考试状态</p>
-                <button @click="exportStudents" class="export-btn">导出Excel</button>
+              <div class="export-card export-card-accent">
+                <div class="export-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="8" y1="13" x2="16" y2="13"/>
+                    <line x1="8" y1="17" x2="16" y2="17"/>
+                  </svg>
+                </div>
+                <div class="export-card-body">
+                  <h4>考生列表 Excel</h4>
+                  <p>导出所有考生的基本信息与考试状态</p>
+                </div>
+                <button @click="exportStudents" class="export-btn export-btn-primary">导出Excel</button>
               </div>
 
               <div class="export-card">
-                <h4>PDF报告</h4>
-                <p>生成可归档的PDF考试报告（含题目图片）</p>
-                <button @click="exportPDF" class="export-btn">导出PDF</button>
+                <div class="export-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <path d="M9 15v-2h2a1 1 0 0 1 0 2H9z"/>
+                  </svg>
+                </div>
+                <div class="export-card-body">
+                  <h4>PDF报告</h4>
+                  <p>生成可归档的PDF考试报告（含题目图片）</p>
+                </div>
+                <button @click="exportPDF" class="export-btn export-btn-secondary">导出PDF</button>
               </div>
 
               <div class="export-card">
-                <h4>HTML报告</h4>
-                <p>生成可打印的HTML考试报告（含题目图片）</p>
-                <button @click="exportHTML" class="export-btn">导出HTML</button>
+                <div class="export-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                  </svg>
+                </div>
+                <div class="export-card-body">
+                  <h4>HTML报告</h4>
+                  <p>生成可打印的HTML考试报告（含题目图片）</p>
+                </div>
+                <button @click="exportHTML" class="export-btn export-btn-secondary">导出HTML</button>
               </div>
             </div>
           </div>
@@ -468,43 +512,95 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f5f5f5;
+  background: var(--color-background);
 }
 
-.header {
+/* Header */
+.export-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: #007bff;
-  color: white;
+  padding: 0 var(--spacing-5);
+  height: var(--header-height);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  gap: var(--spacing-4);
 }
 
-.header h1 {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
+}
+
+.export-header h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
-.nav-btn {
-  padding: 8px 16px;
-  background: rgba(255,255,255,0.2);
-  color: white;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
-  border-radius: 4px;
-  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+  border: none;
 }
 
+.header-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.header-btn-secondary {
+  background: var(--color-header-btn-bg);
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-secondary:hover {
+  background: var(--color-header-btn-hover);
+  opacity: 0.9;
+}
+
+.header-btn-ghost {
+  background: transparent;
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-ghost:hover {
+  background: var(--color-header-btn-bg);
+}
+
+/* Main */
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: var(--spacing-5);
   overflow-y: auto;
 }
 
 .export-container {
-  max-width: 1400px;
+  max-width: var(--content-max-width);
   margin: 0 auto;
   display: flex;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
 .left-panel {
@@ -517,124 +613,182 @@ onMounted(() => {
   min-width: 0;
 }
 
-.stats-section {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
+/* Stats */
+.stats-section,
+.export-section,
+.preview-section {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+  margin-bottom: var(--spacing-5);
+  box-shadow: var(--shadow-sm);
 }
 
-.stats-section h3 {
-  margin: 0 0 15px 0;
-  color: #333;
+.stats-section h3,
+.export-section h3,
+.preview-section h3 {
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
 }
 
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-}
-
-.left-panel .stats-grid {
-  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
 }
 
 .stat-card {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
   text-align: center;
 }
 
 .stat-value {
-  font-size: 32px;
-  font-weight: bold;
-  color: #007bff;
-  margin-bottom: 5px;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-1);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
-  color: #666;
-  font-size: 14px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
-.export-section {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-.export-section h3 {
-  margin: 0 0 15px 0;
-  color: #333;
-}
-
+/* Export Options */
 .export-options {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
 }
 
 .export-card {
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.export-card:hover {
+  border-color: var(--color-border-light);
+  box-shadow: var(--shadow-base);
+}
+
+.export-card-accent {
+  border-color: var(--color-accent-light);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-accent-light) 100%);
+}
+
+.export-card-accent:hover {
+  border-color: var(--color-accent);
+}
+
+.export-card-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-gray-100);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+}
+
+.export-card-accent .export-card-icon {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.export-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.export-card-body {
+  flex: 1;
+  min-width: 0;
 }
 
 .export-card h4 {
-  margin: 0 0 10px 0;
-  color: #333;
+  margin: 0 0 var(--spacing-1) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .export-card p {
-  margin: 0 0 15px 0;
-  color: #666;
-  font-size: 14px;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
 }
 
+/* Export Buttons */
 .export-btn {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
+  border: none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  flex-shrink: 0;
 }
 
-.export-btn:hover {
-  background: #0056b3;
+.export-btn:active {
+  transform: scale(0.97);
 }
 
-.preview-section {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
+.export-btn-primary {
+  background: var(--color-accent);
+  color: white;
 }
 
-.preview-section h3 {
-  margin: 0 0 15px 0;
-  color: #333;
+.export-btn-primary:hover {
+  background: var(--color-accent-hover);
 }
 
+.export-btn-secondary {
+  background: var(--color-gray-100);
+  color: var(--color-text-secondary);
+}
+
+.export-btn-secondary:hover {
+  background: var(--color-gray-200);
+}
+
+/* Preview */
 .preview-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-4);
 }
 
 .refresh-btn {
-  padding: 8px 14px;
-  background: #6c757d;
-  color: white;
+  padding: var(--spacing-2) var(--spacing-4);
+  background: var(--color-gray-100);
+  color: var(--color-text-secondary);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  transition: background var(--transition-fast);
 }
 
 .refresh-btn:hover {
-  background: #5a6268;
+  background: var(--color-gray-200);
 }
 
 .table-container {
@@ -648,136 +802,146 @@ onMounted(() => {
 
 .data-table th,
 .data-table td {
-  padding: 12px;
+  padding: var(--spacing-3);
   text-align: left;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .data-table th {
-  background: #f8f9fa;
-  font-weight: bold;
-  color: #333;
+  background: var(--color-gray-50);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
 }
 
 .data-table td {
-  color: #666;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
 }
 
+/* Status Badge */
 .status-badge {
   display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .status-badge.ready {
-  background: #e9ecef;
-  color: #666;
+  background: var(--color-gray-200);
+  color: var(--color-gray-700);
 }
 
 .status-badge.in_progress {
-  background: #fff3cd;
-  color: #856404;
+  background: var(--color-warning-light);
+  color: var(--color-warning-text);
 }
 
 .status-badge.completed {
-  background: #d4edda;
-  color: #155724;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
+/* Expand Button */
 .expand-btn {
-  padding: 4px 12px;
-  background: #6c757d;
-  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  background: var(--color-gray-100);
+  color: var(--color-text-secondary);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast);
 }
 
 .expand-btn:hover {
-  background: #5a6268;
+  background: var(--color-gray-200);
 }
 
+/* Expand Row */
 .expand-row {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
 }
 
 .expand-row td {
-  padding: 15px;
-  border-bottom: 1px solid #dee2e6;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .question-details {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-4);
 }
 
 .question-section {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #dee2e6;
+  background: var(--color-surface);
+  padding: var(--spacing-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
 }
 
 .question-title {
-  font-weight: bold;
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 10px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-3);
 }
 
 .question-content {
-  font-size: 13px;
-  color: #666;
-  line-height: 1.6;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .question-content p {
-  margin: 8px 0;
+  margin: var(--spacing-2) 0;
 }
 
 .question-content .image-container {
-  margin: 10px 0;
+  margin: var(--spacing-3) 0;
   cursor: pointer;
 }
 
 .question-content .image-container img {
   max-width: 150px;
   max-height: 120px;
-  border-radius: 4px;
-  border: 1px solid #dee2e6;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  transition: border-color var(--transition-fast);
 }
 
 .question-content .image-container:hover img {
-  border-color: #007bff;
+  border-color: var(--color-primary);
 }
 
 .question-content .sub-question {
-  margin-bottom: 15px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
+  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-3);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-md);
 }
 
 .question-content .sub-question-title {
-  font-weight: bold;
-  font-size: 13px;
-  color: #333;
-  margin-bottom: 8px;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
 }
 
-/* 图片预览弹窗 */
+/* Image Preview */
 .image-preview-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--color-modal-overlay-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -793,33 +957,39 @@ onMounted(() => {
 .image-preview-content img {
   max-width: 100%;
   max-height: 90vh;
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
 }
 
 .image-preview-content .close-btn {
   position: absolute;
-  top: -40px;
+  top: -44px;
   right: 0;
   background: none;
   border: none;
   color: white;
-  font-size: 32px;
+  font-size: 28px;
   cursor: pointer;
-  padding: 0;
+  padding: var(--spacing-2);
   line-height: 1;
+  opacity: 0.8;
+  transition: opacity var(--transition-fast);
 }
 
 .image-preview-content .close-btn:hover {
-  color: #ccc;
+  opacity: 1;
 }
 
-/* 底部 */
+/* Footer */
 .footer {
   text-align: center;
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  color: #6b7280;
-  font-size: 14px;
+  padding: var(--spacing-4);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.footer p {
+  margin: 0;
 }
 </style>

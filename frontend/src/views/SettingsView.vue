@@ -1,13 +1,29 @@
 <template>
   <div class="settings-page">
     <!-- 顶部导航 -->
-    <header class="header">
+    <header class="settings-header">
       <div class="header-left">
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
         <h1>考试设置</h1>
       </div>
       <div class="header-right">
-        <router-link to="/" class="nav-btn">返回考试</router-link>
-        <router-link to="/help" class="nav-btn">帮助</router-link>
+        <router-link to="/" class="header-btn header-btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          返回考试
+        </router-link>
+        <router-link to="/help" class="header-btn header-btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          帮助
+        </router-link>
       </div>
     </header>
 
@@ -39,11 +55,19 @@
               :class="['system-card', { active: activeSection === 'header' }]"
               @click="selectedStep = -1; activeSection = 'header'; loadHeaderSettings()"
             >
-              <span class="system-icon">🎨</span>
+              <svg class="system-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
               <span class="system-label">Logo设置</span>
             </div>
             <div class="system-card" @click="$router.push('/settings/ai')">
-              <span class="system-icon">🤖</span>
+              <svg class="system-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+                <path d="M16 14H8a4 4 0 0 0-4 4v2h20v-2a4 4 0 0 0-4-4z"/>
+                <circle cx="12" cy="6" r="1"/>
+              </svg>
               <span class="system-label">AI 配置</span>
             </div>
           </div>
@@ -403,45 +427,93 @@ const loadFooterSettings = async () => {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f5f5f5;
+  background: var(--color-background);
 }
 
-.header {
+/* Header */
+.settings-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: #007bff;
-  color: white;
+  padding: 0 var(--spacing-5);
+  height: var(--header-height);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  gap: var(--spacing-4);
 }
 
-.header h1 {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
+}
+
+.settings-header h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
-.nav-btn {
-  padding: 8px 16px;
-  background: rgba(255,255,255,0.2);
-  color: white;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   text-decoration: none;
-  border-radius: 4px;
-  font-size: 14px;
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+  border: none;
 }
 
-.nav-btn:hover {
-  background: rgba(255,255,255,0.3);
+.header-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
+.header-btn-secondary {
+  background: var(--color-header-btn-bg);
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-secondary:hover {
+  background: var(--color-header-btn-hover);
+  opacity: 0.9;
+}
+
+.header-btn-ghost {
+  background: transparent;
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-ghost:hover {
+  background: var(--color-header-btn-bg);
+}
+
+/* Main */
 .main-content {
   flex: 1;
-  padding: 20px;
+  padding: var(--spacing-5);
   overflow-y: auto;
 }
 
 .settings-container {
   display: flex;
-  gap: 20px;
+  gap: var(--spacing-5);
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -451,85 +523,96 @@ const loadFooterSettings = async () => {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-5);
 }
 
+.steps-section,
 .system-section {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-5);
+  box-shadow: var(--shadow-sm);
 }
 
+.steps-section h3,
 .system-section h3 {
-  margin: 0 0 15px 0;
-  color: #333;
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
 }
 
+/* System Card */
 .system-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 15px;
-  background: #f8f9fa;
-  border-radius: 6px;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  color: #333;
-  transition: all 0.2s;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+  border: 1px solid transparent;
+  margin-bottom: var(--spacing-2);
+}
+
+.system-card:last-child {
+  margin-bottom: 0;
 }
 
 .system-card:hover {
-  background: #e9ecef;
-  color: #007bff;
+  background: var(--color-gray-100);
+  color: var(--color-primary);
 }
 
 .system-card.active {
-  background: #007bff;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
 }
 
 .system-icon {
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .system-label {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
-.steps-section {
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-}
-
-.steps-section h3 {
-  margin: 0 0 15px 0;
-  color: #333;
-}
-
+/* Steps List */
 .steps-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-2);
 }
 
 .step-item {
   display: flex;
   align-items: center;
-  padding: 12px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+  gap: var(--spacing-3);
 }
 
 .step-item:hover {
-  border-color: #007bff;
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
 }
 
 .step-item.active {
-  background: #007bff;
-  color: white;
-  border-color: #007bff;
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
 }
 
 .step-number {
@@ -538,40 +621,114 @@ const loadFooterSettings = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e9ecef;
+  background: var(--color-gray-100);
   border-radius: 50%;
-  font-weight: bold;
-  margin-right: 10px;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .step-item.active .step-number {
-  background: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.25);
+  color: var(--color-text-on-primary);
 }
 
 .step-name {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast);
 }
 
+.step-item.active .step-name {
+  color: var(--color-text-on-primary);
+}
+
+/* Content Section */
 .content-section {
   flex: 1;
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  box-shadow: var(--shadow-sm);
 }
 
 .content-section h3 {
-  margin: 0 0 20px 0;
-  color: #333;
+  margin: 0 0 var(--spacing-5) 0;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
 }
 
-/* Logo设置相关样式 */
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  box-sizing: border-box;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.time-input-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.time-input-group .form-input {
+  width: 120px;
+}
+
+.time-display {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.form-hint {
+  display: block;
+  margin-top: var(--spacing-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+/* Logo Upload */
 .logo-upload {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-3);
 }
 
 .file-input {
@@ -580,20 +737,22 @@ const loadFooterSettings = async () => {
 
 .file-label {
   display: inline-block;
-  padding: 8px 16px;
-  background: #007bff;
-  color: white;
-  border-radius: 4px;
+  padding: var(--spacing-2) var(--spacing-4);
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast);
 }
 
 .file-label:hover {
-  background: #0056b3;
+  background: var(--color-primary-hover);
 }
 
 .logo-preview {
-  margin-top: 10px;
+  margin-top: var(--spacing-3);
   position: relative;
   display: inline-block;
 }
@@ -602,135 +761,111 @@ const loadFooterSettings = async () => {
   max-height: 80px;
   max-width: 200px;
   object-fit: contain;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
 }
 
 .remove-btn {
   position: absolute;
   top: -8px;
   right: -8px;
-  width: 20px;
-  height: 20px;
-  background: #dc3545;
+  width: 22px;
+  height: 22px;
+  background: var(--color-danger);
   color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background var(--transition-fast);
 }
 
 .remove-btn:hover {
-  background: #c82333;
+  background: var(--color-danger-hover);
 }
 
+/* Preview Section */
 .preview-section {
-  margin: 30px 0;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
+  margin: var(--spacing-6) 0;
+  padding: var(--spacing-5);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
 }
 
 .preview-section h4 {
-  margin: 0 0 15px 0;
-  color: #666;
+  margin: 0 0 var(--spacing-4) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
 }
 
 .header-preview {
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
-  background: #007bff;
-  border-radius: 4px;
-  color: white;
+  gap: var(--spacing-4);
+  padding: var(--spacing-4);
+  background: var(--color-primary);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-on-primary);
 }
 
 .preview-logos {
   display: flex;
-  gap: 10px;
+  gap: var(--spacing-3);
 }
 
 .preview-logo {
   height: 40px;
   object-fit: contain;
-  background: white;
-  padding: 5px;
-  border-radius: 4px;
+  background: var(--color-surface);
+  padding: var(--spacing-2);
+  border-radius: var(--radius-md);
 }
 
 .preview-title {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #333;
-}
-
-.form-input, .form-select, .form-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-size: 14px;
-  box-sizing: border-box;
-}
-
-.form-textarea {
-  resize: vertical;
-}
-
-.time-input-group {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.time-input-group .form-input {
-  width: 120px;
-}
-
-.time-display {
-  color: #666;
-  font-size: 14px;
-}
-
-.form-hint {
-  display: block;
-  margin-top: 5px;
-  color: #999;
-  font-size: 12px;
-}
-
+/* Save Button */
 .save-btn {
-  padding: 12px 30px;
-  background: #28a745;
-  color: white;
+  padding: var(--spacing-3) var(--spacing-6);
+  background: var(--color-success);
+  color: var(--color-text-on-success);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .save-btn:hover {
-  background: #218838;
+  background: var(--color-success-hover);
 }
 
-/* 底部 */
+.save-btn:active {
+  transform: scale(0.97);
+}
+
+/* Footer */
 .footer {
   text-align: center;
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-  color: #6b7280;
-  font-size: 14px;
+  padding: var(--spacing-4);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.footer p {
+  margin: 0;
 }
 </style>

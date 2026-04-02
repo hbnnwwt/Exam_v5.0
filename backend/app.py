@@ -115,14 +115,6 @@ try:
 except ImportError as e:
     print(f"FAIL - auth API registration failed: {e}")
 
-# 注册 AI 蓝图
-try:
-    from apis.ai import ai_bp
-    app.register_blueprint(ai_bp)
-    print("OK - AI API registered")
-except ImportError as e:
-    print(f"FAIL - AI API registration failed: {e}")
-
 # 注册备份管理蓝图
 try:
     from apis.common.backup import get_backup_blueprint
@@ -213,8 +205,8 @@ def serve_frontend_assets(filename):
 def serve_frontend(path):
     """服务前端页面"""
     from pathlib import Path
-    # 如果是 API 请求或docs，跳过
-    if path.startswith(('exam-api', 'api', 'export-api', 'docs')):
+    # 如果是 docs 或 API 请求，跳过（由蓝图处理）
+    if path.startswith('docs') or path.startswith('api') or path.startswith('exam-api') or path.startswith('export-api') or path.startswith('backup-api'):
         return {'error': 'Not found'}, 404
 
     # 生产环境：返回前端构建文件

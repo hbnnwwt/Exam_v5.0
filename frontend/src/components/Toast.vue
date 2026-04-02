@@ -1,5 +1,5 @@
 <template>
-  <div class="toast-container">
+  <div class="toast-container" role="status" aria-live="polite">
     <TransitionGroup name="toast">
       <div
         v-for="msg in toastStore.messages"
@@ -45,8 +45,8 @@ const iconMap = {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s ease, opacity 0.3s ease;
   min-width: 200px;
 }
 
@@ -55,28 +55,28 @@ const iconMap = {
 }
 
 .toast-success {
-  background: #28a745;
-  color: white;
+  background: var(--color-success);
+  color: var(--color-text-on-success);
 }
 
 .toast-error {
-  background: #dc3545;
-  color: white;
+  background: var(--color-danger);
+  color: var(--color-text-on-danger);
 }
 
 .toast-warning {
-  background: #ffc107;
-  color: #333;
+  background: var(--color-warning);
+  color: var(--color-text-on-warning);
 }
 
 .toast-info {
-  background: #17a2b8;
+  background: var(--color-info);
   color: white;
 }
 
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .toast-enter-from {

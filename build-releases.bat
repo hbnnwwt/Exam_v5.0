@@ -36,7 +36,7 @@ xcopy /E /Q "frontend\src" "temp_release\frontend\src\" >nul
 xcopy /E /Q "docs" "temp_release\docs\" >nul
 xcopy /Y "*.bat" "temp_release\" >nul
 xcopy /Y "README.md" "temp_release\" >nul
-xcopy /Y ".gitignore" "temp_release\" >nul
+xcopy /Y "env.example" "temp_release\" >nul
 
 :: 打包
 powershell -Command "Compress-Archive -Path 'temp_release\*' -DestinationPath '%OUTPUT_DIR%\%VERSION%-release.zip' -Force"
@@ -64,7 +64,7 @@ if not exist "python_portable" (
     xcopy /E /Q "docs" "temp_portable\docs\" >nul
     xcopy /Y "*.bat" "temp_portable\" >nul
     xcopy /Y "README.md" "temp_portable\" >nul
-    xcopy /Y ".gitignore" "temp_portable\" >nul
+    xcopy /Y "env.example" "temp_portable\" >nul
     xcopy /E /Q "python_portable" "temp_portable\python_portable\" >nul
 
     :: 打包

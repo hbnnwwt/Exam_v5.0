@@ -36,6 +36,7 @@ def init_database():
     conn.execute('CREATE TABLE IF NOT EXISTS professional_questions (id INTEGER PRIMARY KEY AUTOINCREMENT, question_index INTEGER, question_data TEXT, difficulty TEXT DEFAULT "medium", subject TEXT, is_used BOOLEAN DEFAULT 0, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, code TEXT UNIQUE, name TEXT NOT NULL, description TEXT, is_active BOOLEAN DEFAULT 1, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
     conn.execute('CREATE TABLE IF NOT EXISTS operation_logs (id INTEGER PRIMARY KEY AUTOINCREMENT, operation_type TEXT, operator TEXT, operation_details TEXT, ip_address TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
+    conn.execute('CREATE TABLE IF NOT EXISTS api_keys (id TEXT PRIMARY KEY, api_key TEXT, base_url TEXT, default_model TEXT, is_default INTEGER DEFAULT 0, updated_at TEXT DEFAULT CURRENT_TIMESTAMP, created_at TEXT DEFAULT CURRENT_TIMESTAMP)')
 
     # 插入默认考试步骤（如果不存在）
     for step in DEFAULT_EXAM_STEPS:

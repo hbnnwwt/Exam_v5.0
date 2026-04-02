@@ -82,14 +82,22 @@ def get_providers():
 @ai_bp.route('/providers', methods=['POST'])
 def save_provider():
     """保存提供商配置到数据库"""
-    from .api_keys import save_to_db
+    from .api_keys import save_to_db, load_from_db
 
     data = request.json
     provider_id = data.get('provider') or data.get('id')
+    
+    # 获取现有配置（如果存在）
+    existing = load_from_db(provider_id) or {}
+    
+    # 如果 api_key 为空字符串，保留已有的 key
+    api_key = data.get('apiKey', '')
+    if api_key == '' and existing.get('apiKey'):
+        api_key = existing['apiKey']
 
     save_to_db(
         provider_id,
-        api_key=data.get('apiKey', ''),
+        api_key=api_key,
         base_url=data.get('baseUrl', ''),
         default_model=data.get('defaultModel', ''),
         is_default=0
@@ -99,11 +107,17 @@ def save_provider():
 
 @ai_bp.route('/providers/<provider_id>', methods=['PUT'])
 def update_provider(provider_id):
-    from .api_keys import save_to_db
+    from .api_keys import save_to_db, load_from_db
+
+    existing = load_from_db(provider_id) or {}
+
+    api_key = request.json.get('apiKey', '')
+    if api_key == '' and existing.get('apiKey'):
+        api_key = existing['apiKey']
 
     save_to_db(
         provider_id,
-        api_key=request.json.get('apiKey', ''),
+        api_key=api_key,
         base_url=request.json.get('baseUrl', ''),
         default_model=request.json.get('defaultModel', ''),
         is_default=0,
@@ -114,7 +128,7 @@ def update_provider(provider_id):
         'baseUrl': request.json.get('baseUrl', ''),
         'defaultModel': request.json.get('defaultModel', ''),
         'apiFormat': request.json.get('apiFormat', 'openai'),
-        'hasApiKey': bool(request.json.get('apiKey', '')),
+        'hasApiKey': bool(api_key),
     })
 
 @ai_bp.route('/providers/<provider_id>', methods=['DELETE'])

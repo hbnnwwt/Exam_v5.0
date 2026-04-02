@@ -2,14 +2,7 @@ import os
 import json
 from flask import jsonify, request
 from . import ai_bp
-
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), '..', 'config', 'ai_providers.json')
-
-def load_providers():
-    if not os.path.exists(CONFIG_FILE):
-        return []
-    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-        return json.load(f)
+from .api_keys import load_api_key
 
 @ai_bp.route('/test', methods=['POST'])
 def test_connection():
@@ -33,18 +26,17 @@ def test_connection():
 
 @ai_bp.route('/test/<provider_id>', methods=['POST'])
 def test_connection_by_id(provider_id):
-    """AI Provider 连接测试（从配置文件读取）"""
+    """AI Provider 连接测试（ENV→DB→JSON 依次查找）"""
     try:
-        providers = load_providers()
-        provider = next((p for p in providers if p.get('id') == provider_id), None)
+        provider = load_api_key(provider_id)
 
         if not provider:
             return jsonify({'success': False, 'error': 'Provider not found'})
 
-        if not provider.get('apiKey'):
+        api_key = provider.get('apiKey', '')
+        if not api_key:
             return jsonify({'success': False, 'error': 'API Key not configured'})
 
-        api_key = provider.get('apiKey', '')
         if len(api_key) < 10:
             return jsonify({'success': False, 'error': 'Invalid API Key'})
 

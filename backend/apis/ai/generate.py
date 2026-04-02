@@ -5,6 +5,22 @@ from flask import jsonify, request
 from . import ai_bp
 from .api_keys import load_api_key
 
+def get_subject_name(subject_code):
+    """根据科目代码获取科目名称"""
+    if not subject_code:
+        return ''
+    try:
+        from apis.common.database import get_db_connection
+        conn = get_db_connection()
+        cursor = conn.execute('SELECT name FROM subjects WHERE code = ?', (subject_code,))
+        row = cursor.fetchone()
+        conn.close()
+        if row:
+            return row['name']
+    except Exception as e:
+        print(f"获取科目名称失败: {e}")
+    return subject_code  # 如果查不到，返回原代码
+
 def call_minimax(provider_config, messages):
     """调用 MiniMax API"""
     api_key = provider_config.get('apiKey')
@@ -165,7 +181,8 @@ def generate_question():
     question_type = data.get('type', 'professional')
     context = data.get('context', '')
     source_text = data.get('source_text', '')
-    subject = data.get('subject', '')  # 获取科目信息
+    subject = data.get('subject', '')  # 获取科目代码
+    subject_name = get_subject_name(subject)  # 转换为科目名称
 
     provider = load_api_key(provider_id)
     if not provider:
@@ -215,7 +232,7 @@ def generate_question():
 请生成3个难度递进的英文段落："""
         else:
             # 专业题，加入科目信息
-            subject_info = f"【科目：{subject}】" if subject else ""
+            subject_info = f"【科目：{subject_name}】" if subject_name else ""
             
             if has_multiple_questions:
                 prompt = f"""请基于以下参考内容，生成3组难度递进的专业题目：
@@ -244,7 +261,7 @@ def generate_question():
                 prompt = f"""请基于以下参考内容，生成3道差异明显的专业题目：
 {subject_info}
 参考内容：{source_text}
-科目：{subject if subject else context}
+科目：{subject_name if subject_name else context}
 
 【重要】必须生成3道差异显著的题目，难度递进：
 - 第1道（基础）：考察基本概念和定义，难度较低
@@ -275,7 +292,7 @@ def generate_question():
 请生成3个难度递进的英文段落："""
         else:
             # 专业题，加入科目信息
-            subject_info = f"【科目：{subject}】" if subject else ""
+            subject_info = f"【科目：{subject_name}】" if subject_name else ""
             prompt = f"""请生成3道关于{context}的专业题目。
 {subject_info}
 
@@ -355,7 +372,7 @@ def generate_question():
             f"Cloud computing technology enables enterprises to deploy applications more flexibly and efficiently."
         ]
     else:
-        subject_info = f"【{subject}】" if subject else ""
+        subject_info = f"【{subject_name}】" if subject_name else ""
         candidates = [
             f"{subject_info}请简述 {context} 的基本概念及核心特点。",
             f"{subject_info}解释 {context} 的工作原理，并说明其在实际应用中的优势。",

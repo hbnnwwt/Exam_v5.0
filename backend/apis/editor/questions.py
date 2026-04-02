@@ -2,11 +2,14 @@
 题库编辑 - 题目管理模块
 """
 
+import logging
 from flask import Blueprint, request
 from datetime import datetime
 import json
 from ..common.database import get_db_connection
 from ..common.utils import format_response, validate_request, calculate_pagination
+
+logger = logging.getLogger(__name__)
 
 editor_questions_bp = Blueprint('editor_questions', __name__, url_prefix='/questions')
 
@@ -142,7 +145,7 @@ def get_questions(question_type):
                 
                 result.append(question_item)
             except Exception as e:
-                print(f"格式化题目数据失败 (ID: {q['id']}): {e}")
+                logger.warning(f"格式化题目数据失败 (ID: {q['id']}): {e}")
                 continue
         
         return format_response(

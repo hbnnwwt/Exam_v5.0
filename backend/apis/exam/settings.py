@@ -2,9 +2,12 @@
 系统设置模块 - 处理考试系统的配置和设置
 """
 
+import logging
 from flask import Blueprint, request
 from ..common.database import get_db_connection
 from ..common.utils import format_response, validate_request
+
+logger = logging.getLogger(__name__)
 
 settings_bp = Blueprint('settings', __name__, url_prefix='/settings')
 
@@ -38,7 +41,7 @@ def get_settings():
             conn.close()
 
         except Exception as e:
-            print(f"获取步骤设置失败，使用空配置: {e}")
+            logger.warning(f"获取步骤设置失败，使用空配置: {e}")
             total_steps = 0
             # 如果 exam_steps 表不存在，使用默认步骤配置
             time_settings = {
@@ -105,7 +108,7 @@ def get_settings():
                         default_settings[category][key] = value
 
         except Exception as e:
-            print(f"获取数据库设置失败: {e}")
+            logger.warning(f"获取数据库设置失败: {e}")
 
         return format_response(
             success=True,
@@ -167,7 +170,7 @@ def update_settings():
                         updated_count += 1
                         
                     except Exception as e:
-                        print(f"更新设置失败 {category}.{key}: {e}")
+                        logger.warning(f"更新设置失败 {category}.{key}: {e}")
                         continue
         
         conn.commit()

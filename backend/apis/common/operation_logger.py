@@ -2,9 +2,12 @@
 操作日志模块 - 记录考生关键操作到数据库
 """
 
+import logging
 from datetime import datetime
 import os
 import sys
+
+logger = logging.getLogger(__name__)
 
 # 添加项目路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -76,7 +79,7 @@ def log_operation(student_number, operation_type, operation_detail=None, step_nu
         return True
     except Exception as e:
         # 日志记录失败不应影响主业务
-        print(f"记录操作日志失败: {e}")
+        logger.error(f"记录操作日志失败: {e}")
         return False
 
 

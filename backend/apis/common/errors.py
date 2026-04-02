@@ -1,10 +1,13 @@
 """
 错误处理模块 - 统一的错误分类和HTTP状态码
 """
+import logging
 from enum import Enum
 from flask import jsonify
 from functools import wraps
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 class ErrorCode(Enum):
     """错误代码枚举"""
@@ -164,8 +167,7 @@ def register_error_handlers(app):
                 f.write("\n")
         except:
             pass
-        print(f"[ERROR HANDLER Exception] {str(error)}")
-        print(traceback.format_exc())
+        logger.error(f"[ERROR HANDLER Exception] {str(error)}", exc_info=True)
         return handle_generic_error(error)
 
 

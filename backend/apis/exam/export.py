@@ -3,6 +3,7 @@
 提供考试数据导出功能
 """
 
+import logging
 from flask import Blueprint, jsonify, request, make_response
 from datetime import datetime
 import json
@@ -10,6 +11,8 @@ import csv
 import io
 import sys
 import os
+
+logger = logging.getLogger(__name__)
 
 # 添加项目根目录到Python路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +35,7 @@ def get_subject_map():
             subject_map[row['code']] = row['name']
         conn.close()
     except Exception as e:
-        print(f"获取科目映射失败: {e}")
+        logger.warning(f"获取科目映射失败: {e}")
     return subject_map
 
 def get_image_source(item_content, prefer_thumbnail=False):
@@ -144,7 +147,7 @@ def format_question_content_for_html(content):
                                         mime_type = 'image/webp'
                                     img_src = f'data:{mime_type};base64,{img_data}'
                             except Exception as e:
-                                print(f'读取图片文件失败: {file_to_check}, 错误: {e}')
+                                logger.warning(f'读取图片文件失败: {file_to_check}, 错误: {e}')
 
                         if img_src:
                             html_content += f'''<div class="question-image-part">
@@ -1840,8 +1843,7 @@ def export_pdf():
 
     except Exception as e:
         import traceback
-        print(f"[PDF Export Error] {str(e)}")
-        print(traceback.format_exc())
+        logger.error(f"[PDF Export Error] {str(e)}", exc_info=True)
         return format_response(
             success=False,
             error=f"导出PDF失败: {str(e)}",

@@ -2,11 +2,14 @@
 题库编辑系统API模块 - 统一管理题库编辑相关的所有API接口
 """
 
+import logging
 from flask import Blueprint, request
 from datetime import datetime
 import json
 import sys
 import os
+
+logger = logging.getLogger(__name__)
 
 # 添加项目根目录到Python路径
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -251,7 +254,7 @@ def get_questions(question_type):
 
                 result.append(question_item)
             except Exception as e:
-                print(f"格式化题目数据失败 (ID: {q['id']}): {e}")
+                logger.warning(f"格式化题目数据失败 (ID: {q['id']}): {e}")
                 continue
 
         return format_response(
@@ -1332,8 +1335,8 @@ editor_bp.register_blueprint(subjects_bp)
 try:
     from .upload import upload_bp
     editor_bp.register_blueprint(upload_bp)
-    print("OK - upload API registered")
+    logger.info("upload API registered")
 except ImportError as e:
-    print(f"INFO - upload module not found: {e}")
+    logger.info(f"upload module not found: {e}")
 
 __all__ = ['editor_bp']

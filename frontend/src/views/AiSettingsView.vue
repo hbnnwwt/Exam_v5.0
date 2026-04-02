@@ -130,7 +130,7 @@
                     v-model="providerSettings.apiKey"
                     :type="showApiKey ? 'text' : 'password'"
                     class="form-input"
-                    placeholder="请输入 API Key"
+                    :placeholder="isConfigured(activeProvider) ? '已配置，如需更新请输入新Key' : '请输入 API Key'"
                     autocomplete="off"
                   >
                   <button
@@ -349,7 +349,7 @@ const isBuiltInProvider = (provider) => {
 // 判断提供商是否已配置
 const isConfigured = (provider) => {
   const config = allProviders.value[provider]
-  return config && config.apiKey
+  return config && (config.hasApiKey || config.apiKey)
 }
 
 // 获取提供商当前配置的模型（用于卡片显示）
@@ -443,7 +443,9 @@ const saveDefaultProvider = async () => {
 const selectProvider = (provider) => {
   activeProvider.value = provider
   const config = allProviders.value[provider] || {}
-  providerSettings.apiKey = config.apiKey || ''
+  // 后端不返回 apiKey 明文，已配置的 provider 输入框保持空白
+  // 用户需输入新值才能更新，不输入则保留原值
+  providerSettings.apiKey = ''
   providerSettings.baseUrl = config.baseUrl || getDefaultBaseUrl(provider)
   providerSettings.defaultModel = config.defaultModel || getAvailableModels(provider)[0]
   testResult.value = null
@@ -452,6 +454,7 @@ const selectProvider = (provider) => {
 // 保存提供商配置
 const saveProviderSettings = async () => {
   try {
+    // apiKey 为空时保留数据库中的已有值（非空时保存新值）
     const response = await api.post('/api/ai/providers', {
       provider: activeProvider.value,
       apiKey: providerSettings.apiKey,
@@ -465,10 +468,12 @@ const saveProviderSettings = async () => {
       // 更新本地配置
       allProviders.value[activeProvider.value] = {
         ...allProviders.value[activeProvider.value],
-        apiKey: providerSettings.apiKey,
+        hasApiKey: true,
         baseUrl: providerSettings.baseUrl,
         defaultModel: providerSettings.defaultModel
       }
+      // 保存成功后清空输入框
+      providerSettings.apiKey = ''
     } else {
       toast.error(response.error || '保存失败')
     }
@@ -483,6 +488,7 @@ const testConnection = async () => {
   testResult.value = null
 
   try {
+    // apiKey 为空时后端会从 DB/ENV 读取已保存的 Key
     const response = await api.post('/api/ai/test', {
       provider: activeProvider.value,
       apiKey: providerSettings.apiKey,

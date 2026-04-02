@@ -58,6 +58,35 @@ http://localhost:5000
 - **Release 版**: Python 3.8+、Node.js 18+
 - **Portable 版**: 无需额外安装
 
+### AI Key 配置
+
+系统支持三种方式配置 AI Provider Key，优先级依次为：**环境变量 > 数据库 > JSON 模板**。
+
+#### 方式一：环境变量（推荐，生产部署用）
+
+复制 `env.example` 为 `.env`，填入真实 Key：
+
+```env
+MINIMAX_API_KEY=sk-cp-xxx
+SILICONFLOW_API_KEY=sk-xxx
+```
+
+环境变量会覆盖数据库和 JSON 模板中的配置。
+
+#### 方式二：UI 配置（便携场景用）
+
+启动系统后访问 **AI 设置** 页面，直接在界面填写 Key。配置保存到本地数据库，换电脑不丢失。
+
+#### 方式三：JSON 模板（仅默认配置，无 Key）
+
+`backend/apis/config/ai_providers.json` 包含各 Provider 的默认 base_url 和模型名，但不含真实 Key。新用户首次使用需先配置 Key。
+
+#### 安全说明
+
+- `env.example` 已包含所有 Provider 的环境变量说明
+- 发布包（release/portable）**不包含** `interview_system.db` 和 `ai_providers.json`，不会泄露真实 Key
+- 切勿将包含真实 Key 的 `ai_providers.json` 提交到 GitHub
+
 ## 项目结构
 
 ```

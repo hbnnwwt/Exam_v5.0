@@ -830,7 +830,8 @@ const loadEnabledProviders = async () => {
     const result = await getAiProviders()
     // API 返回的可能是数组或 {data: array} 对象
     const providers = result.data || result
-    enabledProviders.value = Array.isArray(providers) ? providers.filter(p => p.apiKey) : []
+    // 后端返回 hasApiKey 而不是 apiKey（安全考虑）
+    enabledProviders.value = Array.isArray(providers) ? providers.filter(p => p.hasApiKey || p.apiKey) : []
   } catch (error) {
     console.error('加载 Provider 失败:', error)
   }
@@ -926,10 +927,10 @@ const getActiveProvider = async () => {
     if (defaultResponse && defaultResponse.id) {
       return defaultResponse.id
     }
-    // 没有默认 provider，使用第一个启用的
+    // 没有默认 provider，使用第一个已配置的（hasApiKey 为 true）
     const providers = await getAiProviders()
     const list = Array.isArray(providers) ? providers : (providers.data || [])
-    const enabled = list.find(p => p.enabled)
+    const enabled = list.find(p => p.hasApiKey || p.apiKey)
     return enabled ? enabled.id : null
   } catch (error) {
     console.error('获取 Provider 失败:', error)

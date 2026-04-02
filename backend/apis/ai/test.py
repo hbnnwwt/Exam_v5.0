@@ -6,12 +6,24 @@ from .api_keys import load_api_key
 
 @ai_bp.route('/test', methods=['POST'])
 def test_connection():
-    """AI Provider 连接测试（从请求体获取配置）"""
+    """AI Provider 连接测试（从请求体获取配置，key为空时从DB/ENV读取）"""
     try:
         data = request.json or {}
+        provider_id = data.get('provider', '')
         api_key = data.get('apiKey', '')
         base_url = data.get('baseUrl', '')
         model = data.get('defaultModel', '')
+        
+        # 如果 api_key 为空且 provider_id 存在，尝试从 DB/ENV 读取
+        if not api_key and provider_id:
+            provider = load_api_key(provider_id)
+            if provider:
+                api_key = provider.get('apiKey', '')
+                # 使用 DB/ENV 中的配置填充其他字段
+                if not base_url:
+                    base_url = provider.get('baseUrl', '')
+                if not model:
+                    model = provider.get('defaultModel', '')
 
         if not api_key:
             return jsonify({'success': False, 'error': 'API Key 未配置'})

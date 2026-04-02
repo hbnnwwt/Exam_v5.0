@@ -219,14 +219,19 @@ def serve_frontend(path):
     return {'message': 'Frontend not built. Run: cd frontend && npm run build'}, 404
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('port', nargs='?', type=int, default=5000)
+    args = parser.parse_args()
+
     print("=" * 40)
     print("Backend for Graduate Interview System")
     print(f"Environment: {'Development' if app.config['DEBUG'] else 'Production'}")
-    print(f"URL: http://localhost:5000")
+    print(f"URL: http://localhost:{args.port}")
     print("=" * 40)
 
     app.run(
         host='0.0.0.0',
-        port=5000,
+        port=args.port,
         debug=app.config['DEBUG']
     )

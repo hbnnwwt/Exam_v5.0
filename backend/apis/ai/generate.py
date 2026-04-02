@@ -3,26 +3,7 @@ import os
 import requests
 from flask import jsonify, request
 from . import ai_bp
-
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), '..', 'config', 'ai_providers.json')
-
-def load_providers():
-    if not os.path.exists(CONFIG_FILE):
-        return []
-    with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-        # 兼容新格式 {providers: [...], defaultProvider: ...}
-        if isinstance(data, dict):
-            return data.get('providers', [])
-        # 兼容旧格式 [...]
-        return data
-
-def get_provider_config(provider_id):
-    providers = load_providers()
-    for p in providers:
-        if p.get('id') == provider_id:
-            return p
-    return None
+from .api_keys import load_api_key
 
 def call_minimax(provider_config, messages):
     """调用 MiniMax API"""
@@ -186,7 +167,7 @@ def generate_question():
     source_text = data.get('source_text', '')
     subject = data.get('subject', '')  # 获取科目信息
 
-    provider = get_provider_config(provider_id)
+    provider = load_api_key(provider_id)
     if not provider:
         return jsonify({'error': 'Provider not configured'}), 400
 
@@ -393,7 +374,7 @@ def batch_generate():
     count = data.get('count', 5)
     questions_per_set = data.get('questionsPerSet', 1)
 
-    provider = get_provider_config(provider_id)
+    provider = load_api_key(provider_id)
     if not provider:
         return jsonify({'error': 'Provider not configured'}), 400
 

@@ -35,11 +35,6 @@ const routes = [
     path: '/settings/ai',
     name: 'AiSettings',
     component: () => import('@/views/AiSettingsView.vue')
-  },
-  {
-    path: '/subjects',
-    name: 'Subjects',
-    component: () => import('@/views/SubjectsView.vue')
   }
 ]
 

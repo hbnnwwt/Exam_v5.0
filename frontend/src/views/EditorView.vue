@@ -254,55 +254,130 @@
     </main>
 
     <!-- 科目编辑弹窗 -->
-    <div v-if="showSubjectModal" class="modal-overlay" @click="closeSubjectModal">
-      <div class="modal" @click.stop>
+    <div v-if="showSubjectModal" class="modal-overlay subject-modal-overlay" @click="closeSubjectModal" role="dialog" aria-modal="true" :aria-labelledby="isEditingSubject ? 'subject-edit-title' : 'subject-add-title'">
+      <div class="modal" @click.stop @keydown.enter="saveSubject">
         <div class="modal-header">
-          <h3>{{ isEditingSubject ? '编辑科目' : '添加科目' }}</h3>
-          <button class="modal-close" @click="closeSubjectModal">&times;</button>
+          <div class="modal-title-group">
+            <svg v-if="!isEditingSubject" class="modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <svg v-else class="modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            <h3 :id="isEditingSubject ? 'subject-edit-title' : 'subject-add-title'">
+              {{ isEditingSubject ? '编辑科目' : '添加科目' }}
+            </h3>
+          </div>
+          <button class="modal-close" @click="closeSubjectModal" aria-label="关闭">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label>科目代码</label>
+            <label for="subject-code" class="form-label">
+              科目代码 <span class="required">*</span>
+              <span v-if="isEditingSubject" class="field-badge">不可修改</span>
+            </label>
             <input
+              id="subject-code"
               v-model="subjectForm.code"
               type="text"
               class="form-input"
+              :class="{ error: subjectValidation.code }"
               placeholder="例如: c_language"
               :disabled="isEditingSubject"
+              autocomplete="off"
+              aria-describedby="code-hint"
             >
-            <small class="form-hint">科目代码用于系统内部识别，建议使用英文和下划线</small>
+            <span id="code-hint" class="form-hint">系统内部识别码，建议用英文和下划线</span>
+            <span v-if="subjectValidation.code" class="form-error" role="alert">{{ subjectValidation.code }}</span>
           </div>
           <div class="form-group">
-            <label>科目名称</label>
+            <label for="subject-name" class="form-label">
+              科目名称 <span class="required">*</span>
+            </label>
             <input
+              id="subject-name"
               v-model="subjectForm.name"
               type="text"
               class="form-input"
+              :class="{ error: subjectValidation.name }"
               placeholder="例如: C语言"
+              autocomplete="off"
+              maxlength="50"
             >
+            <span v-if="subjectValidation.name" class="form-error" role="alert">{{ subjectValidation.name }}</span>
           </div>
           <div class="form-group">
-            <label>描述</label>
+            <div class="label-row">
+              <label for="subject-desc" class="form-label">描述</label>
+              <span class="char-count">{{ subjectForm.description.length }}/200</span>
+            </div>
             <textarea
+              id="subject-desc"
               v-model="subjectForm.description"
-              rows="3"
+              rows="2"
               class="form-textarea"
-              placeholder="请输入科目描述..."
+              placeholder="简要描述科目内容..."
+              maxlength="200"
             ></textarea>
           </div>
-          <div class="form-group" v-if="isEditingSubject">
-            <label>
-              <input v-model="subjectForm.is_active" type="checkbox">
+          <div class="form-group checkbox-group" v-if="isEditingSubject">
+            <label class="checkbox-label">
+              <input
+                v-model="subjectForm.is_active"
+                type="checkbox"
+                class="checkbox-input"
+              >
+              <span class="checkbox-custom"></span>
               启用此科目
             </label>
           </div>
+          <p class="form-hint-inline">按 Enter 键快速提交</p>
         </div>
         <div class="modal-footer">
           <button @click="closeSubjectModal" class="cancel-btn">取消</button>
-          <button @click="saveSubject" class="save-btn">保存</button>
+          <button @click="saveSubject" class="save-btn" :disabled="subjectSaving">
+            <span v-if="subjectSaving" class="btn-loading"></span>
+            {{ subjectSaving ? '保存中...' : '保存' }}
+          </button>
         </div>
       </div>
     </div>
+
+    <!-- 删除确认对话框 -->
+    <Transition name="modal">
+      <div
+        v-if="showDeleteConfirm"
+        class="confirm-overlay modal"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-title"
+        aria-describedby="confirm-desc"
+      >
+        <div class="confirm-dialog">
+          <div class="confirm-header">
+            <svg class="confirm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+            <h3 id="confirm-title">确认删除</h3>
+          </div>
+          <div class="confirm-body">
+            <p id="confirm-desc">
+              确定要删除科目「<strong>{{ pendingDeleteSubject?.name }}</strong>」吗？<br>
+              此操作不可恢复。
+            </p>
+          </div>
+          <div class="confirm-footer">
+            <button @click="cancelDelete" class="confirm-btn cancel">取消</button>
+            <button @click="confirmDelete" class="confirm-btn danger">删除</button>
+          </div>
+        </div>
+      </div>
+    </Transition>
 
     <!-- 批量修改科目弹窗 -->
     <div v-if="showBatchSubjectModal" class="modal-overlay" @click="showBatchSubjectModal = false">
@@ -768,6 +843,11 @@ const currentType = computed(() => currentTab.value === 'subjects' ? 'profession
 const subjectList = ref([])
 const showSubjectModal = ref(false)
 const isEditingSubject = ref(false)
+const subjectSaving = ref(false)
+const subjectValidation = reactive({
+  code: '',
+  name: ''
+})
 const subjectForm = reactive({
   id: null,
   code: '',
@@ -775,6 +855,9 @@ const subjectForm = reactive({
   description: '',
   is_active: true
 })
+// 删除确认对话框
+const showDeleteConfirm = ref(false)
+const pendingDeleteSubject = ref(null)
 
 // 切换Tab
 const switchTab = (tab) => {
@@ -1188,6 +1271,8 @@ const loadSubjectList = async () => {
 
 // 打开科目弹窗
 const openSubjectModal = (subject = null) => {
+  subjectValidation.code = ''
+  subjectValidation.name = ''
   if (subject) {
     isEditingSubject.value = true
     subjectForm.id = subject.id
@@ -1218,11 +1303,18 @@ const editSubject = (subject) => {
 
 // 保存科目
 const saveSubject = async () => {
-  if (!subjectForm.code || !subjectForm.name) {
-    toast.error('请填写科目代码和名称')
+  subjectValidation.code = ''
+  subjectValidation.name = ''
+  if (!subjectForm.code.trim()) {
+    subjectValidation.code = '请输入科目代码'
+    return
+  }
+  if (!subjectForm.name.trim()) {
+    subjectValidation.name = '请输入科目名称'
     return
   }
 
+  subjectSaving.value = true
   try {
     let response
     if (isEditingSubject.value) {
@@ -1250,6 +1342,8 @@ const saveSubject = async () => {
     }
   } catch (error) {
     toast.error('操作失败: ' + error.message)
+  } finally {
+    subjectSaving.value = false
   }
 }
 
@@ -1269,11 +1363,15 @@ const toggleSubject = async (subject) => {
 }
 
 // 删除科目
-const deleteSubject = async (subject) => {
-  if (!confirm(`确定要删除科目"${subject.name}"吗？`)) {
-    return
-  }
+const deleteSubject = (subject) => {
+  pendingDeleteSubject.value = subject
+  showDeleteConfirm.value = true
+}
 
+// 确认删除
+const confirmDelete = async () => {
+  if (!pendingDeleteSubject.value) return
+  const subject = pendingDeleteSubject.value
   try {
     const response = await api.delete(`/api/editor/subjects/${subject.id}`)
     if (response.success) {
@@ -1285,7 +1383,16 @@ const deleteSubject = async (subject) => {
     }
   } catch (error) {
     toast.error('删除失败: ' + error.message)
+  } finally {
+    showDeleteConfirm.value = false
+    pendingDeleteSubject.value = null
   }
+}
+
+// 取消删除
+const cancelDelete = () => {
+  showDeleteConfirm.value = false
+  pendingDeleteSubject.value = null
 }
 
 // 批量导入弹窗状态
@@ -2715,25 +2822,26 @@ onUnmounted(() => {
 }
 
 .subjects-toolbar {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-5);
 }
 
 .subjects-list {
-  background: white;
-  border-radius: 8px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
   overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .subject-item {
   display: flex;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s;
+  padding: var(--spacing-5);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: background var(--transition-fast);
 }
 
 .subject-item:hover {
-  background: #f8f9fa;
+  background: var(--color-gray-50);
 }
 
 .subject-item.inactive {
@@ -2746,83 +2854,512 @@ onUnmounted(() => {
 
 .subject-info {
   flex: 1;
+  min-width: 0;
 }
 
 .subject-name {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .subject-code {
-  font-size: 13px;
-  color: #666;
-  margin-top: 4px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-1);
 }
 
 .subject-desc {
-  font-size: 13px;
-  color: #999;
-  margin-top: 4px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: var(--spacing-1);
 }
 
 .subject-stats {
   display: flex;
-  gap: 10px;
-  margin-right: 20px;
+  gap: var(--spacing-2);
+  margin-right: var(--spacing-5);
 }
 
 .stat-badge {
-  padding: 4px 10px;
-  background: #e9ecef;
-  border-radius: 12px;
-  font-size: 13px;
-  color: #495057;
+  padding: var(--spacing-1) var(--spacing-3);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 13px;
-  background: #dc3545;
-  color: white;
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-danger-light);
+  color: var(--color-danger);
 }
 
 .status-badge.active {
-  background: #28a745;
+  background: var(--color-success-light);
+  color: var(--color-success);
 }
 
 .subject-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--spacing-2);
+  flex-shrink: 0;
 }
 
 .subject-tip {
-  color: #6c757d;
-  font-size: 13px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 }
 
 .action-btn {
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
-  font-size: 13px;
+  transition: all var(--transition-fast);
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.action-btn svg {
+  width: 14px;
+  height: 14px;
 }
 
 .action-btn.edit {
-  background: #007bff;
-  color: white;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.action-btn.edit:hover {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
 }
 
 .action-btn.toggle {
-  background: #ffc107;
-  color: #333;
+  background: var(--color-warning-light);
+  color: var(--color-warning-text);
+}
+
+.action-btn.toggle:hover {
+  background: var(--color-warning);
+  color: var(--color-text-on-warning);
 }
 
 .action-btn.delete {
-  background: #dc3545;
-  color: white;
+  background: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.action-btn.delete:hover {
+  background: var(--color-danger);
+  color: var(--color-text-on-danger);
+}
+
+/* 科目弹窗样式 */
+.subject-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  z-index: var(--z-modal);
+  backdrop-filter: blur(4px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-5) var(--spacing-6);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.modal-title-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: all var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-primary-light);
+  color: var(--color-text-primary);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-body {
+  padding: var(--spacing-6);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-5);
+}
+
+.form-label {
+  display: block;
+  margin-bottom: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+}
+
+.required {
+  color: var(--color-danger);
+}
+
+.field-badge {
+  margin-left: var(--spacing-2);
+  padding: 2px 6px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+}
+
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-2);
+}
+
+.char-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.form-hint-inline {
+  margin: var(--spacing-3) 0 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
+}
+
+.form-input.error,
+.form-textarea.error {
+  border-color: var(--color-danger);
+}
+
+.form-input:disabled {
+  background: var(--color-gray-100);
+  cursor: not-allowed;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.form-hint {
+  display: block;
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.form-error {
+  display: block;
+  margin-top: var(--spacing-1);
+  font-size: var(--font-size-xs);
+  color: var(--color-danger);
+}
+
+/* 复选框 */
+.checkbox-group {
+  margin-top: var(--spacing-4);
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+}
+
+.checkbox-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-input:focus-visible + .checkbox-custom {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.cancel-btn,
+.save-btn {
+  padding: var(--spacing-3) var(--spacing-5);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cancel-btn:focus-visible,
+.save-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.cancel-btn {
+  background: var(--color-gray-200);
+  color: var(--color-text-primary);
+}
+
+.cancel-btn:hover {
+  background: var(--color-gray-300);
+}
+
+.save-btn {
+  background: var(--color-success);
+  color: var(--color-text-on-success);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.save-btn:hover {
+  background: var(--color-success-hover);
+}
+
+.save-btn:disabled {
+  background: var(--color-gray-300);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.btn-loading {
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 弹窗过渡动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity var(--transition-base);
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+/* 删除确认对话框 */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--color-modal-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  z-index: var(--z-modal);
+  backdrop-filter: blur(4px);
+}
+
+.confirm-dialog {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-xl);
+}
+
+.confirm-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-5) var(--spacing-6);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.confirm-icon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-danger);
+  flex-shrink: 0;
+}
+
+.confirm-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.confirm-body {
+  padding: var(--spacing-5) var(--spacing-6);
+}
+
+.confirm-body p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+.confirm-body strong {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.confirm-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.confirm-btn {
+  padding: var(--spacing-2) var(--spacing-5);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.confirm-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.confirm-btn.cancel {
+  background: var(--color-gray-200);
+  color: var(--color-text-primary);
+}
+
+.confirm-btn.cancel:hover {
+  background: var(--color-gray-300);
+}
+
+.confirm-btn.danger {
+  background: var(--color-danger);
+  color: var(--color-text-on-danger);
+}
+
+.confirm-btn.danger:hover {
+  background: var(--color-danger-hover);
 }
 
 /* 分页样式 */

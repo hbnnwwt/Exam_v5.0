@@ -1,0 +1,609 @@
+/**
+ * Help Docs CSS Design System
+ * Shared styles for all help documentation pages
+ */
+
+/* ============================================================
+   1. CSS Variables (Design Tokens)
+   ============================================================ */
+:root {
+  /* Colors */
+  --primary: #4f46e5;
+  --primary-light: #818cf8;
+  --primary-dark: #3730a3;
+  --accent: #06b6d4;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+
+  /* Background & Surface */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+
+  /* Text */
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  /* Border */
+  --border: #e2e8f0;
+
+  /* Shadow */
+  --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+  /* Border Radius */
+  --radius: 16px;
+  --radius-sm: 8px;
+
+  /* Sidebar */
+  --sidebar-width: 260px;
+}
+
+/* ============================================================
+   2. Reset & Base Styles
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Noto Sans SC', 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ============================================================
+   3. Page Layout
+   ============================================================ */
+.page-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ============================================================
+   4. Sidebar
+   ============================================================ */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--sidebar-width);
+  height: 100vh;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header .logo-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.sidebar-header .site-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+}
+
+.sidebar-nav li a {
+  display: block;
+  padding: 10px 16px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.sidebar-nav li a:hover {
+  color: var(--primary);
+  background-color: rgba(79, 70, 229, 0.06);
+  text-decoration: none;
+}
+
+.sidebar-nav li a.active {
+  color: var(--primary);
+  background-color: rgba(79, 70, 229, 0.1);
+  border-left-color: var(--primary);
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.sidebar-footer .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.sidebar-footer .version-text {
+  display: block;
+  margin-top: 4px;
+}
+
+/* ============================================================
+   5. Content Area
+   ============================================================ */
+.content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  padding: 32px 40px;
+  min-width: 0;
+}
+
+/* ============================================================
+   6. Page Title Card (Hero)
+   ============================================================ */
+.page-title-card {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+  border-radius: var(--radius);
+  padding: 40px;
+  margin-bottom: 32px;
+  color: var(--surface);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.page-title-card .card-icon {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.page-title-card .card-content {
+  flex: 1;
+}
+
+.page-title-card .card-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.page-title-card .card-subtitle {
+  font-size: 1rem;
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+/* ============================================================
+   7. Section Card
+   ============================================================ */
+.section-card {
+  background-color: var(--surface);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+}
+
+.section-card .section-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--primary);
+  margin-bottom: 12px;
+}
+
+.section-card .section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-card .section-body {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.section-card .section-body p {
+  margin-bottom: 12px;
+}
+
+.section-card .section-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   8. Screenshot Display
+   ============================================================ */
+.screenshot-wrap {
+  text-align: center;
+  margin: 24px 0;
+}
+
+.screenshot-wrap img {
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  max-width: 100%;
+}
+
+.screenshot-caption {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* ============================================================
+   9. Info Box
+   ============================================================ */
+.info-box {
+  background-color: #eff6ff;
+  border-left: 4px solid #4f46e5;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.info-box strong {
+  color: var(--primary);
+}
+
+/* ============================================================
+   10. Warning Box
+   ============================================================ */
+.warning-box {
+  background-color: #fff7ed;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.warning-box strong {
+  color: var(--warning);
+}
+
+/* ============================================================
+   11. Tip Box
+   ============================================================ */
+.tip-box {
+  background-color: #f0fdf4;
+  border-left: 4px solid #10b981;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.tip-box strong {
+  color: var(--success);
+}
+
+/* ============================================================
+   12. Step List (Ordered)
+   ============================================================ */
+.step-list {
+  background-color: #fffbeb;
+  border-left: 4px solid #ffc107;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 20px 16px 40px;
+  margin: 20px 0;
+  list-style: none;
+  counter-reset: step-counter;
+}
+
+.step-list li {
+  counter-increment: step-counter;
+  position: relative;
+  margin-bottom: 12px;
+  padding-left: 12px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.step-list li:last-child {
+  margin-bottom: 0;
+}
+
+.step-list li::before {
+  content: counter(step-counter);
+  position: absolute;
+  left: -28px;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  background-color: #ffc107;
+  color: var(--text);
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   13. Feature List (Unordered)
+   ============================================================ */
+.feature-list {
+  background-color: #f8f9fa;
+  border-left: 4px solid #28a745;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 16px 20px 16px 40px;
+  margin: 20px 0;
+  list-style: none;
+}
+
+.feature-list li {
+  position: relative;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.feature-list li:last-child {
+  margin-bottom: 0;
+}
+
+.feature-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: #28a745;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   14. Tables
+   ============================================================ */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+thead {
+  background-color: var(--primary);
+  color: var(--surface);
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.025em;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: var(--surface);
+}
+
+tbody tr:hover {
+  background-color: rgba(79, 70, 229, 0.04);
+}
+
+tbody td {
+  padding: 12px 16px;
+  color: var(--text-secondary);
+}
+
+tbody td:first-child {
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* ============================================================
+   15. Keyboard Shortcut (kbd)
+   ============================================================ */
+kbd {
+  display: inline-block;
+  padding: 3px 8px;
+  font-family: 'Inter', monospace;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text);
+  background-color: #f1f5f9;
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================================
+   16. Back to Top Link
+   ============================================================ */
+.back-top-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 16px;
+}
+
+.back-top-link:hover {
+  text-decoration: none;
+  color: var(--primary-dark);
+}
+
+.back-top-link svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================================
+   17. Document Footer
+   ============================================================ */
+.doc-footer {
+  text-align: center;
+  padding: 32px 0;
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   18. Hamburger (Mobile Only)
+   ============================================================ */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  width: 44px;
+  height: 44px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.hamburger svg {
+  width: 24px;
+  height: 24px;
+  color: var(--text);
+}
+
+/* ============================================================
+   22. Responsive (Mobile)
+   ============================================================ */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .content {
+    margin-left: 0;
+    padding: 24px 20px;
+    padding-top: 68px;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .page-title-card {
+    padding: 24px;
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .page-title-card .card-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .page-title-card .card-title {
+    font-size: 1.35rem;
+  }
+
+  .section-card {
+    padding: 20px;
+  }
+
+  table {
+    font-size: 0.8rem;
+  }
+
+  thead th,
+  tbody td {
+    padding: 10px 12px;
+  }
+}

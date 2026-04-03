@@ -122,12 +122,20 @@ def batch_export_questions():
         for q in questions:
             try:
                 question_data = json.loads(q['question_data']) if q['question_data'] else []
-                # 提取文本内容
                 text_content = ''
                 if isinstance(question_data, list):
-                    for item in question_data:
-                        if item[0] == 'txt' and item[1]:
-                            text_content += item[1] + '\n'
+                    if question_data and isinstance(question_data[0], dict) and 'content' in question_data[0]:
+                        # 套题格式: [{'content': [['txt', 'text']]}, ...]
+                        for sub_item in question_data:
+                            if isinstance(sub_item, dict) and 'content' in sub_item:
+                                for content_item in sub_item['content']:
+                                    if isinstance(content_item, list) and len(content_item) >= 2 and content_item[0] == 'txt' and content_item[1]:
+                                        text_content += content_item[1] + '\n'
+                    else:
+                        # 扁平格式: [['txt', 'text'], ['img', {...}]]
+                        for item in question_data:
+                            if isinstance(item, list) and len(item) >= 2 and item[0] == 'txt' and item[1]:
+                                text_content += item[1] + '\n'
 
                 if text_content:
                     export_lines.append(text_content.strip())

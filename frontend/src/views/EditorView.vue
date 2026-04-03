@@ -405,144 +405,227 @@
     </div>
 
     <!-- 添加/编辑题目弹窗 -->
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal" @click.stop>
-        <div class="modal-header">
-          <h3>{{ isEditing ? '编辑题目' : '添加题目' }}</h3>
-          <button class="modal-close" @click="closeModal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="form-group" v-if="currentType === 'professional'">
-            <label>科目</label>
-            <select v-model="formData.subject" class="form-select">
-              <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
-                {{ subject.label }}
-              </option>
-            </select>
-          </div>
-
-          <div class="form-group" v-if="currentType === 'professional'">
-            <label>难度</label>
-            <select v-model="formData.difficulty" class="form-select">
-              <option value="easy">简单</option>
-              <option value="medium">中等</option>
-              <option value="hard">困难</option>
-            </select>
-          </div>
-
-          <!-- 题目列表（全部按套题处理） -->
-          <div class="sub-questions-container">
-            <div class="sub-question-item" v-for="(sub, index) in subQuestions" :key="sub.id">
-              <div class="sub-question-header">
-                <span class="sub-question-number">题目 {{ index + 1 }}</span>
-                <button type="button" @click="removeSubQuestion(index)" class="btn-remove-sub" v-if="subQuestions.length > 1">删除</button>
-              </div>
-              <textarea
-                v-model="sub.text"
-                rows="4"
-                class="form-textarea"
-                placeholder="请输入题目内容，或点击上方 AI 按钮生成..."
-              ></textarea>
-
-              <!-- AI 生成控制行 -->
-              <div class="ai-toolbar" v-if="currentTab !== 'subjects'">
-                <button
-                  @click="generateWithAIForSubQuestion(index)"
-                  class="ai-btn ai-btn-primary"
-                  type="button"
-                  :disabled="aiGenerating"
-                >
-                  <svg v-if="!aiGenerating" class="ai-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                  </svg>
-                  <svg v-else class="ai-btn-icon ai-btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                  </svg>
-                  <span>{{ aiGenerating ? '生成中...' : 'AI 生成' }}</span>
-                </button>
-                <button
-                  v-if="aiCandidates.length > 0 && currentGeneratingIndex === index"
-                  @click="regenerateWithAIForSubQuestion(index)"
-                  class="ai-btn ai-btn-secondary"
-                  type="button"
-                  :disabled="aiGenerating"
-                >
-                  <svg v-if="!aiGenerating" class="ai-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M1 4v6h6M23 20v-6h-6"/>
-                    <path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/>
-                  </svg>
-                  <svg v-else class="ai-btn-icon ai-btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-                  </svg>
-                  <span>{{ aiGenerating ? '生成中...' : '重新生成' }}</span>
-                </button>
-              </div>
-
-              <!-- AI 候选结果 - 只显示在当前生成的子题下方 -->
-              <div v-if="aiCandidates.length > 0 && currentGeneratingIndex === index" class="ai-candidates-panel">
-                <div class="candidates-header">
-                  <span class="candidates-title">AI 生成结果</span>
-                  <span class="candidates-count">{{ aiCandidates.length }} 个候选</span>
-                </div>
-                <div class="candidates-list">
-                  <div
-                    v-for="(candidate, idx) in aiCandidates"
-                    :key="idx"
-                    class="candidate-card"
-                    :class="{ selected: selectedCandidateIdx === idx }"
-                    @click="selectCandidate(idx)"
-                  >
-                    <div class="candidate-header">
-                      <span class="candidate-index">{{ idx + 1 }}</span>
-                      <span class="candidate-label" :class="'label-' + idx">
-                        {{ currentType === 'translation' ? getTranslationLabel(idx) : getQuestionLabel(idx) }}
-                      </span>
-                    </div>
-                    <p class="candidate-text">{{ candidate }}</p>
-                  </div>
-                </div>
-                <div class="candidates-actions">
-                  <button type="button" class="candidates-use-btn" @click="applySelectedCandidate">使用选中</button>
-                  <button type="button" class="candidates-cancel-btn" @click="dismissCandidates">取消</button>
-                </div>
-              </div>
-
-              <!-- AI 生成错误 - 只显示在当前生成的子题下方 -->
-              <div v-if="aiGeneratingError && currentGeneratingIndex === index" class="ai-error">
-                <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="8" x2="12" y2="12"/>
-                  <line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                <span>{{ aiGeneratingError }}</span>
-                <button type="button" class="error-dismiss" @click="aiGeneratingError = ''; currentGeneratingIndex = -1">×</button>
-              </div>
-              <!-- 子题图片列表 -->
-              <div class="sub-question-images">
-                <div v-for="(img, imgIndex) in getSubQuestionImages(sub.contentItems)" :key="imgIndex" class="image-preview">
-                  <img :src="img.thumb" alt="题目图片" @click="openImagePreview(img.src)">
-                  <button type="button" @click.stop="removeSubQuestionImage(index, img.contentIndex)" class="btn-remove-image">×</button>
-                </div>
-              </div>
-              <button type="button" @click="triggerImageUpload(index)" class="btn-upload">
-                添加图片
-              </button>
+    <Transition name="modal-fade">
+      <div v-if="showModal" class="modal-overlay" @click="closeModal">
+        <div class="modal" @click.stop role="dialog" aria-modal="true" :aria-labelledby="'modal-title-' + (isEditing ? 'edit' : 'add')">
+          <div class="modal-header">
+            <div class="modal-title-group">
+              <svg v-if="isEditing" class="modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+              <svg v-else class="modal-title-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="16"/>
+                <line x1="8" y1="12" x2="16" y2="12"/>
+              </svg>
+              <h3 :id="'modal-title-' + (isEditing ? 'edit' : 'add')">{{ isEditing ? '编辑题目' : '添加题目' }}</h3>
             </div>
-            <!-- 明显的添加题目按钮 -->
-            <button type="button" @click="addSubQuestion" class="btn-add-sub-large">
-              + 添加题目
+            <button class="modal-close" @click="closeModal" aria-label="关闭弹窗">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
             </button>
           </div>
+          <div class="modal-body">
+            <div class="form-row" v-if="currentType === 'professional'">
+              <div class="form-group">
+                <label class="form-label" for="subject-select">科目</label>
+                <div class="select-wrapper">
+                  <select id="subject-select" v-model="formData.subject" class="form-select">
+                    <option v-for="subject in subjects" :key="subject.value" :value="subject.value">
+                      {{ subject.label }}
+                    </option>
+                  </select>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="difficulty-select">难度</label>
+                <div class="select-wrapper">
+                  <select id="difficulty-select" v-model="formData.difficulty" class="form-select">
+                    <option value="easy">简单</option>
+                    <option value="medium">中等</option>
+                    <option value="hard">困难</option>
+                  </select>
+                  <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
 
-          <!-- 隐藏的文件输入 -->
-          <input type="file" ref="imageInput" @change="handleImageSelect" accept="image/*" style="display: none">
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" @click="closeModal">取消</button>
-          <button class="btn-save" @click="saveQuestion">{{ isEditing ? '保存' : '添加' }}</button>
+            <!-- 题目列表（全部按套题处理） -->
+            <div class="sub-questions-container">
+              <TransitionGroup name="sub-question" tag="div" class="sub-questions-list">
+                <div class="sub-question-item" v-for="(sub, index) in subQuestions" :key="sub.id">
+                  <div class="sub-question-header">
+                    <div class="sub-question-title">
+                      <svg class="sub-question-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                      </svg>
+                      <span class="sub-question-number">题目 {{ index + 1 }}</span>
+                    </div>
+                    <button type="button" @click="removeSubQuestion(index)" class="btn-remove-sub" v-if="subQuestions.length > 1" aria-label="删除此题目">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                      </svg>
+                      删除
+                    </button>
+                  </div>
+                  <textarea
+                    :id="'sub-text-' + sub.id"
+                    v-model="sub.text"
+                    rows="4"
+                    class="form-textarea"
+                    :aria-label="'题目 ' + (index + 1) + ' 内容'"
+                    placeholder="请输入题目内容，或点击上方 AI 按钮生成..."
+                  ></textarea>
+
+                  <!-- AI 生成控制行 -->
+                  <div class="ai-toolbar" v-if="currentTab !== 'subjects'">
+                    <button
+                      @click="generateWithAIForSubQuestion(index)"
+                      class="ai-btn ai-btn-primary"
+                      type="button"
+                      :disabled="aiGenerating"
+                    >
+                      <svg v-if="!aiGenerating" class="ai-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                      </svg>
+                      <svg v-else class="ai-btn-icon ai-btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"/>
+                      </svg>
+                      <span>{{ aiGenerating ? '生成中...' : 'AI 生成' }}</span>
+                    </button>
+                    <button
+                      v-if="aiCandidates.length > 0 && currentGeneratingIndex === index"
+                      @click="regenerateWithAIForSubQuestion(index)"
+                      class="ai-btn ai-btn-secondary"
+                      type="button"
+                      :disabled="aiGenerating"
+                    >
+                      <svg v-if="!aiGenerating" class="ai-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 4v6h6M23 20v-6h-6"/>
+                        <path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/>
+                      </svg>
+                      <svg v-else class="ai-btn-icon ai-btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"/>
+                      </svg>
+                      <span>{{ aiGenerating ? '生成中...' : '重新生成' }}</span>
+                    </button>
+                  </div>
+
+                  <!-- AI 候选结果 - 只显示在当前生成的子题下方 -->
+                  <Transition name="candidates-slide">
+                    <div v-if="aiCandidates.length > 0 && currentGeneratingIndex === index" class="ai-candidates-panel">
+                      <div class="candidates-header">
+                        <svg class="candidates-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+                        </svg>
+                        <span class="candidates-title">AI 生成结果</span>
+                        <span class="candidates-count">{{ aiCandidates.length }} 个候选</span>
+                      </div>
+                      <div class="candidates-list">
+                        <div
+                          v-for="(candidate, idx) in aiCandidates"
+                          :key="idx"
+                          class="candidate-card"
+                          :class="{ selected: selectedCandidateIdx === idx }"
+                          @click="selectCandidate(idx)"
+                          @keydown.enter.prevent="selectCandidate(idx)"
+                          @keydown.space.prevent="selectCandidate(idx)"
+                          role="button"
+                          tabindex="0"
+                        >
+                          <div class="candidate-header">
+                            <span class="candidate-index">{{ idx + 1 }}</span>
+                            <span class="candidate-label" :class="'label-' + idx">
+                              {{ currentType === 'translation' ? getTranslationLabel(idx) : getQuestionLabel(idx) }}
+                            </span>
+                          </div>
+                          <p class="candidate-text">{{ candidate }}</p>
+                        </div>
+                      </div>
+                      <div class="candidates-actions">
+                        <button type="button" class="candidates-use-btn" @click="applySelectedCandidate">使用选中</button>
+                        <button type="button" class="candidates-cancel-btn" @click="dismissCandidates">取消</button>
+                      </div>
+                    </div>
+                  </Transition>
+
+                  <!-- AI 生成错误 - 只显示在当前生成的子题下方 -->
+                  <div v-if="aiGeneratingError && currentGeneratingIndex === index" class="ai-error">
+                    <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="8" x2="12" y2="12"/>
+                      <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span>{{ aiGeneratingError }}</span>
+                    <button type="button" class="error-dismiss" @click="aiGeneratingError = ''; currentGeneratingIndex = -1" aria-label="关闭错误提示">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <!-- 子题图片列表 -->
+                  <div class="sub-question-images" v-if="getSubQuestionImages(sub.contentItems).length > 0">
+                    <div v-for="(img, imgIndex) in getSubQuestionImages(sub.contentItems)" :key="imgIndex" class="image-preview">
+                      <img :src="img.thumb" alt="题目图片" @click="openImagePreview(img.src)">
+                      <button type="button" @click.stop="removeSubQuestionImage(index, img.contentIndex)" class="btn-remove-image" aria-label="删除图片">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <line x1="18" y1="6" x2="6" y2="18"/>
+                          <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <button type="button" @click="triggerImageUpload(index)" class="btn-upload">
+                    <svg class="btn-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                    添加图片
+                  </button>
+                </div>
+              </TransitionGroup>
+              <!-- 明显的添加题目按钮 -->
+              <button type="button" @click="addSubQuestion" class="btn-add-sub-large">
+                <svg class="btn-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="12" y1="5" x2="12" y2="19"/>
+                  <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                添加题目
+              </button>
+            </div>
+
+            <!-- 隐藏的文件输入 -->
+            <input type="file" ref="imageInput" @change="handleImageSelect" accept="image/*" style="display: none">
+          </div>
+          <div class="modal-footer">
+            <button class="btn-cancel" @click="closeModal">取消</button>
+            <button class="btn-save" @click="saveQuestion" :disabled="saving">
+              <svg v-if="saving" class="btn-spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="20"/>
+              </svg>
+              <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              {{ saving ? '保存中...' : (isEditing ? '保存' : '添加') }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
 
     <!-- 批量导入弹窗 -->
     <div v-if="showBatchImportModal" class="modal-overlay" @click="closeBatchImportModal">
@@ -831,6 +914,7 @@ const batchSubjectForm = ref({ subject: '' })  // 批量修改科目表单
 const showModal = ref(false)
 const isEditing = ref(false)
 const editingId = ref(null)
+const saving = ref(false)  // 保存状态
 const isQuestionSet = ref(false)  // 是否为套题模式
 const subQuestions = ref([])  // 子题列表
 const showImagePreview = ref(false)
@@ -1950,8 +2034,12 @@ const handleImageSelect = async (event) => {
 
 // 保存题目
 const saveQuestion = async () => {
+  if (saving.value) return  // 防止重复提交
+  saving.value = true
+
   if (currentType.value === 'professional' && !formData.value.subject) {
     toast.warning('当前没有可用科目，请先到科目管理添加科目')
+    saving.value = false
     return
   }
 
@@ -1962,6 +2050,7 @@ const saveQuestion = async () => {
     // 套题模式
     if (subQuestions.value.length === 0) {
       toast.warning('请至少添加一道子题')
+      saving.value = false
       return
     }
 
@@ -1980,6 +2069,7 @@ const saveQuestion = async () => {
     // 单题模式
     if (!formData.value.content) {
       toast.warning('请填写题目内容')
+      saving.value = false
       return
     }
     content = [['txt', formData.value.content]]
@@ -2015,6 +2105,8 @@ const saveQuestion = async () => {
     }
   } catch (error) {
     toast.error('保存失败: ' + error.message)
+  } finally {
+    saving.value = false
   }
 }
 
@@ -2586,139 +2678,323 @@ onUnmounted(() => {
   color: #999;
 }
 
-/* 弹窗样式 */
+/* 弹窗样式 - 使用设计令牌 */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-active .modal,
+.modal-fade-leave-active .modal {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-fade-enter-from .modal,
+.modal-fade-leave-to .modal {
+  transform: scale(0.95);
+  opacity: 0;
+}
+
+/* 子题列表过渡动画 */
+.sub-question-enter-active,
+.sub-question-leave-active {
+  transition: all 0.25s ease;
+}
+
+.sub-question-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.sub-question-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+/* AI 候选区滑入动画 */
+.candidates-slide-enter-active,
+.candidates-slide-leave-active {
+  transition: all 0.2s ease;
+}
+
+.candidates-slide-enter-from,
+.candidates-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.5);
+  background: var(--color-modal-overlay, rgba(0,0,0,0.5));
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: var(--z-modal, 1000);
+  padding: var(--spacing-4, 1rem);
 }
 
 .modal {
-  background: white;
-  border-radius: 8px;
+  background: var(--color-surface, white);
+  border-radius: var(--radius-xl, 0.75rem);
   width: 90%;
-  max-width: 500px;
-  max-height: 80vh;
+  max-width: 560px;
+  max-height: 85vh;
   overflow-y: auto;
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
 }
 
 .modal-large {
-  max-width: 700px;
+  max-width: 720px;
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  border-bottom: 1px solid #dee2e6;
+  padding: var(--spacing-4, 1rem) var(--spacing-5, 1.25rem);
+  border-bottom: 1px solid var(--color-border, #dee2e6);
+}
+
+.modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3, 0.75rem);
+}
+
+.modal-title-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--color-primary, #0f172a);
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
   margin: 0;
+  font-size: var(--font-size-lg, 1.125rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #333);
 }
 
 .modal-close {
   background: none;
   border: none;
-  font-size: 24px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
-  color: #999;
+  color: var(--color-text-muted, #999);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-gray-100, #f1f3f5);
+  color: var(--color-text-primary, #333);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid var(--color-primary, #0f172a);
+  outline-offset: 2px;
+}
+
+.modal-close svg {
+  width: 20px;
+  height: 20px;
 }
 
 .modal-body {
-  padding: 20px;
+  padding: var(--spacing-5, 1.25rem);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4, 1rem);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-4, 1rem);
 }
 
-.form-group label {
+.form-label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #333;
+  margin-bottom: var(--spacing-2, 0.5rem);
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary, #495057);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper .form-select {
+  appearance: none;
+  padding-right: 2.5rem;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted, #999);
+  pointer-events: none;
 }
 
 .form-input, .form-select, .form-textarea {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: var(--spacing-3, 0.75rem);
+  border: 1px solid var(--color-border, #dee2e6);
+  border-radius: var(--radius-md, 0.375rem);
+  font-size: var(--font-size-base, 1rem);
+  font-family: inherit;
+  color: var(--color-text-primary, #333);
+  background: var(--color-surface, white);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary, #0f172a);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.1);
 }
 
 .form-textarea {
   resize: vertical;
+  min-height: 100px;
 }
 
 .modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  padding: 15px 20px;
-  border-top: 1px solid #dee2e6;
+  gap: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-4, 1rem) var(--spacing-5, 1.25rem);
+  border-top: 1px solid var(--color-border, #dee2e6);
+  background: var(--color-gray-50, #f8f9fa);
+  border-radius: 0 0 var(--radius-xl, 0.75rem) var(--radius-xl, 0.75rem);
 }
 
 .btn-cancel {
-  padding: 10px 20px;
-  border: 1px solid #dee2e6;
-  background: white;
-  border-radius: 4px;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
+  border: 1px solid var(--color-border, #dee2e6);
+  background: var(--color-surface, white);
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  color: var(--color-text-secondary, #495057);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-cancel:hover {
+  background: var(--color-gray-50, #f8f9fa);
+  border-color: var(--color-gray-400, #ced4da);
+}
+
+.btn-cancel:focus-visible {
+  outline: 2px solid var(--color-primary, #0f172a);
+  outline-offset: 2px;
 }
 
 .btn-save {
-  padding: 10px 20px;
-  background: #007bff;
-  color: white;
+  padding: var(--spacing-3, 0.75rem) var(--spacing-5, 1.25rem);
+  background: var(--color-primary, #0f172a);
+  color: var(--color-text-on-primary, white);
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
+  font-size: var(--font-size-sm, 0.875rem);
+  font-weight: var(--font-weight-medium, 500);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.btn-save:hover {
-  background: #0056b3;
+.btn-save:hover:not(:disabled) {
+  background: var(--color-primary-hover, #1e293b);
+}
+
+.btn-save:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-save:focus-visible {
+  outline: 2px solid var(--color-primary, #0f172a);
+  outline-offset: 2px;
+}
+
+.btn-save svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-spinner {
+  animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner {
+    animation: none;
+  }
 }
 
 .btn-import {
-  background: #28a745;
+  background: var(--color-success, #059669);
 }
 
 .btn-import:hover {
-  background: #218838;
+  background: var(--color-success-hover, #047857);
 }
 
 .btn-copy {
-  background: #17a2b8;
+  background: var(--color-info, #17a2b8);
 }
 
 .btn-copy:hover {
-  background: #138496;
+  background: var(--color-info-hover, #138496);
 }
 
 .preview-section {
-  margin-top: 15px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
+  margin-top: var(--spacing-4, 1rem);
+  padding: var(--spacing-3, 0.75rem);
+  background: var(--color-gray-50, #f8f9fa);
+  border-radius: var(--radius-md, 0.375rem);
   max-height: 200px;
   overflow-y: auto;
 }
 
 .preview-section h4 {
-  margin: 0 0 10px 0;
-  font-size: 14px;
-  color: #666;
+  margin: 0 0 var(--spacing-3, 0.75rem) 0;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary, #495057);
 }
 
 .preview-list {
@@ -2730,9 +3006,9 @@ onUnmounted(() => {
 .preview-item {
   display: flex;
   align-items: flex-start;
-  padding: 5px;
-  background: white;
-  border-radius: 3px;
+  padding: var(--spacing-2, 0.5rem);
+  background: var(--color-surface, white);
+  border-radius: var(--radius-base, 0.25rem);
 }
 
 .preview-index {
@@ -2741,17 +3017,17 @@ onUnmounted(() => {
   justify-content: center;
   width: 24px;
   height: 24px;
-  background: #007bff;
-  color: white;
+  background: var(--color-primary, #0f172a);
+  color: var(--color-text-on-primary, white);
   border-radius: 50%;
   font-size: 12px;
-  margin-right: 8px;
+  margin-right: var(--spacing-2, 0.5rem);
   flex-shrink: 0;
 }
 
 .preview-text {
-  font-size: 13px;
-  color: #666;
+  font-size: var(--font-size-sm, 0.875rem);
+  color: var(--color-text-secondary, #495057);
   word-break: break-all;
 }
 
@@ -3514,89 +3790,97 @@ onUnmounted(() => {
 
 /* 套题相关样式 */
 .sub-questions-container {
-  max-height: 400px;
+  max-height: 420px;
   overflow-y: auto;
+  padding-right: var(--spacing-1, 0.25rem);
+}
+
+.sub-questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4, 1rem);
 }
 
 .sub-question-item {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 15px;
-  margin-bottom: 15px;
+  border: 1px solid var(--color-border-light, #e9ecef);
+  border-radius: var(--radius-lg, 0.5rem);
+  padding: var(--spacing-4, 1rem);
+  background: var(--color-gray-50, #f8f9fa);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sub-question-item:hover {
+  border-color: var(--color-border, #dee2e6);
 }
 
 .sub-question-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-3, 0.75rem);
+}
+
+.sub-question-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+}
+
+.sub-question-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary, #0f172a);
 }
 
 .sub-question-number {
-  font-weight: bold;
-  color: #007bff;
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #333);
+  font-size: var(--font-size-sm, 0.875rem);
 }
 
 .btn-remove-sub {
-  padding: 4px 10px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: var(--spacing-1, 0.25rem) var(--spacing-3, 0.75rem);
+  background: transparent;
+  color: var(--color-danger, #dc3545);
+  border: 1px solid var(--color-danger, #dc3545);
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-xs, 0.75rem);
+  font-weight: var(--font-weight-medium, 500);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1, 0.25rem);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
 }
 
-.sub-question-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.image-preview {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.image-preview img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  cursor: zoom-in;
-}
-
-.btn-remove-image {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 20px;
-  height: 20px;
-  background: rgba(255,0,0,0.7);
+.btn-remove-sub:hover {
+  background: var(--color-danger, #dc3545);
   color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 1;
 }
 
+.btn-remove-sub:focus-visible {
+  outline: 2px solid var(--color-danger, #dc3545);
+  outline-offset: 2px;
+}
+
+.btn-remove-sub svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* image-preview-overlay is defined later with design tokens */
 .image-preview-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--color-modal-overlay-dark, rgba(0, 0, 0, 0.7));
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  padding: 30px;
+  padding: var(--spacing-8, 2rem);
 }
 
 .image-preview-modal {
@@ -3612,68 +3896,108 @@ onUnmounted(() => {
   max-width: 100%;
   max-height: calc(100vh - 60px);
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  border-radius: var(--radius-lg, 0.5rem);
+  box-shadow: var(--shadow-xl);
 }
 
 .image-preview-close {
   position: absolute;
-  top: -40px;
+  top: -44px;
   right: 0;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border: none;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.25);
-  color: #fff;
-  font-size: 28px;
+  color: var(--color-white, #fff);
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.image-preview-close:hover {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .btn-upload {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  margin-top: var(--spacing-3, 0.75rem);
+  padding: var(--spacing-2, 0.5rem) var(--spacing-4, 1rem);
+  background: var(--color-gray-100, #f1f3f5);
+  color: var(--color-text-secondary, #495057);
+  border: 1px dashed var(--color-border, #dee2e6);
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
+  font-size: var(--font-size-sm, 0.875rem);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2, 0.5rem);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.btn-upload:hover {
+  background: var(--color-gray-200, #e9ecef);
+  border-color: var(--color-gray-400, #ced4da);
+}
+
+.btn-upload-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .btn-add-sub {
   width: 100%;
-  padding: 12px;
-  background: #28a745;
+  padding: var(--spacing-3, 0.75rem);
+  background: var(--color-success, #059669);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-md, 0.375rem);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-sm, 0.875rem);
 }
 
 /* 明显的添加题目按钮 */
 .btn-add-sub-large {
   width: 100%;
-  padding: 16px 24px;
-  background: #007bff;
+  padding: var(--spacing-4, 1rem) var(--spacing-5, 1.25rem);
+  background: var(--color-primary, #0f172a);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-lg, 0.5rem);
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 15px;
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  font-size: var(--font-size-base, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  margin-top: var(--spacing-4, 1rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2, 0.5rem);
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
 .btn-add-sub-large:hover {
-  background: #0056b3;
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+  background: var(--color-primary-hover, #1e293b);
+}
+
+.btn-add-sub-large:active {
+  transform: scale(0.98);
+}
+
+.btn-add-sub-large:focus-visible {
+  outline: 2px solid var(--color-primary, #0f172a);
+  outline-offset: 2px;
+}
+
+.btn-add-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .btn-add-sub:hover {
-  background: #218838;
+  background: var(--color-success-hover, #047857);
 }
 
 .checkbox-label {
@@ -3919,22 +4243,24 @@ onUnmounted(() => {
 
 .candidates-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
+  gap: var(--spacing-2, 0.5rem);
+  padding: var(--spacing-3, 0.75rem) var(--spacing-4, 1rem);
   background: var(--color-gray-50);
   border-bottom: 1px solid var(--color-border-light);
 }
 
-.candidates-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text-primary);
+.candidates-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent, #d97706);
+  flex-shrink: 0;
 }
 
 .candidates-count {
-  font-size: 12px;
+  font-size: var(--font-size-xs, 0.75rem);
   color: var(--color-text-muted);
+  margin-left: auto;
 }
 
 .candidates-list {
@@ -3948,6 +4274,7 @@ onUnmounted(() => {
 
 .candidate-card {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   padding: 10px 12px;
   border: 1.5px solid var(--color-border-light);
@@ -4080,8 +4407,8 @@ onUnmounted(() => {
 }
 
 .error-icon {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
@@ -4091,13 +4418,103 @@ onUnmounted(() => {
   border: none;
   color: var(--color-danger);
   cursor: pointer;
-  font-size: 16px;
-  padding: 0 4px;
-  line-height: 1;
+  padding: var(--spacing-1, 0.25rem);
+  border-radius: var(--radius-sm, 0.125rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0.7;
+  transition: opacity var(--transition-fast);
 }
 
 .error-dismiss:hover {
   opacity: 1;
+}
+
+.error-dismiss:focus-visible {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
+}
+
+.error-dismiss svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* 子题图片列表 */
+.sub-question-images {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3, 0.75rem);
+  margin-top: var(--spacing-3, 0.75rem);
+}
+
+.image-preview {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md, 0.375rem);
+  overflow: visible;
+  background: var(--color-gray-100);
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: transform var(--transition-fast);
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
+}
+
+.btn-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 36px;
+  height: 36px;
+  background: rgba(220, 53, 69, 0.95);
+  color: white;
+  border: 2px solid var(--color-white, #fff);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  z-index: 1;
+}
+
+.image-preview:hover .btn-remove-image,
+.image-preview:focus-within .btn-remove-image {
+  opacity: 1;
+}
+
+.btn-remove-image:hover {
+  transform: scale(1.1);
+}
+
+.btn-remove-image:active {
+  transform: scale(0.95);
+}
+
+.image-preview:hover .btn-remove-image {
+  opacity: 1;
+}
+
+.btn-remove-image:focus-visible {
+  opacity: 1;
+  outline: 2px solid white;
+  outline-offset: 2px;
+}
+
+.btn-remove-image svg {
+  width: 14px;
+  height: 14px;
 }
 </style>

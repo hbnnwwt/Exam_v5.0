@@ -112,37 +112,67 @@
         <div class="right-panel preview-section">
           <div class="preview-header">
             <h3>考试记录预览</h3>
-            <button @click="loadStudents" class="refresh-btn">刷新预览</button>
+            <div class="preview-actions">
+              <span class="record-count">{{ students.length }} 条记录</span>
+              <button @click="loadStudents" class="refresh-btn" :disabled="isLoading">
+                <svg v-if="isLoading" class="spin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <polyline points="1 20 1 14 7 14"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                {{ isLoading ? '加载中...' : '刷新' }}
+              </button>
+            </div>
           </div>
-          <div class="table-container">
+
+          <!-- 空状态 -->
+          <div v-if="!isLoading && students.length === 0" class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+              <rect x="9" y="3" width="6" height="4" rx="1"/>
+              <line x1="9" y1="12" x2="15" y2="12"/>
+              <line x1="9" y1="16" x2="13" y2="16"/>
+            </svg>
+            <p>暂无考试记录</p>
+            <span>当前没有找到任何考生的考试数据</span>
+          </div>
+
+          <div v-else class="table-container">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>考生号</th>
-                  <th>考试状态</th>
-                  <th>专业科目</th>
-                  <th>开始时间</th>
-                  <th>结束时间</th>
-                  <th>时长(分钟)</th>
-                  <th>操作</th>
+                  <th class="col-number">考生号</th>
+                  <th class="col-status">状态</th>
+                  <th class="col-subject">专业科目</th>
+                  <th class="col-time">开始时间</th>
+                  <th class="col-time">结束时间</th>
+                  <th class="col-duration">时长</th>
+                  <th class="col-action">操作</th>
                 </tr>
               </thead>
               <tbody>
-                <template v-for="student in students" :key="student.studentNumber">
-                  <tr>
-                    <td>{{ student.studentNumber }}</td>
+                <template v-for="(student, index) in students" :key="student.studentNumber">
+                  <tr :class="['data-row', { 'row-even': index % 2 === 1, 'row-expanded': isExpanded(student.studentNumber) }]">
+                    <td class="cell-number">{{ student.studentNumber }}</td>
                     <td>
                       <span :class="['status-badge', getStatusClass(student)]">
+                        <span class="status-dot"></span>
                         {{ getStatusText(student.examStatus) }}
                       </span>
                     </td>
-                    <td>{{ student.professionalSubject || '-' }}</td>
-                    <td>{{ student.startTime || '-' }}</td>
-                    <td>{{ student.endTime || '-' }}</td>
-                    <td>{{ student.durationMinutes || '-' }}</td>
+                    <td class="cell-subject">{{ student.professionalSubject || '-' }}</td>
+                    <td class="cell-time">{{ student.startTime || '-' }}</td>
+                    <td class="cell-time">{{ student.endTime || '-' }}</td>
+                    <td class="cell-duration">{{ student.durationMinutes ? student.durationMinutes + '分钟' : '-' }}</td>
                     <td>
-                      <button @click="toggleExpand(student.studentNumber)" class="expand-btn">
-                        {{ isExpanded(student.studentNumber) ? '收起' : '展开' }}
+                      <button @click="toggleExpand(student.studentNumber)" :class="['expand-btn', { 'is-expanded': isExpanded(student.studentNumber) }]">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                        {{ isExpanded(student.studentNumber) ? '收起' : '详情' }}
                       </button>
                     </td>
                   </tr>
@@ -150,12 +180,29 @@
                     <td colspan="7">
                       <div class="question-details">
                         <div v-if="student.translationInfo" class="question-section">
-                          <div class="question-title">翻译题目 (题号: {{ student.translationInfo.questionNumber }})</div>
+                          <div class="question-header">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M5 5h14M5 10h14M5 15h10"/>
+                            </svg>
+                            <span class="question-title">翻译题目</span>
+                            <span class="question-number">题号: {{ student.translationInfo.questionNumber }}</span>
+                          </div>
                           <div class="question-content" v-html="renderQuestion(student.translationInfo.questionContent)"></div>
                         </div>
                         <div v-if="student.professionalInfo" class="question-section">
-                          <div class="question-title">专业题目 (题号: {{ student.professionalInfo.questionNumber }}) - {{ student.professionalInfo.subject }}</div>
+                          <div class="question-header">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                            </svg>
+                            <span class="question-title">专业题目</span>
+                            <span class="question-number">题号: {{ student.professionalInfo.questionNumber }}</span>
+                            <span class="question-tag">{{ student.professionalInfo.subject }}</span>
+                          </div>
                           <div class="question-content" v-html="renderQuestion(student.professionalInfo.questionContent)"></div>
+                        </div>
+                        <div v-if="!student.translationInfo && !student.professionalInfo" class="no-questions">
+                          暂无题目信息
                         </div>
                       </div>
                     </td>
@@ -214,6 +261,7 @@ const stats = reactive({
 })
 
 const students = ref([])
+const isLoading = ref(false)
 
 // 展开行状态管理
 const expandedRows = ref(new Set())
@@ -293,14 +341,16 @@ const renderContentItems = (contentArray) => {
   if (!contentArray || !Array.isArray(contentArray)) return ''
   return contentArray.map(item => {
     if (Array.isArray(item) && item[0] === 'txt') {
-      return `<p>${escapeHtml(item[1] || '')}</p>`
+      const text = (item[1] || '').trim()
+      if (!text) return ''
+      return `<p>${escapeHtml(text)}</p>`
     }
     const imageData = normalizeImageData(item)
     if (imageData) {
       return `<div class="image-container" onclick="window.openImagePreview('${imageData.src}')" title="点击查看原图"><img src="${imageData.thumb}" alt="题目图片缩略图"></div>`
     }
     return ''
-  }).join('')
+  }).filter(Boolean).join('')
 }
 
 // 渲染题目内容（与考试界面一致）
@@ -323,25 +373,22 @@ const renderQuestion = (questionData) => {
     if (Array.isArray(data)) {
       // 检查是否是套题格式
       if (isQuestionSet(data)) {
-        return data.map((sub, index) => `
-          <div class="sub-question">
-            <div class="sub-question-title">第${index + 1}题</div>
-            <div class="sub-question-content">${renderContentItems(sub.content)}</div>
-          </div>`
-        ).join('')
+        return data.map((sub, index) => `<div class="sub-question"><div class="sub-question-title">第${index + 1}题</div><div class="sub-question-content">${renderContentItems(sub.content)}</div></div>`).join('')
       }
 
       // 普通数组
       return data.map(item => {
         if (Array.isArray(item) && item[0] === 'txt') {
-          return `<p>${escapeHtml(item[1])}</p>`
+          const text = (item[1] || '').trim()
+          if (!text) return ''
+          return `<p>${escapeHtml(text)}</p>`
         }
         const imageData = normalizeImageData(item)
         if (imageData) {
           return `<div class="image-container" onclick="window.openImagePreview('${imageData.src}')" title="点击查看原图"><img src="${imageData.thumb}" alt="题目图片缩略图"></div>`
         }
         return ''
-      }).join('')
+      }).filter(Boolean).join('')
     }
 
     // 如果是对象，尝试获取 content 字段
@@ -389,6 +436,7 @@ const loadQuestionStats = async () => {
 }
 
 const loadStudents = async () => {
+  isLoading.value = true
   try {
     const response = await api.get('/export-api/preview')
     if (response.success) {
@@ -396,6 +444,8 @@ const loadStudents = async () => {
     }
   } catch (error) {
     console.error('加载考生列表失败:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -772,11 +822,25 @@ onMounted(() => {
   margin-bottom: var(--spacing-4);
 }
 
+.preview-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.record-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  padding: var(--spacing-1) var(--spacing-3);
+  background: var(--color-gray-100);
+  border-radius: var(--radius-full);
+}
+
 .refresh-btn {
   padding: var(--spacing-2) var(--spacing-4);
-  background: var(--color-gray-100);
+  background: var(--color-surface);
   color: var(--color-text-secondary);
-  border: none;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--font-size-sm);
@@ -784,59 +848,175 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-2);
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
-.refresh-btn:hover {
-  background: var(--color-gray-200);
+.refresh-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
+.refresh-btn:hover:not(:disabled) {
+  background: var(--color-gray-50);
+  border-color: var(--color-border-light);
+}
+
+.refresh-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-10);
+  color: var(--color-text-muted);
+}
+
+.empty-state svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: var(--spacing-4);
+  opacity: 0.4;
+}
+
+.empty-state p {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.empty-state span {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Table */
 .table-container {
-  overflow-x: auto;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-  padding: var(--spacing-3);
-  text-align: left;
-  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--font-size-sm);
 }
 
 .data-table th {
   background: var(--color-gray-50);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
-  font-size: var(--font-size-sm);
+  padding: var(--spacing-3) var(--spacing-4);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
   white-space: nowrap;
 }
 
 .data-table td {
+  padding: var(--spacing-3) var(--spacing-4);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+/* Column Widths */
+.col-number { width: 100px; }
+.col-status { width: 90px; }
+.col-subject { min-width: 100px; }
+.col-time { width: 150px; }
+.col-duration { width: 80px; }
+.col-action { width: 70px; }
+
+/* Row Styling */
+.data-row {
+  transition: background var(--transition-fast);
+}
+
+.data-row:hover {
+  background: var(--color-gray-50);
+}
+
+.row-even {
+  background: var(--color-gray-50);
+}
+
+.row-even:hover {
+  background: var(--color-gray-100);
+}
+
+.row-expanded {
+  background: var(--color-surface);
+  box-shadow: inset 0 2px 0 var(--color-primary);
+}
+
+.row-expanded:hover {
+  background: var(--color-surface);
+}
+
+/* Cell Styles */
+.cell-number {
+  font-family: var(--font-family-mono);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.cell-subject {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cell-time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.cell-duration {
+  font-variant-numeric: tabular-nums;
 }
 
 /* Status Badge */
 .status-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
   padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
 }
 
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
 .status-badge.ready {
-  background: var(--color-gray-200);
-  color: var(--color-gray-700);
+  background: var(--color-gray-100);
+  color: var(--color-gray-600);
 }
 
 .status-badge.in_progress {
   background: var(--color-warning-light);
-  color: var(--color-warning-text);
+  color: #b45309;
 }
 
 .status-badge.completed {
@@ -844,21 +1024,47 @@ onMounted(() => {
   color: var(--color-success);
 }
 
+.status-badge.paused {
+  background: #fef3c7;
+  color: #d97706;
+}
+
 /* Expand Button */
 .expand-btn {
-  padding: var(--spacing-1) var(--spacing-3);
-  background: var(--color-gray-100);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-2);
+  background: transparent;
   color: var(--color-text-secondary);
-  border: none;
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  transition: background var(--transition-fast);
+  transition: all var(--transition-fast);
+}
+
+.expand-btn svg {
+  width: 14px;
+  height: 14px;
+  transition: transform var(--transition-fast);
 }
 
 .expand-btn:hover {
-  background: var(--color-gray-200);
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.expand-btn.is-expanded svg {
+  transform: rotate(180deg);
+}
+
+.expand-btn.is-expanded {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 /* Expand Row */
@@ -867,64 +1073,126 @@ onMounted(() => {
 }
 
 .expand-row td {
-  padding: var(--spacing-4);
+  padding: 0;
   border-bottom: 1px solid var(--color-border-light);
 }
 
 .question-details {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-3);
+  padding: var(--spacing-3);
 }
 
 .question-section {
   background: var(--color-surface);
-  padding: var(--spacing-4);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border-light);
+  overflow: hidden;
+}
+
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  background: var(--color-gray-50);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.question-header svg {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-muted);
 }
 
 .question-title {
   font-weight: var(--font-weight-semibold);
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
-  margin-bottom: var(--spacing-3);
+}
+
+.question-number {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-left: auto;
+}
+
+.question-tag {
+  font-size: var(--font-size-xs);
+  padding: var(--spacing-1) var(--spacing-2);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: var(--radius-sm);
 }
 
 .question-content {
+  padding: var(--spacing-3);
   font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
-  line-height: var(--line-height-relaxed);
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
 }
 
 .question-content p {
-  margin: var(--spacing-2) 0;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.question-content p:empty {
+  display: none;
 }
 
 .question-content .image-container {
-  margin: var(--spacing-3) 0;
+  margin: var(--spacing-2) 0;
   cursor: pointer;
+  display: block;
 }
 
 .question-content .image-container img {
-  max-width: 150px;
-  max-height: 120px;
+  max-width: 200px;
+  max-height: 150px;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-light);
-  transition: border-color var(--transition-fast);
+  transition: all var(--transition-fast);
+  vertical-align: middle;
 }
 
 .question-content .image-container:hover img {
   border-color: var(--color-primary);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-base);
+}
+
+.question-content .image-container:first-child {
+  margin-top: 0;
+}
+
+.question-content .image-container:last-child {
+  margin-bottom: 0;
+}
+
+.question-content .image-container img {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-fast);
+}
+
+.question-content .image-container:hover img {
+  border-color: var(--color-primary);
+  transform: scale(1.02);
+  box-shadow: var(--shadow-base);
 }
 
 .question-content .sub-question {
-  margin-bottom: var(--spacing-3);
+  margin-bottom: var(--spacing-2);
   padding: var(--spacing-3);
   background: var(--color-gray-50);
   border-radius: var(--radius-md);
+  border-left: 3px solid var(--color-primary);
 }
 
 .question-content .sub-question-title {
@@ -934,49 +1202,89 @@ onMounted(() => {
   margin-bottom: var(--spacing-2);
 }
 
-/* Image Preview */
+.question-content .sub-question p {
+  margin: 0;
+}
+
+.no-questions {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-4);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+/* Image Preview Modal */
 .image-preview-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--color-modal-overlay-dark);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
+  padding: var(--spacing-5);
+  animation: fadeIn 150ms ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .image-preview-content {
   position: relative;
   max-width: 90%;
   max-height: 90%;
+  animation: scaleIn 200ms ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .image-preview-content img {
   max-width: 100%;
-  max-height: 90vh;
+  max-height: 85vh;
   border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  object-fit: contain;
 }
 
 .image-preview-content .close-btn {
   position: absolute;
-  top: -44px;
-  right: 0;
-  background: none;
-  border: none;
-  color: white;
-  font-size: 28px;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+  font-size: 20px;
   cursor: pointer;
-  padding: var(--spacing-2);
-  line-height: 1;
-  opacity: 0.8;
-  transition: opacity var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-base);
 }
 
 .image-preview-content .close-btn:hover {
-  opacity: 1;
+  background: var(--color-gray-100);
+  color: var(--color-text-primary);
+  transform: scale(1.05);
 }
 
 /* Footer */

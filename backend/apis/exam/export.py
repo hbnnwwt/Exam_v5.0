@@ -91,31 +91,91 @@ def format_question_content_for_html(content):
     else:
         question_data = content
 
-    # 处理 {"content": [...]} 格式
+    # 检查是否是套题格式（多道题目）: [{"content": [...]}, {"content": [...]}]
     if isinstance(question_data, list) and len(question_data) > 0:
-        if isinstance(question_data[0], dict) and 'content' in question_data[0]:
-            question_data = question_data[0]['content']
+        first_item = question_data[0]
+        if isinstance(first_item, dict) and 'content' in first_item:
+            # 套题格式：遍历每一道题
+            for q_idx, q_item in enumerate(question_data):
+                if isinstance(q_item, dict) and 'content' in q_item:
+                    q_content = q_item['content']
+                    # 添加题目编号
+                    html_content += f'<div class="question-item"><div class="question-item-title">第{q_idx + 1}题</div>'
+                    if isinstance(q_content, list) and len(q_content) > 0:
+                        for index, item in enumerate(q_content):
+                            if isinstance(item, list) and len(item) >= 2:
+                                item_type = item[0]
+                                item_content = item[1]
 
+                                if item_type == 'txt':
+                                    html_content += f'<div class="question-text-part">{item_content}</div>'
+                                elif item_type == 'img':
+                                    image_path = get_image_source(item_content)
+                                    if image_path.startswith('data:image/'):
+                                        html_content += f'''<div class="question-image-part">
+                                            <img src="{image_path}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                        </div>'''
+                                    else:
+                                        img_src = ''
+                                        file_to_check = None
+
+                                        if image_path.startswith('/uploads/'):
+                                            file_to_check = 'static' + image_path
+                                        elif image_path.startswith('static/uploads/'):
+                                            file_to_check = image_path
+                                        elif image_path.startswith('assets/'):
+                                            file_to_check = image_path
+                                        elif not image_path.startswith('./') and not image_path.startswith('http'):
+                                            file_to_check = 'assets/' + image_path
+                                        else:
+                                            file_to_check = image_path.lstrip('./')
+
+                                        if file_to_check and os.path.exists(file_to_check):
+                                            try:
+                                                import base64
+                                                with open(file_to_check, 'rb') as f:
+                                                    img_data = base64.b64encode(f.read()).decode()
+                                                    ext = os.path.splitext(file_to_check)[1].lower()
+                                                    mime_type = 'image/png'
+                                                    if ext in ['.jpg', '.jpeg']:
+                                                        mime_type = 'image/jpeg'
+                                                    elif ext == '.gif':
+                                                        mime_type = 'image/gif'
+                                                    elif ext == '.webp':
+                                                        mime_type = 'image/webp'
+                                                    img_src = f'data:{mime_type};base64,{img_data}'
+                                            except Exception as e:
+                                                logger.warning(f'读取图片文件失败: {file_to_check}, 错误: {e}')
+
+                                        if img_src:
+                                            html_content += f'''<div class="question-image-part">
+                                                <img src="{img_src}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                            </div>'''
+                                        else:
+                                            html_content += f'''<div class="question-image-part">
+                                                <div style="padding: 20px; background: #f8d9da; border: 1px solid #f5c6cb; text-align: center; color: #721c24;">
+                                                    图片文件不存在: {image_path}
+                                                </div>
+                                            </div>'''
+                    html_content += '</div>'
+            return html_content or '暂无内容'
+
+    # 普通单题格式处理
     if isinstance(question_data, list) and len(question_data) > 0:
-        # 处理多内容格式
         for index, item in enumerate(question_data):
             if isinstance(item, list) and len(item) >= 2:
                 item_type = item[0]
                 item_content = item[1]
 
                 if item_type == 'txt':
-                    # 文本内容
                     html_content += f'<div class="question-text-part">{item_content}</div>'
                 elif item_type == 'img':
-                    # 图片内容
                     image_path = get_image_source(item_content)
                     if image_path.startswith('data:image/'):
-                        # Base64图片数据 - 直接使用
                         html_content += f'''<div class="question-image-part">
                             <img src="{image_path}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
                         </div>'''
                     else:
-                        # 图片文件路径 - 尝试读取并转换为Base64
                         img_src = ''
                         file_to_check = None
 
@@ -130,13 +190,11 @@ def format_question_content_for_html(content):
                         else:
                             file_to_check = image_path.lstrip('./')
 
-                        # 尝试读取文件
                         if file_to_check and os.path.exists(file_to_check):
                             try:
                                 import base64
                                 with open(file_to_check, 'rb') as f:
                                     img_data = base64.b64encode(f.read()).decode()
-                                    # 根据文件扩展名确定MIME类型
                                     ext = os.path.splitext(file_to_check)[1].lower()
                                     mime_type = 'image/png'
                                     if ext in ['.jpg', '.jpeg']:
@@ -154,7 +212,6 @@ def format_question_content_for_html(content):
                                 <img src="{img_src}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
                             </div>'''
                         else:
-                            # 文件不存在，显示占位符
                             html_content += f'''<div class="question-image-part">
                                 <div style="padding: 20px; background: #f8d9da; border: 1px solid #f5c6cb; text-align: center; color: #721c24;">
                                     图片文件不存在: {image_path}
@@ -229,28 +286,88 @@ def format_question_content_for_pdf(content):
     else:
         question_data = content
 
+    # 检查是否是套题格式（多道题目）
     if isinstance(question_data, list) and len(question_data) > 0:
-        # 处理多内容格式
+        first_item = question_data[0]
+        if isinstance(first_item, dict) and 'content' in first_item:
+            # 套题格式：遍历每一道题
+            for q_idx, q_item in enumerate(question_data):
+                if isinstance(q_item, dict) and 'content' in q_item:
+                    q_content = q_item['content']
+                    html_content += f'<div class="question-item"><div class="question-item-title">第{q_idx + 1}题</div>'
+                    if isinstance(q_content, list) and len(q_content) > 0:
+                        for index, item in enumerate(q_content):
+                            if isinstance(item, list) and len(item) >= 2:
+                                item_type = item[0]
+                                item_content = item[1]
+
+                                if item_type == 'txt':
+                                    html_content += f'<div class="question-text-part">{item_content}</div>'
+                                elif item_type == 'img':
+                                    image_path = get_image_source(item_content)
+                                    if image_path.startswith('data:image/'):
+                                        html_content += f'''<div class="question-image-part">
+                                            <img src="{image_path}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                        </div>'''
+                                    else:
+                                        try:
+                                            if image_path.startswith('assets/images/'):
+                                                file_path = image_path
+                                            elif image_path.startswith('/assets/'):
+                                                file_path = image_path[1:]
+                                            elif not image_path.startswith('./') and not image_path.startswith('http'):
+                                                file_path = f'assets/images/{image_path}'
+                                            else:
+                                                file_path = image_path
+
+                                            if os.path.exists(file_path):
+                                                with open(file_path, 'rb') as img_file:
+                                                    img_data = img_file.read()
+                                                    img_base64 = base64.b64encode(img_data).decode('utf-8')
+                                                    if file_path.lower().endswith('.png'):
+                                                        mime_type = 'image/png'
+                                                    elif file_path.lower().endswith('.jpg') or file_path.lower().endswith('.jpeg'):
+                                                        mime_type = 'image/jpeg'
+                                                    elif file_path.lower().endswith('.gif'):
+                                                        mime_type = 'image/gif'
+                                                    else:
+                                                        mime_type = 'image/png'
+                                                    data_url = f'data:{mime_type};base64,{img_base64}'
+                                                    html_content += f'''<div class="question-image-part">
+                                                        <img src="{data_url}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
+                                                    </div>'''
+                                            else:
+                                                html_content += f'''<div class="question-image-part">
+                                                    <div style="padding: 20px; background: #f8f9fa; border: 1px dashed #ccc; text-align: center; color: #666;">
+                                                        图片文件不存在: {file_path}
+                                                    </div>
+                                                </div>'''
+                                        except Exception as e:
+                                            html_content += f'''<div class="question-image-part">
+                                                <div style="padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; text-align: center; color: #721c24;">
+                                                    图片处理失败: {str(e)}
+                                                </div>
+                                            </div>'''
+                    html_content += '</div>'
+            return html_content or '暂无内容'
+
+    # 普通单题格式处理
+    if isinstance(question_data, list) and len(question_data) > 0:
         for index, item in enumerate(question_data):
             if isinstance(item, list) and len(item) >= 2:
                 item_type = item[0]
                 item_content = item[1]
 
                 if item_type == 'txt':
-                    # 文本内容
                     html_content += f'<div class="question-text-part">{item_content}</div>'
                 elif item_type == 'img':
-                    # 图片内容
                     image_path = get_image_source(item_content)
                     if image_path.startswith('data:image/'):
-                        # Base64图片数据，直接使用
                         html_content += f'''<div class="question-image-part">
                             <img src="{image_path}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
                         </div>'''
                     else:
-                        # 图片路径，尝试转换为base64
                         try:
-                            # 构建完整的文件路径
                             if image_path.startswith('assets/images/'):
                                 file_path = image_path
                             elif image_path.startswith('/assets/'):
@@ -260,13 +377,10 @@ def format_question_content_for_pdf(content):
                             else:
                                 file_path = image_path
 
-                            # 读取图片文件并转换为base64
                             if os.path.exists(file_path):
                                 with open(file_path, 'rb') as img_file:
                                     img_data = img_file.read()
                                     img_base64 = base64.b64encode(img_data).decode('utf-8')
-
-                                    # 根据文件扩展名确定MIME类型
                                     if file_path.lower().endswith('.png'):
                                         mime_type = 'image/png'
                                     elif file_path.lower().endswith('.jpg') or file_path.lower().endswith('.jpeg'):
@@ -274,21 +388,18 @@ def format_question_content_for_pdf(content):
                                     elif file_path.lower().endswith('.gif'):
                                         mime_type = 'image/gif'
                                     else:
-                                        mime_type = 'image/png'  # 默认
-
+                                        mime_type = 'image/png'
                                     data_url = f'data:{mime_type};base64,{img_base64}'
                                     html_content += f'''<div class="question-image-part">
                                         <img src="{data_url}" alt="题目图片 {index + 1}" style="max-width: 100%; height: auto; border-radius: 4px;">
                                     </div>'''
                             else:
-                                # 文件不存在，显示占位符
                                 html_content += f'''<div class="question-image-part">
                                     <div style="padding: 20px; background: #f8f9fa; border: 1px dashed #ccc; text-align: center; color: #666;">
                                         图片文件不存在: {file_path}
                                     </div>
                                 </div>'''
                         except Exception as e:
-                            # 处理图片失败，显示错误信息
                             html_content += f'''<div class="question-image-part">
                                 <div style="padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; text-align: center; color: #721c24;">
                                     图片处理失败: {str(e)}
@@ -334,13 +445,38 @@ def format_question_content_for_pdf_text(content):
     else:
         question_data = content
 
-    # 处理 {"content": [...]} 格式
+    # 检查是否是套题格式（多道题目）
     if isinstance(question_data, list) and len(question_data) > 0:
-        if isinstance(question_data[0], dict) and 'content' in question_data[0]:
-            question_data = question_data[0]['content']
+        first_item = question_data[0]
+        if isinstance(first_item, dict) and 'content' in first_item:
+            # 套题格式：遍历每一道题
+            all_text_parts = []
+            for q_idx, q_item in enumerate(question_data):
+                if isinstance(q_item, dict) and 'content' in q_item:
+                    q_content = q_item['content']
+                    if isinstance(q_content, list) and len(q_content) > 0:
+                        text_parts = []
+                        for index, item in enumerate(q_content):
+                            if isinstance(item, list) and len(item) >= 2:
+                                item_type = item[0]
+                                item_content = item[1]
 
+                                if item_type == 'txt':
+                                    text_parts.append(item_content)
+                                elif item_type == 'img':
+                                    image_path = get_image_source(item_content)
+                                    if image_path.startswith('data:image/'):
+                                        text_parts.append(f"[图片 {index + 1}: Base64编码图片]")
+                                    else:
+                                        text_parts.append(f"[图片 {index + 1}: {image_path}]")
+                            elif isinstance(item, str):
+                                text_parts.append(item)
+                        if text_parts:
+                            all_text_parts.append(f"第{q_idx + 1}题:\n" + '\n'.join(text_parts))
+            return '\n\n'.join(all_text_parts) or '暂无内容'
+
+    # 普通单题格式处理
     if isinstance(question_data, list) and len(question_data) > 0:
-        # 处理多内容格式
         text_parts = []
         for index, item in enumerate(question_data):
             if isinstance(item, list) and len(item) >= 2:
@@ -348,10 +484,8 @@ def format_question_content_for_pdf_text(content):
                 item_content = item[1]
 
                 if item_type == 'txt':
-                    # 文本内容
                     text_parts.append(item_content)
                 elif item_type == 'img':
-                    # 图片内容，显示为文本描述
                     image_path = get_image_source(item_content)
                     if image_path.startswith('data:image/'):
                         text_parts.append(f"[图片 {index + 1}: Base64编码图片]")
@@ -405,38 +539,122 @@ def format_question_content_for_pdf_elements(content, normal_style, question_sty
     else:
         question_data = content
 
-    # 处理 {"content": [...]} 格式
+    # 检查是否是套题格式（多道题目）
     if isinstance(question_data, list) and len(question_data) > 0:
-        if isinstance(question_data[0], dict) and 'content' in question_data[0]:
-            question_data = question_data[0]['content']
+        first_item = question_data[0]
+        if isinstance(first_item, dict) and 'content' in first_item:
+            # 套题格式：遍历每一道题
+            for q_idx, q_item in enumerate(question_data):
+                if isinstance(q_item, dict) and 'content' in q_item:
+                    q_content = q_item['content']
+                    # 添加题目标题
+                    title_style = question_style if question_style else normal_style
+                    elements.append(Paragraph(f"第{q_idx + 1}题", title_style))
+                    elements.append(Spacer(1, 6))
+                    if isinstance(q_content, list) and len(q_content) > 0:
+                        for index, item in enumerate(q_content):
+                            if isinstance(item, list) and len(item) >= 2:
+                                item_type = item[0]
+                                item_content = item[1]
 
+                                if item_type == 'txt':
+                                    if item_content.strip():
+                                        text_style = question_style if question_style else normal_style
+                                        elements.append(Paragraph(item_content, text_style))
+                                        elements.append(Spacer(1, 6))
+
+                                elif item_type == 'img':
+                                    try:
+                                        img_element = None
+                                        image_path = get_image_source(item_content)
+
+                                        if image_path.startswith('data:image/'):
+                                            header, data = image_path.split(',', 1)
+                                            img_data = base64.b64decode(data)
+
+                                            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                                                temp_file.write(img_data)
+                                                temp_path = temp_file.name
+
+                                            try:
+                                                img_element = Image(temp_path, width=4*inch, height=3*inch)
+                                                img_element.hAlign = 'CENTER'
+                                            except:
+                                                elements.append(Paragraph(f'[图片 {index + 1}: Base64编码图片 - 无法显示]', normal_style))
+                                            finally:
+                                                try:
+                                                    os.unlink(temp_path)
+                                                except:
+                                                    pass
+                                        else:
+                                            file_path = None
+                                            if image_path.startswith('/uploads/'):
+                                                file_path = 'static' + image_path
+                                            elif image_path.startswith('static/uploads/'):
+                                                file_path = image_path
+                                            elif image_path.startswith('assets/images/'):
+                                                file_path = image_path
+                                            elif image_path.startswith('/assets/'):
+                                                file_path = image_path[1:]
+                                            elif not image_path.startswith('./') and not image_path.startswith('http'):
+                                                file_path = f'assets/images/{image_path}'
+                                            else:
+                                                file_path = image_path.replace('./', '')
+
+                                            if file_path and os.path.exists(file_path):
+                                                try:
+                                                    img_element = Image(file_path)
+                                                    img_width, img_height = img_element.imageWidth, img_element.imageHeight
+                                                    max_width = 4.5 * inch
+                                                    max_height = 3 * inch
+                                                    width_ratio = max_width / img_width
+                                                    height_ratio = max_height / img_height
+                                                    scale_ratio = min(width_ratio, height_ratio, 1.0)
+                                                    img_element.drawWidth = img_width * scale_ratio
+                                                    img_element.drawHeight = img_height * scale_ratio
+                                                    img_element.hAlign = 'CENTER'
+                                                except Exception as e:
+                                                    elements.append(Paragraph(f'[图片 {index + 1}: {file_path} - 加载失败: {str(e)}]', normal_style))
+                                            else:
+                                                elements.append(Paragraph(f'[图片 {index + 1}: {file_path} - 文件不存在]', normal_style))
+
+                                        if img_element:
+                                            elements.append(img_element)
+                                            elements.append(Spacer(1, 12))
+
+                                    except Exception as e:
+                                        elements.append(Paragraph(f'[图片 {index + 1}: 处理失败 - {str(e)}]', normal_style))
+                                        elements.append(Spacer(1, 6))
+
+                            elif isinstance(item, str):
+                                if item.strip():
+                                    elements.append(Paragraph(item, normal_style))
+                                    elements.append(Spacer(1, 6))
+                    elements.append(Spacer(1, 12))
+            return elements if elements else [Paragraph('暂无内容', normal_style)]
+
+    # 普通单题格式处理
     if isinstance(question_data, list) and len(question_data) > 0:
-        # 处理多内容格式
         for index, item in enumerate(question_data):
             if isinstance(item, list) and len(item) >= 2:
                 item_type = item[0]
                 item_content = item[1]
 
                 if item_type == 'txt':
-                    # 文本内容
                     if item_content.strip():
                         text_style = question_style if question_style else normal_style
                         elements.append(Paragraph(item_content, text_style))
                         elements.append(Spacer(1, 6))
 
                 elif item_type == 'img':
-                    # 图片内容
                     try:
                         img_element = None
                         image_path = get_image_source(item_content)
 
                         if image_path.startswith('data:image/'):
-                            # Base64图片数据
-                            # 解析base64数据
                             header, data = image_path.split(',', 1)
                             img_data = base64.b64decode(data)
 
-                            # 创建临时文件
                             with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
                                 temp_file.write(img_data)
                                 temp_path = temp_file.name
@@ -447,16 +665,13 @@ def format_question_content_for_pdf_elements(content, normal_style, question_sty
                             except:
                                 elements.append(Paragraph(f'[图片 {index + 1}: Base64编码图片 - 无法显示]', normal_style))
                             finally:
-                                # 清理临时文件
                                 try:
                                     os.unlink(temp_path)
                                 except:
                                     pass
                         else:
-                            # 图片路径
                             file_path = None
                             if image_path.startswith('/uploads/'):
-                                # 处理 /uploads/xxx.png 格式
                                 file_path = 'static' + image_path
                             elif image_path.startswith('static/uploads/'):
                                 file_path = image_path
@@ -469,20 +684,15 @@ def format_question_content_for_pdf_elements(content, normal_style, question_sty
                             else:
                                 file_path = image_path.replace('./', '')
 
-                            # 读取图片文件
                             if file_path and os.path.exists(file_path):
                                 try:
                                     img_element = Image(file_path)
-                                    # 设置图片大小，保持比例
                                     img_width, img_height = img_element.imageWidth, img_element.imageHeight
                                     max_width = 4.5 * inch
                                     max_height = 3 * inch
-
-                                    # 计算缩放比例
                                     width_ratio = max_width / img_width
                                     height_ratio = max_height / img_height
-                                    scale_ratio = min(width_ratio, height_ratio, 1.0)  # 不放大
-
+                                    scale_ratio = min(width_ratio, height_ratio, 1.0)
                                     img_element.drawWidth = img_width * scale_ratio
                                     img_element.drawHeight = img_height * scale_ratio
                                     img_element.hAlign = 'CENTER'
@@ -1299,6 +1509,19 @@ def export_html():
             height: auto;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }}
+        .question-item {{
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #28a745;
+        }}
+        .question-item-title {{
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 8px;
+            font-size: 14px;
         }}
         .subject-stats {{
             margin-top: 15px;

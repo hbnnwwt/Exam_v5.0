@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>考试系统帮助文档</title>
+    <title>考试系统使用指南</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/help-docs.css">
 </head>
 <body>
-    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    <button type="button" class="hamburger" aria-label="打开导航菜单" onclick="document.querySelector('.sidebar').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
 
@@ -18,29 +18,35 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                    </svg>
+                <svg class="sidebar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                <div class="sidebar-header-text">
                     <span class="sidebar-title">帮助文档中心</span>
+                    <span class="sidebar-subtitle">研究生复试流程控制系统</span>
                 </div>
-                <p class="sidebar-subtitle">研究生复试流程控制系统</p>
             </div>
 
             <div class="sidebar-nav">
                 <div class="sidebar-nav-title">本页面导航</div>
                 <a href="#overview" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>系统概述</a>
-                <a href="#interface"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>界面介绍</a>
-                <a href="#workflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>考试流程</a>
-                <a href="#controls"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>操作控制</a>
-                <a href="#settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>系统设置</a>
-                <a href="#troubleshooting"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>常见问题</a>
+                <a href="#interface"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>界面布局</a>
+                <a href="#flow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>流程控制</a>
+                <a href="#step1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>步骤1：中文自我介绍</a>
+                <a href="#step2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>步骤2：英文自我介绍</a>
+                <a href="#step3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l6 6M4 14l6-6 2-2M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"/></svg>步骤3：英文翻译</a>
+                <a href="#step4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>步骤4：专业问题</a>
+                <a href="#step5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>步骤5：综合问答</a>
+                <a href="#step6"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>步骤6：考试结束</a>
 
-                <div class="sidebar-nav-title" style="margin-top:16px;">其他文档</div>
+                <div class="sidebar-nav-divider"></div>
+                <div class="sidebar-nav-title">其他文档</div>
                 <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>文档中心首页</a>
-                <a href="ai-settings-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>AI 配置</a>
-                <a href="shortcuts-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/></svg>快捷键参考</a>
-                <a href="faq-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>常见问题</a>
+                <a href="database-editor-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>题库编辑器</a>
+                <a href="ai-settings-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M12 12v10"/><path d="M8 22h8"/></svg>AI 配置</a>
+                <a href="header-setting-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>顶部设置</a>
+                <a href="page-content-setting-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>步骤内容设置</a>
+                <a href="export-exam-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>考试导出</a>
             </div>
 
             <div class="sidebar-footer">
@@ -68,212 +74,320 @@
                     </svg>
                 </div>
                 <h1>考试系统使用指南</h1>
-                <p>研究生复试流程控制系统 · Exam System Guide</p>
+                <p>研究生复试流程控制系统 · Exam System User Guide</p>
             </div>
 
             <!-- 系统概述 -->
             <div class="section-card" id="overview">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #4f46e5, #818cf8);">
+                    <div class="section-card-icon section-card-icon-primary">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     </div>
                     <h2 class="section-card-title">系统概述</h2>
                 </div>
                 <div class="section-card-body">
                     <div class="feature-list">
-                        <p style="margin-bottom:12px;"><strong>研究生复试流程控制系统</strong>是一个专为研究生复试面试设计的综合管理平台，提供完整的面试流程控制、题库管理、计时功能和考生记录管理。</p>
+                        <p style="margin-bottom:12px;"><strong>研究生复试流程控制系统</strong>是用于管理研究生复试面试全流程的操作界面，为考官和系统管理员提供便捷的面试控制工具。</p>
                         <ul>
                             <li><strong>六步考试流程：</strong>中文自我介绍 → 英文自我介绍 → 英文翻译 → 专业问题 → 综合问答 → 考试结束</li>
-                            <li><strong>智能题库管理：</strong>支持翻译题和专业题的分类管理，包含文本和图片内容</li>
-                            <li><strong>随机抽题功能：</strong>自动随机选择题目，避免重复，确保公平性</li>
-                            <li><strong>精确计时控制：</strong>每个环节独立计时，支持暂停、重置和自定义时长</li>
-                            <li><strong>考生记录管理：</strong>自动记录每位考生的考试进度和抽取题目</li>
-                            <li><strong>系统状态监控：</strong>实时显示数据库连接、当前步骤、计时器状态等</li>
+                            <li><strong>流程控制面板：</strong>左侧面板实时显示考试进度，支持步骤切换和状态追踪</li>
+                            <li><strong>随机抽题：</strong>系统从未使用题目中自动随机选择，确保考试公平性</li>
+                            <li><strong>计时控制：</strong>每个环节独立计时，支持开始、暂停、重置</li>
+                            <li><strong>考生记录：</strong>自动记录每位考生的考试进度、抽取题目和完成状态</li>
+                            <li><strong>快捷键支持：</strong>支持键盘快捷操作，提升考试控制效率</li>
                         </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 界面介绍 -->
-            <div class="section-card" id="interface">
-                <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    </div>
-                    <h2 class="section-card-title">界面介绍</h2>
-                </div>
-                <div class="section-card-body">
-                    <div class="screenshot-wrap">
-                        <img src="exam-system-main.png" alt="考试系统主界面截图">
-                        <p class="screenshot-caption">图 1：考试系统主界面</p>
-                    </div>
-
-                    <h3 class="section-heading">界面布局</h3>
-                    <div class="step-list">
-                        <ol>
-                            <li><strong>顶部标题栏：</strong>显示系统标题、学校 Logo 和当前考生信息</li>
-                            <li><strong>左侧流程面板（20% 宽度）：</strong>显示六步考试流程和当前进度</li>
-                            <li><strong>中央内容区：</strong>显示考试内容、题目和指导信息</li>
-                            <li><strong>右侧控制面板（20% 宽度）：</strong>包含操作按钮和系统状态</li>
-                            <li><strong>底部状态栏：</strong>显示计时器和版权信息</li>
-                        </ol>
-                    </div>
-
-                    <h3 class="section-heading">考试流程</h3>
-                    <table>
-                        <thead>
-                            <tr><th>步骤</th><th>名称</th><th>默认时长</th><th>说明</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>1</td><td>中文自我介绍</td><td>1 分钟</td><td>考生用中文进行自我介绍</td></tr>
-                            <tr><td>2</td><td>英文自我介绍</td><td>1 分钟</td><td>考生用英文进行自我介绍</td></tr>
-                            <tr><td>3</td><td>英文翻译</td><td>4 分钟</td><td>随机抽取英文段落进行翻译</td></tr>
-                            <tr><td>4</td><td>专业问题</td><td>5 分钟</td><td>按科目随机抽取专业问题回答</td></tr>
-                            <tr><td>5</td><td>综合问答</td><td>9 分钟</td><td>考官综合提问环节</td></tr>
-                            <tr><td>6</td><td>考试结束</td><td>—</td><td>总结评分，准备下一位考生</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 考试流程 -->
-            <div class="section-card" id="workflow">
-                <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                    </div>
-                    <h2 class="section-card-title">考试流程</h2>
-                </div>
-                <div class="section-card-body">
-                    <h3 class="section-heading">开始新考试</h3>
-                    <div class="step-list">
-                        <ol>
-                            <li>点击<strong>"开始考试"</strong>按钮或按 <kbd>Space</kbd> 键</li>
-                            <li>系统自动生成考生编号并创建考试记录</li>
-                            <li>进入第一步：中文自我介绍</li>
-                            <li>左侧面板显示当前步骤，右侧控制按钮激活</li>
-                        </ol>
                     </div>
 
                     <div class="info-box" style="margin-top:16px;">
-                        <strong>自动流程：</strong>使用"下一步"按钮按顺序进行，系统会自动保存进度和状态。<br>
-                        <strong>手动跳转：</strong>可以使用"上一步"返回之前的环节，或"完成考试"直接结束。
-                    </div>
-
-                    <h3 class="section-heading">题目抽取（步骤 3 和 4）</h3>
-                    <div class="step-list">
-                        <ol>
-                            <li><strong>英文翻译（步骤 3）：</strong>点击"抽取题目"自动随机选择翻译题</li>
-                            <li><strong>专业问题（步骤 4）：</strong>首先选择科目，然后随机抽取该科目的专业题</li>
-                            <li>抽取的题目会显示在中央内容区，包含文本和图片内容</li>
-                            <li>已抽取的题目会被标记为"已使用"，避免重复抽取</li>
-                        </ol>
+                        <strong>提示：</strong>如需了解具体操作步骤（如何开始考试、如何抽题、如何使用快捷键等），请查看本页面各章节的详细说明。
                     </div>
                 </div>
             </div>
 
-            <!-- 操作控制 -->
-            <div class="section-card" id="controls">
+            <!-- 界面布局 -->
+            <div class="section-card" id="interface">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #ec4899, #f472b6);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+                    <div class="section-card-icon section-card-icon-purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
                     </div>
-                    <h2 class="section-card-title">操作控制</h2>
-                </div>
-                <div class="section-card-body">
-                    <table>
-                        <thead>
-                            <tr><th>按钮</th><th>快捷键</th><th>功能</th><th>使用时机</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>开始考试</td><td><kbd>Space</kbd></td><td>开始新的考试流程</td><td>考试开始前</td></tr>
-                            <tr><td>上一步</td><td><kbd>←</kbd></td><td>返回上一个考试步骤</td><td>需要重新进行某个环节时</td></tr>
-                            <tr><td>下一步</td><td><kbd>→</kbd></td><td>进入下一个考试步骤</td><td>当前环节完成后</td></tr>
-                            <tr><td>抽取题目</td><td><kbd>D</kbd></td><td>随机抽取考试题目</td><td>翻译和专业问题环节</td></tr>
-                            <tr><td>开始计时</td><td><kbd>T</kbd></td><td>开始当前环节计时</td><td>考生开始答题时</td></tr>
-                            <tr><td>暂停计时</td><td><kbd>P</kbd></td><td>暂停当前计时器</td><td>需要中断计时时</td></tr>
-                            <tr><td>重置计时</td><td><kbd>R</kbd></td><td>重置计时器到初始值</td><td>重新开始计时时</td></tr>
-                            <tr><td>完成考试</td><td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td>直接结束当前考试</td><td>提前结束考试时</td></tr>
-                        </tbody>
-                    </table>
-
-                    <div class="warning-box" style="margin-top:16px;">
-                        <strong>注意：</strong>快捷键只在对应按钮可用时生效，且不会重复触发。
-                    </div>
-                </div>
-            </div>
-
-            <!-- 系统设置 -->
-            <div class="section-card" id="settings">
-                <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                    </div>
-                    <h2 class="section-card-title">系统设置</h2>
+                    <h2 class="section-card-title">界面布局</h2>
                 </div>
                 <div class="section-card-body">
                     <div class="screenshot-wrap">
-                        <img src="exam-system-settings.png" alt="系统设置界面截图">
-                        <p class="screenshot-caption">图 2：系统设置界面</p>
+                        <img src="exam-system-main.png" alt="考试系统主界面截图" loading="lazy">
+                        <p class="screenshot-caption">图 1：考试系统主界面 — 左侧流程面板 + 中央内容区 + 右侧控制面板</p>
                     </div>
 
-                    <div class="info-box">
-                        <strong>时间设置：</strong>可以自定义每个考试环节的时长（以秒为单位），设置后立即生效。
-                    </div>
+                    <h3 class="section-heading">区域划分</h3>
+                    <table>
+                        <thead>
+                            <tr><th>区域</th><th>位置</th><th>内容说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>顶部标题栏</strong></td><td>页面最上方</td><td>系统标题、学校 Logo、学院 Logo、导航按钮（题库管理、导出、设置、帮助）</td></tr>
+                            <tr><td><strong>左侧流程面板</strong></td><td>左侧（可折叠）</td><td>六步考试流程列表，显示当前步骤和完成状态</td></tr>
+                            <tr><td><strong>中央内容区</strong></td><td>中间主区域</td><td>考试题目、步骤指导说明、计时器、上一步/下一步/完成考试按钮</td></tr>
+                            <tr><td><strong>右侧控制面板</strong></td><td>右侧（可折叠）</td><td>考试状态徽章、重置考试按钮</td></tr>
+                            <tr><td><strong>底部状态栏</strong></td><td>页面最下方</td><td>版权信息</td></tr>
+                        </tbody>
+                    </table>
 
-                    <h3 class="section-heading">系统管理功能</h3>
-                    <div class="feature-list">
-                        <ul>
-                            <li><strong>题库管理：</strong>打开数据库编辑器，管理翻译题和专业题</li>
-                            <li><strong>步骤内容设置：</strong>设置各考试步骤的指导内容和说明</li>
-                            <li><strong>顶部设置：</strong>自定义系统标题和上传学校、学院 Logo</li>
-                            <li><strong>考试导出：</strong>导出所有考生的考试记录和题目信息</li>
-                            <li><strong>系统重置：</strong>清除所有考试记录，恢复初始状态</li>
-                        </ul>
+                    <div class="tip-box" style="margin-top:16px;">
+                        <strong>面板折叠：</strong>左侧流程面板和右侧控制面板都有折叠按钮（◀ / ▶），点击可收起或展开面板，为中央内容区腾出更多空间。
                     </div>
                 </div>
             </div>
 
-            <!-- 常见问题 -->
-            <div class="section-card" id="troubleshooting">
+            <!-- 流程控制 -->
+            <div class="section-card" id="flow">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="section-card-icon section-card-icon-green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     </div>
-                    <h2 class="section-card-title">常见问题</h2>
+                    <h2 class="section-card-title">流程控制详解</h2>
                 </div>
                 <div class="section-card-body">
-                    <h3 class="section-heading">Q: 系统显示"数据库连接失败"怎么办？</h3>
-                    <div class="info-box">
-                        <ol style="padding-left:18px;margin:0;">
-                            <li>确认服务器正常运行（检查控制台是否有错误信息）</li>
-                            <li>刷新页面重新连接</li>
-                            <li>检查数据库文件是否存在于 <code>assets/data</code> 目录</li>
-                        </ol>
+                    <!-- 步骤 1：中文自我介绍 -->
+                    <div class="section-card" id="step1">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-primary">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 1：中文自我介绍</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step1-intro-zh.png" alt="步骤1 中文自我介绍界面" loading="lazy">
+                                <p class="screenshot-caption">图 1：中文自我介绍 — 点击"开始考试"后进入步骤1</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 2 分钟</span>
+                                    <span class="step-type">自我介绍</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>点击<strong>开始考试</strong>按钮初始化考生会话</li>
+                                    <li>系统自动进入步骤1，计时器归零</li>
+                                    <li>点击<strong>开始</strong>按钮启动计时，考生进行自我介绍</li>
+                                    <li>如需暂停，点击<strong>暂停</strong>按钮保留剩余时间</li>
+                                    <li>时间到达或考生完成时，点击<strong>下一步 ▶</strong>进入下一环节</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
 
-                    <h3 class="section-heading">Q: 抽取题目时显示"无可用题目"？</h3>
-                    <div class="info-box">
-                        <ol style="padding-left:18px;margin:0;">
-                            <li>进入题库管理，检查是否有足够的题目</li>
-                            <li>确认题目没有全部被标记为"已使用"</li>
-                            <li>可以通过系统重置清除使用状态</li>
-                        </ol>
+                    <!-- 步骤 2：英文自我介绍 -->
+                    <div class="section-card" id="step2">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-cyan">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <line x1="2" y1="12" x2="22" y2="12"/>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 2：英文自我介绍</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step2-intro-en.png" alt="步骤2 英文自我介绍界面" loading="lazy">
+                                <p class="screenshot-caption">图 2：英文自我介绍 — 进入步骤2后进行英文自我介绍</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 3 分钟</span>
+                                    <span class="step-type">自我介绍</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>点击<strong>下一步 ▶</strong>从步骤1进入步骤2</li>
+                                    <li>系统自动进入步骤2，计时器归零</li>
+                                    <li>点击<strong>开始</strong>按钮启动计时，考生进行英文自我介绍</li>
+                                    <li>如需暂停，点击<strong>暂停</strong>按钮保留剩余时间</li>
+                                    <li>时间到达或考生完成时，点击<strong>下一步 ▶</strong>进入下一环节</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
 
-                    <h3 class="section-heading">Q: 计时器不工作或显示异常？</h3>
-                    <div class="info-box">
-                        <ol style="padding-left:18px;margin:0;">
-                            <li>点击"重置计时"按钮</li>
-                            <li>检查系统设置中的时间配置</li>
-                            <li>刷新页面重新初始化</li>
-                        </ol>
+                    <!-- 步骤 3：英文翻译 -->
+                    <div class="section-card" id="step3">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-cyan2">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 8l6 6M4 14l6-6 2-2M2 5h12M7 2v3M22 22l-5-10-5 10M14 18h6"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 3：英文翻译</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step3-translation-start.png" alt="步骤3 英文翻译抽取界面" loading="lazy">
+                                <img src="../images/exam-system/step3-translation-done.png" alt="步骤3 英文翻译题目已抽取界面" loading="lazy">
+                                <p class="screenshot-caption">图 3：英文翻译 — 抽取翻译题目后启动计时</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 4 分钟</span>
+                                    <span class="step-type">随机抽题</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>进入步骤3后，点击<strong>抽取翻译题目</strong>按钮</li>
+                                    <li>在弹出的翻译题库中随机抽取一道题目</li>
+                                    <li>题目抽取后点击<strong>开始抽取</strong>确认，再点"×"关闭</li>
+                                    <li>点击<strong>开始</strong>按钮启动计时，考生进行翻译</li>
+                                    <li>计时结束后，点击<strong>下一步 ▶</strong>进入专业问题</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
 
-                    <h3 class="section-heading">Q: 如何恢复到某个考生的考试状态？</h3>
-                    <div class="info-box">
-                        系统会自动保存每位考生的进度。刷新页面后，系统会自动恢复到最后一位考生的状态，包括当前步骤和已抽取的题目。
+                    <!-- 步骤 4：专业问题 -->
+                    <div class="section-card" id="step4">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-amber">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 4：专业问题</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step4-professional-start.png" alt="步骤4 专业问题抽取界面" loading="lazy">
+                                <img src="../images/exam-system/step4-professional-done.png" alt="步骤4 专业问题已抽取界面" loading="lazy">
+                                <p class="screenshot-caption">图 4：专业问题 — 选取科目后抽取专业题目</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 5 分钟</span>
+                                    <span class="step-type">随机抽题</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>进入步骤4后，点击<strong>抽取专业题目</strong>按钮</li>
+                                    <li>在弹出的科目选择中选取科目，点击<strong>确定</strong></li>
+                                    <li>系统从该科目题库随机抽取一道专业问题</li>
+                                    <li>点击<strong>开始抽取</strong>确认，再点"×"关闭</li>
+                                    <li>专业题可能含图片，图片显示在题目下方</li>
+                                    <li>点击<strong>开始</strong>按钮启动计时</li>
+                                    <li>计时结束后，点击<strong>下一步 ▶</strong>进入综合问答</li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
+
+                    <!-- 步骤 5：综合问答 -->
+                    <div class="section-card" id="step5">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-green">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 5：综合问答</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step5-qa.png" alt="步骤5 综合问答界面" loading="lazy">
+                                <p class="screenshot-caption">图 5：综合问答 — 考官自由提问，综合考察考生</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 9 分钟</span>
+                                    <span class="step-type">自由问答</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>进入步骤5后，系统显示综合问答说明</li>
+                                    <li>本环节<strong>无固定题目</strong>，由考官自由提问</li>
+                                    <li>本环节<strong>无时间硬性限制</strong>，由考官自行掌握</li>
+                                    <li>问答结束后，点击<strong>下一步 ▶</strong>进入考试结束</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 步骤 6：考试结束 -->
+                    <div class="section-card" id="step6">
+                        <div class="section-card-header">
+                            <div class="section-card-icon section-card-icon-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                            </div>
+                            <h2 class="section-card-title">步骤 6：考试结束</h2>
+                        </div>
+                        <div class="section-card-body">
+                            <div class="screenshot-wrap">
+                                <img src="../images/exam-system/step6-end.png" alt="步骤6 考试结束界面" loading="lazy">
+                                <p class="screenshot-caption">图 6：考试结束 — 所有步骤完成，显示结束界面</p>
+                            </div>
+                            <div class="step-guide">
+                                <div class="step-meta">
+                                    <span class="step-duration">⏱ 即时</span>
+                                    <span class="step-type">完成</span>
+                                </div>
+                                <h3>考官操作流程</h3>
+                                <ol>
+                                    <li>点击<strong>下一步 ▶</strong>后，系统自动保存考生考试记录</li>
+                                    <li>所有步骤状态更新为已完成，显示考试结束界面</li>
+                                    <li>可点击<strong>开始考试</strong>为下一位考生初始化</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能模块 -->
+            <div class="section-card" id="modules">
+                <div class="section-card-header">
+                    <div class="section-card-icon section-card-icon-orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/></svg>
+                    </div>
+                    <h2 class="section-card-title">相关功能模块</h2>
+                </div>
+                <div class="section-card-body">
+                    <p style="margin-bottom:16px;">考试系统与其他功能模块相互配合，完整支持研究生复试全流程管理。各模块详细说明请参考对应文档：</p>
+                    <table>
+                        <thead>
+                            <tr><th>功能模块</th><th>用途说明</th><th>详细文档</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>题库编辑器</strong></td>
+                                <td>管理翻译题和专业问题题库，支持添加、编辑、删除题目</td>
+                                <td><a href="database-editor-help.html">题库编辑器使用指南</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>顶部设置</strong></td>
+                                <td>设置系统顶部显示的学校 Logo、学院 Logo 和考试标题</td>
+                                <td><a href="header-setting-help.html">顶部设置使用指南</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>步骤内容设置</strong></td>
+                                <td>自定义每个考试步骤的指导说明内容</td>
+                                <td><a href="page-content-setting-help.html">步骤内容设置指南</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>考试导出</strong></td>
+                                <td>导出考试记录为 CSV、PDF 或 HTML 格式报告</td>
+                                <td><a href="export-exam-help.html">考试导出使用指南</a></td>
+                            </tr>
+                            <tr>
+                                <td><strong>AI 配置</strong></td>
+                                <td>配置 AI 提供商，为系统提供智能出题功能</td>
+                                <td><a href="ai-settings-help.html">AI 配置使用指南</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -283,5 +397,29 @@
             </div>
         </main>
     </div>
+
+    <script>
+    (function() {
+        const sections = document.querySelectorAll('.section-card[id]');
+        const navLinks = document.querySelectorAll('.sidebar-nav > a[href^="#"]');
+        if (!sections.length || !navLinks.length) return;
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(function(link) {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                    });
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+
+        sections.forEach(function(section) { observer.observe(section); });
+    })();
+    </script>
 </body>
 </html>

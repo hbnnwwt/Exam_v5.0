@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>步骤内容设置帮助文档</title>
+    <title>考试设置使用指南</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./css/help-docs.css">
 </head>
 <body>
-    <button class="hamburger" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    <button type="button" class="hamburger" aria-label="打开导航菜单" onclick="document.querySelector('.sidebar').classList.toggle('open')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
 
@@ -18,28 +18,31 @@
         <!-- Sidebar -->
         <nav class="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-                    </svg>
+                <svg class="sidebar-logo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
+                <div class="sidebar-header-text">
                     <span class="sidebar-title">帮助文档中心</span>
+                    <span class="sidebar-subtitle">研究生复试流程控制系统</span>
                 </div>
-                <p class="sidebar-subtitle">研究生复试流程控制系统</p>
             </div>
 
             <div class="sidebar-nav">
                 <div class="sidebar-nav-title">本页面导航</div>
-                <a href="#content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>内容管理说明</a>
-                <a href="#steps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>步骤选择</a>
-                <a href="#editing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>内容块编辑</a>
-                <a href="#toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="16" cy="12" r="3"/></svg>启用/禁用控制</a>
+                <a href="#overview" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>功能概述</a>
+                <a href="#layout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>界面布局</a>
+                <a href="#step-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>步骤设置</a>
+                <a href="#logo-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Logo 设置</a>
+                <a href="#preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>实时预览</a>
 
-                <div class="sidebar-nav-title" style="margin-top:16px;">其他文档</div>
+                <div class="sidebar-nav-divider"></div>
+                <div class="sidebar-nav-title">其他文档</div>
                 <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>文档中心首页</a>
                 <a href="exam-system-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>考试系统</a>
-                <a href="ai-settings-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>AI 配置</a>
-                <a href="shortcuts-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M6 16h12"/></svg>快捷键参考</a>
-                <a href="faq-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>常见问题</a>
+                <a href="database-editor-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>题库编辑器</a>
+                <a href="ai-settings-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M12 12v10"/><path d="M8 22h8"/></svg>AI 配置</a>
+                <a href="header-setting-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>顶部设置</a>
+                <a href="export-exam-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>考试导出</a>
             </div>
 
             <div class="sidebar-footer">
@@ -62,173 +65,225 @@
             <div class="page-title-card">
                 <div class="page-title-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
                     </svg>
                 </div>
-                <h1>步骤内容设置帮助文档</h1>
-                <p>研究生复试流程控制系统 · Step Content Settings Guide</p>
+                <h1>考试设置使用指南</h1>
+                <p>Exam Settings Guide · 步骤属性编辑与 Logo 管理</p>
             </div>
 
-            <!-- 内容管理说明 -->
-            <div class="section-card" id="content">
+            <!-- 功能概述 -->
+            <div class="section-card" id="overview">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #4f46e5, #818cf8);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="section-card-icon section-card-icon-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     </div>
-                    <h2 class="section-card-title">内容管理说明</h2>
+                    <h2 class="section-card-title">功能概述</h2>
                 </div>
                 <div class="section-card-body">
                     <div class="screenshot-wrap">
-                        <img src="page-content-setting-main.png" alt="步骤内容设置主界面截图">
-                        <p class="screenshot-caption">图 1：步骤内容设置主界面</p>
+                        <img src="exam-settings-main.png" alt="考试设置页面" loading="lazy">
+                        <p class="screenshot-caption">图 1：考试设置页面 — 步骤设置与 Logo 设置</p>
                     </div>
 
-                    <h3 class="section-heading">功能概述</h3>
                     <div class="feature-list">
-                        <p><strong>步骤内容设置</strong>是考试系统的核心配置功能，用于管理每个考试步骤的指导内容和说明信息，为考生和考官提供清晰的操作指引。</p>
+                        <p style="margin-bottom:12px;"><strong>考试设置页面</strong>（路由 <code>/settings</code>）是系统管理员配置考试流程参数的核心入口。通过此页面，您可以自定义每个考试步骤的标题、描述、时长和类型，以及设置系统顶部的标题和 Logo 图片。</p>
                         <ul>
-                            <li><strong>步骤内容管理：</strong>为每个考试步骤设置专门的指导内容</li>
-                            <li><strong>多内容支持：</strong>每个步骤可以包含多个内容块</li>
-                            <li><strong>实时编辑：</strong>支持在线编辑和即时保存</li>
-                            <li><strong>状态管理：</strong>控制内容的启用/禁用状态</li>
-                            <li><strong>时间追踪：</strong>记录内容的创建和更新时间</li>
+                            <li><strong>步骤属性编辑：</strong>自定义每个考试步骤的标题、描述、时间限制和步骤类型</li>
+                            <li><strong>Logo 设置：</strong>上传学校 Logo 和学院 Logo，设置系统标题</li>
+                            <li><strong>实时预览：</strong>设置后即时预览顶部栏显示效果</li>
+                            <li><strong>即时生效：</strong>保存后考试页面立即应用新设置</li>
                         </ul>
                     </div>
 
-                    <h3 class="section-heading">界面布局</h3>
+                    <div class="info-box" style="margin-top:16px;">
+                        <strong>与"顶部设置"页面的区别：</strong>本页面（<code>/settings</code>）通过<strong>文件上传</strong>方式设置 Logo，同时包含步骤属性编辑。而"顶部设置"页面（<code>/header-settings</code>）通过 <strong>URL 输入</strong>方式设置 Logo，功能更简洁。两者修改的是同一组数据，任选其一使用即可。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 界面布局 -->
+            <div class="section-card" id="layout">
+                <div class="section-card-header">
+                    <div class="section-card-icon section-card-icon-blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
+                    </div>
+                    <h2 class="section-card-title">界面布局</h2>
+                </div>
+                <div class="section-card-body">
+                    <h3 class="section-heading">页面结构</h3>
+                    <table>
+                        <thead>
+                            <tr><th>区域</th><th>位置</th><th>内容说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>顶部导航栏</strong></td><td>页面最上方</td><td>页面标题"考试设置"、"返回考试"按钮、"帮助"按钮</td></tr>
+                            <tr><td><strong>左侧边栏</strong></td><td>左侧固定宽度</td><td>考试步骤列表、系统外观入口（Logo 设置、AI 配置）</td></tr>
+                            <tr><td><strong>右侧编辑区</strong></td><td>右侧主区域</td><td>步骤属性编辑表单 或 Logo 设置表单</td></tr>
+                            <tr><td><strong>底部版权栏</strong></td><td>页面最下方</td><td>版权信息和联系方式</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="section-heading">左侧边栏</h3>
                     <div class="step-list">
                         <ol>
-                            <li><strong>顶部导航：</strong>页面标题和快捷链接</li>
-                            <li><strong>左侧步骤列表：</strong>显示所有考试步骤，点击选择</li>
-                            <li><strong>右侧内容编辑区：</strong>显示选中步骤的内容管理界面</li>
-                            <li><strong>内容列表：</strong>显示当前步骤的所有内容块</li>
-                            <li><strong>操作按钮：</strong>编辑、删除、添加等功能按钮</li>
+                            <li><strong>考试步骤列表：</strong>显示 6 个考试步骤，点击步骤编号选中该步骤进行编辑</li>
+                            <li><strong>系统外观：</strong>
+                                <ul>
+                                    <li><strong>Logo 设置：</strong>点击切换到 Logo 设置面板</li>
+                                    <li><strong>AI 配置：</strong>点击跳转到 AI 配置页面（<code>/settings/ai</code>）</li>
+                                </ul>
+                            </li>
                         </ol>
                     </div>
                 </div>
             </div>
 
-            <!-- 步骤选择 -->
-            <div class="section-card" id="steps">
+            <!-- 步骤设置 -->
+            <div class="section-card" id="step-settings">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #0ea5e9, #38bdf8);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    <div class="section-card-icon section-card-icon-green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                     </div>
-                    <h2 class="section-card-title">步骤选择</h2>
+                    <h2 class="section-card-title">步骤设置</h2>
                 </div>
                 <div class="section-card-body">
-                    <h3 class="section-heading">如何选择考试步骤</h3>
+                    <h3 class="section-heading">编辑步骤属性</h3>
+                    <p style="margin-bottom:16px;">每个考试步骤有 4 个可编辑属性：</p>
+
+                    <table>
+                        <thead>
+                            <tr><th>属性</th><th>类型</th><th>说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>步骤标题</strong></td><td>文本</td><td>步骤显示名称，如"中文自我介绍"</td></tr>
+                            <tr><td><strong>步骤描述</strong></td><td>多行文本</td><td>步骤的详细说明，显示在考试页面中</td></tr>
+                            <tr><td><strong>时间限制</strong></td><td>数字（秒）</td><td>该步骤的倒计时时长，0 表示无限制</td></tr>
+                            <tr><td><strong>步骤类型</strong></td><td>下拉选择</td><td>决定该步骤的功能行为</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="section-heading">步骤类型选项</h3>
+                    <table>
+                        <thead>
+                            <tr><th>类型值</th><th>显示名称</th><th>说明</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><code>introduction</code></td><td>自我介绍</td><td>考生进行自我介绍（中文或英文）</td></tr>
+                            <tr><td><code>translation</code></td><td>英文翻译</td><td>抽取翻译题目，考生现场翻译</td></tr>
+                            <tr><td><code>professional</code></td><td>专业问题</td><td>按科目抽取专业问题，考生回答</td></tr>
+                            <tr><td><code>comprehensive</code></td><td>综合问答</td><td>考官自由提问，综合考察</td></tr>
+                            <tr><td><code>completion</code></td><td>考试结束</td><td>考试完成，记录保存</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3 class="section-heading">操作步骤</h3>
                     <div class="step-list">
                         <ol>
-                            <li>在左侧步骤列表中点击要编辑的步骤</li>
-                            <li>右侧会显示该步骤的所有内容</li>
-                            <li>如果步骤没有内容，会显示"请选择一个步骤"提示</li>
+                            <li>在左侧"考试步骤"列表中点击要编辑的步骤编号</li>
+                            <li>右侧编辑区显示该步骤的当前设置</li>
+                            <li>修改步骤标题、描述、时间限制或步骤类型</li>
+                            <li>时间限制输入秒数，右侧会实时显示转换为"X分Y秒"的格式</li>
+                            <li>点击"保存设置"按钮保存修改</li>
                         </ol>
                     </div>
 
-                    <h3 class="section-heading">系统预设步骤</h3>
+                    <div class="info-box" style="margin-top:16px;">
+                        <strong>提示：</strong>时间限制设置为 <code>0</code> 表示无时间限制，计时器不会倒计时。建议为每个步骤设置合理的时间限制，帮助考官控制考试节奏。
+                    </div>
+
+                    <div class="warning-box" style="margin-top:16px;">
+                        <strong>注意：</strong>修改步骤类型会影响考试页面的功能行为。例如将步骤 3 从"英文翻译"改为"自我介绍"后，该步骤将不再显示抽题按钮。请谨慎修改步骤类型。
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo 设置 -->
+            <div class="section-card" id="logo-settings">
+                <div class="section-card-header">
+                    <div class="section-card-icon section-card-icon-purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    </div>
+                    <h2 class="section-card-title">Logo 设置</h2>
+                </div>
+                <div class="section-card-body">
+                    <h3 class="section-heading">进入 Logo 设置</h3>
+                    <div class="step-list">
+                        <ol>
+                            <li>在左侧边栏"系统外观"区域点击"Logo 设置"卡片</li>
+                            <li>右侧编辑区切换到 Logo 设置面板</li>
+                        </ol>
+                    </div>
+
+                    <h3 class="section-heading">设置系统标题</h3>
+                    <div class="step-list">
+                        <ol>
+                            <li>在"系统标题"输入框中输入标题文字</li>
+                            <li>标题会显示在考试页面顶部栏中央</li>
+                            <li>建议格式："XX 大学 XX 学院研究生复试面试"</li>
+                        </ol>
+                    </div>
+
+                    <h3 class="section-heading">上传 Logo 图片</h3>
+                    <div class="step-list">
+                        <ol>
+                            <li>点击"选择图片"按钮（学校 Logo 或学院 Logo）</li>
+                            <li>从本地选择图片文件（支持 JPG、PNG、GIF 等格式）</li>
+                            <li>上传成功后，图片预览会显示在按钮下方</li>
+                            <li>如需更换，点击"选择图片"重新上传即可</li>
+                            <li>如需删除，点击预览图右上角的 <strong>×</strong> 按钮</li>
+                        </ol>
+                    </div>
+
+                    <h3 class="section-heading">Logo 显示说明</h3>
                     <table>
                         <thead>
-                            <tr><th>步骤</th><th>名称</th><th>默认时长</th><th>内容用途</th></tr>
+                            <tr><th>Logo</th><th>显示位置</th><th>建议尺寸</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>步骤 1</td><td>中文自我介绍</td><td>2 分钟</td><td>中文自我介绍指导</td></tr>
-                            <tr><td>步骤 2</td><td>英文自我介绍</td><td>3 分钟</td><td>英文自我介绍指导</td></tr>
-                            <tr><td>步骤 3</td><td>英文翻译</td><td>4 分钟</td><td>翻译题目说明</td></tr>
-                            <tr><td>步骤 4</td><td>专业问题</td><td>5 分钟</td><td>专业题目指导</td></tr>
-                            <tr><td>步骤 5</td><td>综合问答</td><td>9 分钟</td><td>综合问答说明</td></tr>
+                            <tr><td><strong>学校 Logo</strong></td><td>顶部栏左侧（第一个）</td><td>宽度不超过 200px，高度不超过 80px</td></tr>
+                            <tr><td><strong>学院 Logo</strong></td><td>顶部栏左侧（第二个）</td><td>宽度不超过 200px，高度不超过 80px</td></tr>
                         </tbody>
                     </table>
 
                     <div class="info-box" style="margin-top:16px;">
-                        <strong>注意：</strong>每个步骤都可以设置多个内容块，系统会按顺序显示这些内容。
+                        <strong>图片要求：</strong>建议使用 PNG 格式（支持透明背景），文件大小不超过 2MB。图片会自动适配顶部栏高度，建议使用横向比例的 Logo。
                     </div>
                 </div>
             </div>
 
-            <!-- 内容块编辑 -->
-            <div class="section-card" id="editing">
+            <!-- 实时预览 -->
+            <div class="section-card" id="preview">
                 <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    <div class="section-card-icon section-card-icon-orange">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     </div>
-                    <h2 class="section-card-title">内容块编辑</h2>
+                    <h2 class="section-card-title">实时预览</h2>
                 </div>
                 <div class="section-card-body">
-                    <h3 class="section-heading">添加新内容</h3>
+                    <h3 class="section-heading">预览效果</h3>
+                    <p style="margin-bottom:16px;">在 Logo 设置面板底部，有一个<strong>预览效果</strong>区域，实时显示顶部栏的最终效果：</p>
+
+                    <div class="step-list">
+                        <ul>
+                            <li><strong>Logo 排列：</strong>学校 Logo 和学院 Logo 按顺序显示在预览左侧</li>
+                            <li><strong>标题显示：</strong>系统标题显示在预览右侧</li>
+                            <li><strong>背景色：</strong>预览使用与考试页面相同的蓝色背景</li>
+                        </ul>
+                    </div>
+
+                    <h3 class="section-heading">保存设置</h3>
                     <div class="step-list">
                         <ol>
-                            <li>选择要添加内容的步骤</li>
-                            <li>点击"添加新内容"按钮</li>
-                            <li>在弹出的编辑框中输入内容文本</li>
-                            <li>设置内容的启用状态</li>
-                            <li>点击保存完成添加</li>
+                            <li>确认预览效果满意后，点击底部的"保存设置"按钮</li>
+                            <li>系统提示"保存成功"后，设置立即生效</li>
+                            <li>返回考试页面（<code>/</code>）即可看到更新后的效果</li>
                         </ol>
                     </div>
 
-                    <h3 class="section-heading">编辑现有内容</h3>
-                    <div class="step-list">
-                        <ol>
-                            <li>在内容列表中找到要编辑的内容</li>
-                            <li>点击"编辑"按钮</li>
-                            <li>在编辑框中修改内容文本</li>
-                            <li>调整启用/禁用状态（如需要）</li>
-                            <li>保存更改</li>
-                        </ol>
-                    </div>
-
-                    <h3 class="section-heading">删除内容</h3>
-                    <div class="warning-box">
-                        <strong>注意：</strong>删除操作不可恢复，请谨慎操作。
-                        <ol style="padding-left:18px;margin:8px 0 0;">
-                            <li>点击内容旁的"删除"按钮</li>
-                            <li>系统会弹出确认对话框</li>
-                            <li>确认删除后，内容将永久移除</li>
-                        </ol>
-                    </div>
-
-                    <h3 class="section-heading">内容块结构</h3>
-                    <div class="feature-list">
-                        <ul>
-                            <li><strong>内容标识：</strong>每个内容块有唯一的标识符</li>
-                            <li><strong>内容文本：</strong>显示给考生和考官的指导信息</li>
-                            <li><strong>启用状态：</strong>控制内容是否在考试中显示</li>
-                            <li><strong>时间戳：</strong>记录内容的最后更新时间</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 启用/禁用控制 -->
-            <div class="section-card" id="toggle">
-                <div class="section-card-header">
-                    <div class="section-card-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="5" width="22" height="14" rx="7" ry="7"/><circle cx="16" cy="12" r="3"/></svg>
-                    </div>
-                    <h2 class="section-card-title">启用/禁用控制</h2>
-                </div>
-                <div class="section-card-body">
-                    <h3 class="section-heading">状态说明</h3>
-                    <div class="feature-list">
-                        <ul>
-                            <li><strong>已启用：</strong>内容正常显示，考试时会显示此内容</li>
-                            <li><strong>已禁用：</strong>内容暂时隐藏，考试时不会显示此内容</li>
-                        </ul>
-                    </div>
-
-                    <div class="info-box" style="margin-top:16px;">
-                        <strong>使用建议：</strong>可以通过禁用某些内容块来临时隐藏特定指导信息，而不必删除内容。这样在需要时可以重新启用，方便内容的灵活管理。
-                    </div>
-
-                    <h3 class="section-heading">管理建议</h3>
-                    <div class="feature-list">
-                        <ul>
-                            <li><strong>定期更新：</strong>根据考试要求定期更新指导内容</li>
-                            <li><strong>版本控制：</strong>重要修改前备份原有内容</li>
-                            <li><strong>测试验证：</strong>修改后在实际考试前进行测试</li>
-                            <li><strong>反馈收集：</strong>收集考官和考生的反馈，持续改进</li>
-                        </ul>
+                    <div class="tip-box" style="margin-top:16px;">
+                        <strong>步骤设置保存：</strong>步骤属性编辑完成后，同样需要点击"保存设置"按钮。保存成功后，考试页面会立即重新加载步骤设置，无需手动刷新。
                     </div>
                 </div>
             </div>
@@ -239,5 +294,29 @@
             </div>
         </main>
     </div>
+
+    <script>
+    (function() {
+        const sections = document.querySelectorAll('.section-card[id]');
+        const navLinks = document.querySelectorAll('.sidebar-nav > a[href^="#"]');
+        if (!sections.length || !navLinks.length) return;
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(function(link) {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                    });
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '-80px 0px -60% 0px',
+            threshold: 0
+        });
+
+        sections.forEach(function(section) { observer.observe(section); });
+    })();
+    </script>
 </body>
 </html>

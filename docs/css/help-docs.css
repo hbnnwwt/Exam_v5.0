@@ -7,26 +7,26 @@
    1. CSS Variables (Design Tokens)
    ============================================================ */
 :root {
-  /* Colors */
-  --primary: #4f46e5;
-  --primary-light: #818cf8;
-  --primary-dark: #3730a3;
-  --accent: #06b6d4;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  /* Colors — naming matches index.html tokens */
+  --color-primary: #4f46e5;
+  --color-primary-light: #818cf8;
+  --color-primary-dark: #3730a3;
+  --color-accent: #06b6d4;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
 
   /* Background & Surface */
-  --bg: #f8fafc;
-  --surface: #ffffff;
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
 
   /* Text */
-  --text: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #64748b;
 
   /* Border */
-  --border: #e2e8f0;
+  --color-border: #e2e8f0;
 
   /* Shadow */
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
@@ -60,15 +60,15 @@ html {
 
 body {
   font-family: 'Noto Sans SC', 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
+  background-color: var(--color-bg);
+  color: var(--color-text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  color: var(--primary);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -98,86 +98,170 @@ img {
   left: 0;
   width: var(--sidebar-width);
   height: 100vh;
-  background-color: var(--surface);
-  border-right: 1px solid var(--border);
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   z-index: 100;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .sidebar-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 20px 16px;
-  border-bottom: 1px solid var(--border);
-}
-
-.sidebar-header .logo-icon {
-  width: 32px;
-  height: 32px;
-  color: var(--primary);
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
-.sidebar-header .site-title {
-  font-size: 1rem;
+.sidebar-header .sidebar-logo {
+  width: 28px;
+  height: 28px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.sidebar-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.sidebar-header .sidebar-title {
+  font-size: 0.8rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--color-text);
   white-space: nowrap;
+  line-height: 1.2;
+}
+
+.sidebar-header .sidebar-subtitle {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  line-height: 1.2;
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 12px 0;
+  overflow-y: auto;
+  padding: 8px 0;
+  overscroll-behavior: contain;
 }
 
-.sidebar-nav ul {
-  list-style: none;
+/* Nav section title */
+.sidebar-nav-title {
+  padding: 10px 16px 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.sidebar-nav li a {
-  display: block;
-  padding: 10px 16px;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+/* Nav links */
+.sidebar-nav > a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  color: var(--color-text-secondary);
+  font-size: 0.825rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
   border-left: 3px solid transparent;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: 1.4;
 }
 
-.sidebar-nav li a:hover {
-  color: var(--primary);
-  background-color: rgba(79, 70, 229, 0.06);
+.sidebar-nav > a:hover {
+  color: var(--color-primary);
+  background-color: rgba(79, 70, 229, 0.05);
   text-decoration: none;
 }
 
-.sidebar-nav li a.active {
-  color: var(--primary);
+.sidebar-nav > a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
+}
+
+.sidebar-nav > a.active {
+  color: var(--color-primary);
   background-color: rgba(79, 70, 229, 0.1);
-  border-left-color: var(--primary);
+  border-left-color: var(--color-primary);
+  font-weight: 600;
+}
+
+/* Nav icon — small, secondary to text */
+.sidebar-nav > a svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.sidebar-nav > a:hover svg,
+.sidebar-nav > a.active svg {
+  opacity: 1;
+}
+
+/* Divider between nav groups */
+.sidebar-nav-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 6px 16px;
 }
 
 .sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  padding: 10px 16px 12px;
+  border-top: 1px solid var(--color-border);
+  flex-shrink: 0;
 }
 
-.sidebar-footer .back-link {
+.sidebar-footer .sidebar-back {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  color: var(--primary);
+  gap: 5px;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
   font-weight: 500;
-  margin-bottom: 4px;
+  text-decoration: none;
+  border-radius: 5px;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
-.sidebar-footer .version-text {
-  display: block;
-  margin-top: 4px;
+.sidebar-footer .sidebar-back:hover {
+  color: var(--color-primary);
+  background-color: rgba(79, 70, 229, 0.08);
+}
+
+.sidebar-footer .sidebar-back:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.sidebar-footer .sidebar-back svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+
+.sidebar-footer .sidebar-back:hover svg {
+  transform: translateX(-2px);
+}
+
+.sidebar-footer .sidebar-version {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  opacity: 0.7;
 }
 
 /* ============================================================
@@ -194,11 +278,11 @@ img {
    6. Page Title Card (Hero)
    ============================================================ */
 .page-title-card {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 50%, var(--color-accent) 100%);
   border-radius: var(--radius);
   padding: 40px;
   margin-bottom: 32px;
-  color: var(--surface);
+  color: var(--color-surface);
   display: flex;
   align-items: center;
   gap: 24px;
@@ -233,32 +317,74 @@ img {
    7. Section Card
    ============================================================ */
 .section-card {
-  background-color: var(--surface);
+  background-color: var(--color-surface);
   border-radius: var(--radius);
   padding: 28px;
   margin-bottom: 24px;
   box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
 }
 
-.section-card .section-icon {
-  width: 28px;
-  height: 28px;
-  color: var(--primary);
-  margin-bottom: 12px;
+.section-card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border);
 }
+
+.section-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.section-card .section-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-card .section-card-icon svg {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+/* Section icon gradient variants */
+.section-card-icon-primary { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%); }
+.section-card-icon-blue    { background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%); }
+.section-card-icon-purple  { background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%); }
+.section-card-icon-green   { background: linear-gradient(135deg, var(--color-success) 0%, #34d399 100%); }
+.section-card-icon-orange  { background: linear-gradient(135deg, var(--color-warning) 0%, #fbbf24 100%); }
+.section-card-icon-pink    { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
+.section-card-icon-cyan    { background: linear-gradient(135deg, var(--color-accent) 0%, #22d3ee 100%); }
+.section-card-icon-dark     { background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary) 100%); }
+.section-card-icon-amber   { background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); }
+.section-card-icon-red     { background: linear-gradient(135deg, #ef4444 0%, #f87171 100%); }
+.section-card-icon-indigo   { background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%); }
+.section-card-icon-emerald  { background: linear-gradient(135deg, #10a37f 0%, #19c37d 100%); }
+.section-card-icon-violet   { background: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%); }
+.section-card-icon-googleg  { background: linear-gradient(135deg, #4285f4 0%, #34a853 100%); }
+.section-card-icon-cyan2   { background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%); }
 
 .section-card .section-title {
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--color-text);
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .section-card .section-body {
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.95rem;
   line-height: 1.75;
 }
@@ -282,14 +408,14 @@ img {
 .screenshot-wrap img {
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   max-width: 100%;
 }
 
 .screenshot-caption {
   margin-top: 12px;
   font-size: 0.85rem;
-  color: var(--text-muted);
+  color: var(--color-text-muted);
   font-style: italic;
 }
 
@@ -302,12 +428,12 @@ img {
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   padding: 16px 20px;
   margin: 20px 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
 .info-box strong {
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 /* ============================================================
@@ -319,12 +445,12 @@ img {
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   padding: 16px 20px;
   margin: 20px 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
 .warning-box strong {
-  color: var(--warning);
+  color: var(--color-warning);
 }
 
 /* ============================================================
@@ -336,12 +462,12 @@ img {
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   padding: 16px 20px;
   margin: 20px 0;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
 }
 
 .tip-box strong {
-  color: var(--success);
+  color: var(--color-success);
 }
 
 /* ============================================================
@@ -362,7 +488,7 @@ img {
   position: relative;
   margin-bottom: 12px;
   padding-left: 12px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -379,7 +505,7 @@ img {
   width: 22px;
   height: 22px;
   background-color: #ffc107;
-  color: var(--text);
+  color: var(--color-text);
   border-radius: 50%;
   font-size: 0.75rem;
   font-weight: 700;
@@ -404,7 +530,7 @@ img {
   position: relative;
   margin-bottom: 8px;
   padding-left: 20px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   line-height: 1.6;
 }
@@ -438,8 +564,8 @@ table {
 }
 
 thead {
-  background-color: var(--primary);
-  color: var(--surface);
+  background-color: var(--color-primary);
+  color: var(--color-surface);
 }
 
 thead th {
@@ -451,7 +577,7 @@ thead th {
 }
 
 tbody tr {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 tbody tr:nth-child(even) {
@@ -459,7 +585,7 @@ tbody tr:nth-child(even) {
 }
 
 tbody tr:nth-child(odd) {
-  background-color: var(--surface);
+  background-color: var(--color-surface);
 }
 
 tbody tr:hover {
@@ -468,12 +594,12 @@ tbody tr:hover {
 
 tbody td {
   padding: 12px 16px;
-  color: var(--text-secondary);
+  color: var(--color-text-secondary);
 }
 
 tbody td:first-child {
   font-weight: 500;
-  color: var(--text);
+  color: var(--color-text);
 }
 
 /* ============================================================
@@ -485,9 +611,9 @@ kbd {
   font-family: 'Inter', monospace;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text);
+  color: var(--color-text);
   background-color: #f1f5f9;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border);
   border-bottom-width: 2px;
   border-radius: 4px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -500,7 +626,7 @@ kbd {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--primary);
+  color: var(--color-primary);
   font-size: 0.9rem;
   font-weight: 500;
   margin-top: 16px;
@@ -508,7 +634,7 @@ kbd {
 
 .back-top-link:hover {
   text-decoration: none;
-  color: var(--primary-dark);
+  color: var(--color-primary-dark);
 }
 
 .back-top-link svg {
@@ -523,8 +649,8 @@ kbd {
   text-align: center;
   padding: 32px 0;
   margin-top: 40px;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
   font-size: 0.85rem;
 }
 
@@ -539,8 +665,8 @@ kbd {
   z-index: 200;
   width: 44px;
   height: 44px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
   cursor: pointer;
@@ -552,7 +678,7 @@ kbd {
 .hamburger svg {
   width: 24px;
   height: 24px;
-  color: var(--text);
+  color: var(--color-text);
 }
 
 /* ============================================================
@@ -606,4 +732,89 @@ kbd {
   tbody td {
     padding: 10px 12px;
   }
+}
+
+/* ============================================================
+   9. Step Guide（步骤操作指引卡片）
+   ============================================================ */
+.step-guide {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow);
+}
+
+.step-meta {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.step-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: var(--color-bg);
+  padding: 3px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+}
+
+.step-type {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  background: rgba(79, 70, 229, 0.08);
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+.step-guide h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.step-guide ol {
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.step-guide li {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  padding-left: 20px;
+  position: relative;
+}
+
+.step-guide li::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0.5;
+}
+
+.step-guide li strong {
+  color: var(--color-text);
+  font-weight: 600;
 }

@@ -3,8 +3,28 @@
     <!-- 顶部导航 -->
     <header class="header">
       <div class="header-left">
-        <button class="back-btn" @click="$router.back()">← 返回</button>
+        <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/>
+          <path d="M12 12v10"/>
+          <path d="M8 22h8"/>
+        </svg>
         <h1>AI 配置</h1>
+      </div>
+      <div class="header-right">
+        <router-link to="/settings" class="header-btn header-btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15 18 9 12 15 6"/>
+          </svg>
+          返回设置
+        </router-link>
+        <router-link to="/help" class="header-btn header-btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          帮助
+        </router-link>
       </div>
     </header>
 
@@ -622,7 +642,8 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
+  padding: 0 var(--spacing-5);
+  height: var(--header-height);
   background: var(--color-primary);
   color: var(--color-text-on-primary);
 }
@@ -630,7 +651,63 @@ onMounted(() => {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--spacing-3);
+}
+
+.header-icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.9;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.header-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+  border: none;
+}
+
+.header-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.header-btn-secondary {
+  background: var(--color-header-btn-bg);
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-secondary:hover {
+  background: var(--color-header-btn-hover);
+  opacity: 0.9;
+}
+
+.header-btn-ghost {
+  background: transparent;
+  color: var(--color-text-on-primary);
+}
+
+.header-btn-ghost:hover {
+  background: var(--color-header-btn-bg);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .back-btn {
@@ -654,14 +731,10 @@ onMounted(() => {
 .delete-btn:focus-visible,
 .confirm-btn:focus-visible,
 .cancel-btn:focus-visible,
-.provider-card:focus-visible {
+.provider-card:focus-visible,
+.header-btn:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 20px;
 }
 
 .main-content {

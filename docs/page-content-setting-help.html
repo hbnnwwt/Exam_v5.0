@@ -41,7 +41,6 @@
                 <a href="exam-system-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>考试系统</a>
                 <a href="database-editor-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>题库编辑器</a>
                 <a href="ai-settings-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4v2a4 4 0 0 1-8 0V6a4 4 0 0 1 4-4z"/><path d="M12 12v10"/><path d="M8 22h8"/></svg>AI 配置</a>
-                <a href="header-setting-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>顶部设置</a>
                 <a href="export-exam-help.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>考试导出</a>
             </div>
 
@@ -87,6 +86,12 @@
                         <p class="screenshot-caption">图 1：考试设置页面 — 步骤设置与 Logo 设置</p>
                     </div>
 
+                    <!-- 截图：左侧边栏 -->
+                    <div class="screenshot-wrap" style="margin-top:20px;">
+                        <img src="exam-settings-sidebar.png" alt="左侧边栏" loading="lazy">
+                        <p class="screenshot-caption">图 2：左侧边栏（考试步骤列表 + 系统外观入口）</p>
+                    </div>
+
                     <div class="feature-list">
                         <p style="margin-bottom:12px;"><strong>考试设置页面</strong>（路由 <code>/settings</code>）是系统管理员配置考试流程参数的核心入口。通过此页面，您可以自定义每个考试步骤的标题、描述、时长和类型，以及设置系统顶部的标题和 Logo 图片。</p>
                         <ul>
@@ -98,7 +103,7 @@
                     </div>
 
                     <div class="info-box" style="margin-top:16px;">
-                        <strong>与"顶部设置"页面的区别：</strong>本页面（<code>/settings</code>）通过<strong>文件上传</strong>方式设置 Logo，同时包含步骤属性编辑。而"顶部设置"页面（<code>/header-settings</code>）通过 <strong>URL 输入</strong>方式设置 Logo，功能更简洁。两者修改的是同一组数据，任选其一使用即可。
+                        <strong>Logo 设置说明：</strong>本页面（<code>/settings</code>）通过<strong>文件上传</strong>方式设置学校 Logo 和学院 Logo，与顶部标题一同管理。
                     </div>
                 </div>
             </div>
@@ -150,6 +155,13 @@
                 </div>
                 <div class="section-card-body">
                     <h3 class="section-heading">编辑步骤属性</h3>
+
+                    <!-- 截图：步骤属性编辑表单 -->
+                    <div class="screenshot-wrap" style="margin-bottom:16px;">
+                        <img src="exam-settings-step-form.png" alt="步骤属性编辑表单" loading="lazy">
+                        <p class="screenshot-caption">图 3：步骤属性编辑表单（标题、描述、时间限制、步骤类型）</p>
+                    </div>
+
                     <p style="margin-bottom:16px;">每个考试步骤有 4 个可编辑属性：</p>
 
                     <table>
@@ -165,6 +177,13 @@
                     </table>
 
                     <h3 class="section-heading">步骤类型选项</h3>
+
+                    <!-- 截图：步骤类型下拉菜单 -->
+                    <div class="screenshot-wrap" style="margin-bottom:16px;">
+                        <img src="exam-settings-step-type-dropdown.png" alt="步骤类型下拉菜单" loading="lazy">
+                        <p class="screenshot-caption">图 4：步骤类型下拉菜单展开状态（显示 5 个选项）</p>
+                    </div>
+
                     <table>
                         <thead>
                             <tr><th>类型值</th><th>显示名称</th><th>说明</th></tr>
@@ -209,6 +228,13 @@
                 </div>
                 <div class="section-card-body">
                     <h3 class="section-heading">进入 Logo 设置</h3>
+
+                    <!-- 截图：Logo 设置面板 -->
+                    <div class="screenshot-wrap" style="margin-bottom:16px;">
+                        <img src="exam-settings-logo-panel.png" alt="Logo设置面板" loading="lazy">
+                        <p class="screenshot-caption">图 5：Logo 设置面板（系统标题输入框 + 学校/学院 Logo 上传按钮 + 预览区域）</p>
+                    </div>
+
                     <div class="step-list">
                         <ol>
                             <li>在左侧边栏"系统外观"区域点击"Logo 设置"卡片</li>
@@ -226,6 +252,13 @@
                     </div>
 
                     <h3 class="section-heading">上传 Logo 图片</h3>
+
+                    <!-- 截图：Logo 上传成功状态 -->
+                    <div class="screenshot-wrap" style="margin-bottom:16px;">
+                        <img src="exam-settings-logo-uploaded.png" alt="Logo上传成功状态" loading="lazy">
+                        <p class="screenshot-caption">图 6：Logo 上传成功状态（显示图片预览 + 删除按钮）</p>
+                    </div>
+
                     <div class="step-list">
                         <ol>
                             <li>点击"选择图片"按钮（学校 Logo 或学院 Logo）</li>
@@ -263,13 +296,20 @@
                 </div>
                 <div class="section-card-body">
                     <h3 class="section-heading">预览效果</h3>
+
+                    <!-- 截图：实时预览效果 -->
+                    <div class="screenshot-wrap" style="margin-bottom:16px;">
+                        <img src="exam-settings-preview.png" alt="实时预览效果" loading="lazy">
+                        <p class="screenshot-caption">图 7：Logo 设置面板底部的实时预览区域（白色背景 + Logo + 标题）</p>
+                    </div>
+
                     <p style="margin-bottom:16px;">在 Logo 设置面板底部，有一个<strong>预览效果</strong>区域，实时显示顶部栏的最终效果：</p>
 
                     <div class="step-list">
                         <ul>
                             <li><strong>Logo 排列：</strong>学校 Logo 和学院 Logo 按顺序显示在预览左侧</li>
                             <li><strong>标题显示：</strong>系统标题显示在预览右侧</li>
-                            <li><strong>背景色：</strong>预览使用与考试页面相同的蓝色背景</li>
+                            <li><strong>背景色：</strong>预览使用与考试页面相同的白色背景</li>
                         </ul>
                     </div>
 

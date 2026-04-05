@@ -735,11 +735,11 @@ const loadFooterSettings = async () => {
   display: none;
 }
 
-.file-label {
+.form-group .file-label {
   display: inline-block;
   padding: var(--spacing-2) var(--spacing-4);
-  background: var(--color-primary);
-  color: var(--color-text-on-primary);
+  background: var(--color-success);
+  color: #ffffff;
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--font-size-sm);
@@ -747,8 +747,8 @@ const loadFooterSettings = async () => {
   transition: background var(--transition-fast);
 }
 
-.file-label:hover {
-  background: var(--color-primary-hover);
+.form-group .file-label:hover {
+  background: var(--color-success-hover);
 }
 
 .logo-preview {
@@ -808,30 +808,28 @@ const loadFooterSettings = async () => {
 .header-preview {
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
-  padding: var(--spacing-4);
-  background: var(--color-primary);
-  border-radius: var(--radius-lg);
-  color: var(--color-text-on-primary);
+  gap: 15px;
+  padding: 15px 20px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .preview-logos {
   display: flex;
-  gap: var(--spacing-3);
+  gap: 15px;
 }
 
 .preview-logo {
-  height: 40px;
+  height: 45px;
   object-fit: contain;
-  background: var(--color-surface);
-  padding: var(--spacing-2);
-  border-radius: var(--radius-md);
 }
 
 .preview-title {
   margin: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #0f172a;
+  font-family: var(--font-serif, "Noto Serif SC", serif);
 }
 
 /* Save Button */

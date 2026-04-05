@@ -636,6 +636,8 @@ const renderQuestion = (questionData) => {
 
   return escapeHtml(String(questionData))
 }
+
+defineExpose({ startDraw })
 </script>
 
 <style scoped>

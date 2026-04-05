@@ -86,6 +86,8 @@ watch(() => examStore.timer.isRunning, (newVal) => {
 onUnmounted(() => {
   stopInterval()
 })
+
+defineExpose({ start, pause, reset })
 </script>
 
 <style scoped>

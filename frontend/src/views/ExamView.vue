@@ -4,8 +4,8 @@
     <header class="header">
       <div class="header-content">
         <div class="header-logos">
-          <img v-if="settings.instituteLogo" :src="settings.instituteLogo" class="logo" alt="学院Logo">
-          <img v-if="settings.collegeLogo" :src="settings.collegeLogo" class="logo" alt="学校Logo">
+          <img v-if="settings.instituteLogo" :src="settings.instituteLogo" class="logo" alt="学校Logo">
+          <img v-if="settings.collegeLogo" :src="settings.collegeLogo" class="logo" alt="学院Logo">
         </div>
         <h1 class="header-title">{{ settings.title }}</h1>
         <div class="header-controls">
@@ -56,12 +56,12 @@
         <div v-else class="exam-content">
           <div class="step-header">
             <h2>{{ examStore.stepName }}</h2>
-            <Timer />
+            <Timer ref="timerRef" />
           </div>
 
           <!-- 步骤内容 -->
           <div class="step-content">
-            <StepContent :step="examStore.currentStep" />
+            <StepContent ref="stepContentRef" :step="examStore.currentStep" />
           </div>
 
           <!-- 控制按钮 -->
@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useExamStore } from '@/stores/exam'
 import { useToastStore } from '@/stores/toast'
 import api from '@/api'
@@ -133,6 +133,9 @@ import StepContent from '@/components/StepContent.vue'
 
 const examStore = useExamStore()
 const toast = useToastStore()
+
+const timerRef = ref(null)
+const stepContentRef = ref(null)
 
 // 状态
 const leftPanelCollapsed = ref(false)
@@ -308,10 +311,85 @@ const startAutoSave = () => {
 // 页面关闭时不保存进度
 // 进度保存依赖：用户操作时主动保存
 
+// 键盘快捷键
+const handleKeydown = (e) => {
+  // 忽略输入框中的按键
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return
+
+  // Space: 开始考试
+  if (e.code === 'Space' && !examStore.currentStudent) {
+    e.preventDefault()
+    startExam()
+    return
+  }
+
+  // ArrowLeft: 上一步
+  if (e.code === 'ArrowLeft' && examStore.currentStep > 1) {
+    e.preventDefault()
+    prevStep()
+    return
+  }
+
+  // ArrowRight: 下一步
+  if (e.code === 'ArrowRight' && examStore.currentStep < examStore.totalSteps && !isProcessing.value) {
+    e.preventDefault()
+    nextStep()
+    return
+  }
+
+  // D: 抽取题目（步骤3或4）
+  if (e.code === 'KeyD' && (examStore.currentStep === 3 || examStore.currentStep === 4)) {
+    e.preventDefault()
+    if (stepContentRef.value) {
+      stepContentRef.value.startDraw()
+    }
+    return
+  }
+
+  // T: 开始计时
+  if (e.code === 'KeyT' && !examStore.timer.isRunning && examStore.timer.remainingTime > 0) {
+    e.preventDefault()
+    if (timerRef.value) {
+      timerRef.value.start()
+    }
+    return
+  }
+
+  // P: 暂停计时
+  if (e.code === 'KeyP' && examStore.timer.isRunning) {
+    e.preventDefault()
+    if (timerRef.value) {
+      timerRef.value.pause()
+    }
+    return
+  }
+
+  // R: 重置计时
+  if (e.code === 'KeyR') {
+    e.preventDefault()
+    if (timerRef.value) {
+      timerRef.value.reset()
+    }
+    return
+  }
+
+  // Ctrl+Enter: 完成考试
+  if (e.code === 'Enter' && e.ctrlKey) {
+    e.preventDefault()
+    completeExam()
+    return
+  }
+}
+
 onMounted(() => {
   loadSettings()
   examStore.loadStepSettings()
   restoreExamProgress()
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 

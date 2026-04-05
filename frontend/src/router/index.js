@@ -22,11 +22,6 @@ const routes = [
     component: () => import('@/views/SettingsView.vue')
   },
   {
-    path: '/header-settings',
-    name: 'HeaderSettings',
-    component: () => import('@/views/HeaderSettingsView.vue')
-  },
-  {
     path: '/help',
     name: 'Help',
     component: () => import('@/views/HelpView.vue')

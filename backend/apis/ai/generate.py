@@ -395,79 +395,110 @@ def batch_generate():
     count = data.get('count', 5)
     questions_per_set = data.get('questionsPerSet', 1)
 
+    logger.info(f"[AI Batch] provider={provider_id}, type={question_type}, knowledge={knowledge}, count={count}, per_set={questions_per_set}")
+
     provider = load_api_key(provider_id)
     if not provider:
+        logger.error(f"[AI Batch] Provider not found: {provider_id}")
         return jsonify({'error': 'Provider not configured'}), 400
+
+    logger.info(f"[AI Batch] Provider loaded: id={provider.get('id')}, baseUrl={provider.get('baseUrl')}, apiFormat={provider.get('apiFormat', 'openai')}")
 
     # 解析知识点
     topics = [k.strip() for k in knowledge.split(',') if k.strip()]
     if not topics:
         topics = ['计算机基础']
+    logger.info(f"[AI Batch] Topics: {topics}")
 
     # 构建 AI 提示词（根据题型不同）
     if questions_per_set > 1:
         # 套题模式
         if question_type == 'translation':
             prompt = f"""请生成 {count} 套翻译题，每套包含 {questions_per_set} 个英文段落。
+主题：{', '.join(topics)}
+
+请直接输出 JSON 格式，不要输出任何其他内容：
+{{
+  "sets": [
+    {{
+      "id": 1,
+      "subject": "主题名称",
+      "difficulty": "medium",
+      "questions": ["英文段落1", "英文段落2", ...]
+    }},
+    ...
+  ]
+}}
 
 要求：
-1. 内容涉及以下主题：{', '.join(topics)}
-2. 每个段落应该是完整的英文，长度适中（2-4句话）
-3. 内容要有专业性，适合研究生水平的翻译练习
-4. 直接输出英文内容，不要包含中文翻译
-
-重要：使用 "---" 分隔不同的套题，每套内的 {questions_per_set} 个段落各占一行。
-
-格式示例（每套{questions_per_set}个段落）：
-The first paragraph content here...
-The second paragraph content here...
----
-The first paragraph of next set...
-The second paragraph of next set...
----
-...
-
-请生成 {count} 套英文段落（每套{questions_per_set}个）："""
+1. 每个段落长度适中（2-4句话），专业性强
+2. difficulty 可选值：easy, medium, hard
+3. 只输出 JSON，不要有 markdown 代码块标记"""
         else:
             prompt = f"""请生成 {count} 套专业题目，每套包含 {questions_per_set} 道小题。
+知识点：{', '.join(topics)}
+
+请直接输出 JSON 格式，不要输出任何其他内容：
+{{
+  "sets": [
+    {{
+      "id": 1,
+      "subject": "知识点名称",
+      "difficulty": "medium",
+      "questions": ["题目1内容", "题目2内容", "题目3内容"]
+    }},
+    ...
+  ]
+}}
 
 要求：
-1. 题目涉及以下知识点：{', '.join(topics)}
-2. 每道题目都要有具体的题目内容，不能是占位符
-3. 题目要清晰、有针对性，适合研究生复试
-4. 每套题目围绕相同或相关知识点展开
-
-重要：使用 "---" 分隔不同的套题，每套内的 {questions_per_set} 道小题各占一行。
-
-格式示例（每套{questions_per_set}道题）：
-请解释TCP协议的三次握手过程及其作用。
-TCP和UDP协议的主要区别是什么？
----
-什么是操作系统的进程调度？
-进程和线程有什么区别？
----
-...
-
-请生成 {count} 套专业题目（每套{questions_per_set}道）："""
+1. 每道题目清晰、有针对性，适合研究生复试
+2. difficulty 可选值：easy, medium, hard
+3. 只输出 JSON，不要有 markdown 代码块标记"""
     else:
         # 单题模式
         if question_type == 'translation':
-            prompt = f"""请生成 {count} 个英文段落或句子用于翻译练习，要求：
-1. 内容涉及以下主题：{', '.join(topics)}
-2. 每个段落或句子应该是完整的英文内容，长度适中（2-4句话）
-3. 内容要有专业性，适合研究生水平的翻译练习
-4. 直接输出英文内容，每行一个段落/句子，不要有编号或其他格式
-5. 不要包含中文翻译，只输出英文原文
+            prompt = f"""请生成 {count} 个英文段落用于翻译练习。
+主题：{', '.join(topics)}
 
-请生成英文段落："""
+请直接输出 JSON 格式，不要输出任何其他内容：
+{{
+  "questions": [
+    {{
+      "id": 1,
+      "question": "英文段落内容",
+      "subject": "主题名称",
+      "difficulty": "medium"
+    }},
+    ...
+  ]
+}}
+
+要求：
+1. 每个段落长度适中（2-4句话），专业性强
+2. difficulty 可选值：easy, medium, hard
+3. 只输出 JSON，不要有 markdown 代码块标记"""
         else:
-            prompt = f"""请生成 {count} 道专业题目，要求：
-1. 题目涉及以下知识点：{', '.join(topics)}
-2. 每道题目都要有具体的题目内容，不能是占位符
-3. 题目要清晰、有针对性，适合研究生复试
-4. 直接输出题目列表，每行一个题目，不要有编号或其他格式
+            prompt = f"""请生成 {count} 道专业题目。
+知识点：{', '.join(topics)}
 
-请生成具体的题目内容："""
+请直接输出 JSON 格式，不要输出任何其他内容：
+{{
+  "questions": [
+    {{
+      "id": 1,
+      "question": "题目内容",
+      "subject": "知识点名称",
+      "difficulty": "medium"
+    }},
+    ...
+  ]
+}}
+
+要求：
+1. 题目清晰、有针对性，适合研究生复试
+2. difficulty 可选值：easy, medium, hard
+3. 只输出 JSON，不要有 markdown 代码块标记"""
 
     # 调用 AI API
     messages = [{'role': 'user', 'content': prompt}]
@@ -475,94 +506,114 @@ TCP和UDP协议的主要区别是什么？
     try:
         # 根据 provider 类型调用不同 API
         api_format = provider.get('apiFormat', 'openai')
+        logger.info(f"[AI Batch] Calling API, api_format={api_format}")
         if provider_id == 'minimax' or 'minimax' in provider.get('baseUrl', ''):
+            logger.info(f"[AI Batch] Using call_minimax")
             result = call_minimax(provider, messages)
         elif provider_id == 'modelscope' or 'modelscope' in provider.get('baseUrl', '') or 'modelscope.cn' in provider.get('baseUrl', ''):
+            logger.info(f"[AI Batch] Using call_modelscope")
             result = call_modelscope(provider, messages)
         elif provider_id == 'siliconflow' or 'siliconflow' in provider.get('baseUrl', ''):
-            # 硅基流动使用 OpenAI 兼容格式
+            logger.info(f"[AI Batch] Using call_openai_compatible (siliconflow)")
             result = call_openai_compatible(provider, messages)
         elif provider_id in ['claude', 'anthropic'] or 'anthropic' in provider.get('baseUrl', '') or api_format == 'anthropic':
+            logger.info(f"[AI Batch] Using call_anthropic")
             result = call_anthropic(provider, messages)
         else:
-            # 默认使用 OpenAI 格式
+            logger.info(f"[AI Batch] Using call_openai_compatible (default)")
             result = call_openai_compatible(provider, messages)
 
-        # 解析返回的题目
+        logger.info(f"[AI Batch] API returned, result length={len(result) if result else 0}")
+
+        # 解析返回的题目（优先 JSON，失败 fallback 到纯文本）
         questions = []
+        parsed_json = None
+
         if result:
+            # 尝试 JSON 解析
+            cleaned = result.replace('```json', '').replace('```', '').strip()
+            try:
+                parsed_json = json.loads(cleaned)
+                logger.info(f"[AI Batch] JSON 解析成功")
+            except Exception as e:
+                logger.warning(f"[AI Batch] JSON 解析失败，fallback 到文本解析: {e}")
+
+        if parsed_json:
+            # JSON 模式解析
             if questions_per_set > 1:
-                # 套题模式：按 --- 分隔多套题目
-                # 先清理结果，移除常见的 Markdown 代码块标记
+                # 套题模式
+                sets_data = parsed_json.get('sets', [])
+                for set_item in sets_data[:count]:
+                    sub_questions = set_item.get('questions', [])
+                    if len(sub_questions) < questions_per_set:
+                        # 补充不足的题目
+                        topic = topics[len(questions) % len(topics)]
+                        while len(sub_questions) < questions_per_set:
+                            sub_questions.append(f"请简述 {topic} 的基本概念。")
+                    questions.append({
+                        'id': len(questions) + 1,
+                        'question': sub_questions[:questions_per_set],
+                        'answer': f"{set_item.get('subject', topics[0])} 的参考答案",
+                        'difficulty': set_item.get('difficulty', 'medium'),
+                        'subject': set_item.get('subject', topics[0]),
+                        'is_set': True
+                    })
+            else:
+                # 单题模式
+                questions_data = parsed_json.get('questions', [])
+                for q in questions_data[:count]:
+                    questions.append({
+                        'id': len(questions) + 1,
+                        'question': q.get('question', ''),
+                        'answer': f"{q.get('subject', topics[0])} 的参考答案",
+                        'difficulty': q.get('difficulty', 'medium'),
+                        'subject': q.get('subject', topics[0])
+                    })
+        else:
+            # Fallback：纯文本解析（旧逻辑）
+            logger.info(f"[AI Batch] 使用文本解析 fallback")
+            if questions_per_set > 1:
                 cleaned_result = result.replace('```', '').strip()
                 sets = cleaned_result.split('---')
-                logger.debug(f"解析套题：找到 {len(sets)} 个分隔段，需要 {count} 套")
-                
                 for i, set_content in enumerate(sets[:count]):
                     set_content = set_content.strip()
                     if not set_content:
-                        logger.debug(f"套题 {i+1} 内容为空，跳过")
                         continue
-                    
-                    logger.debug(f"解析套题 {i+1}，内容长度: {len(set_content)}")
-                    
-                    # 解析每套题的子题
                     sub_questions = []
                     lines = [line.strip() for line in set_content.split('\n') if line.strip()]
-                    logger.debug(f"套题 {i+1} 找到 {len(lines)} 行内容")
-                    
                     for line in lines:
-                        # 跳过空行和分隔线
                         if not line or line == '---' or set(line) <= {'-', '=', '*'}:
                             continue
-                            
-                        # 移除行号 (1. 1、 1) 等
                         question_text = line
                         for prefix in ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.',
                                        '1、', '2、', '3、', '4、', '5、', '6、', '7、', '8、', '9、', '0、',
                                        '(1)', '(2)', '(3)', '(4)', '(5)', '(6)', '(7)', '(8)', '(9)', '(0)',
-                                       '题目1', '题目2', '题目3', '题目4', '题目5',
-                                       '-', '*', '•']:
+                                       '题目1', '题目2', '题目3', '题目4', '题目5', '-', '*', '•']:
                             if question_text.startswith(prefix):
                                 question_text = question_text[len(prefix):].strip()
                                 break
-                        
-                        # 移除 "题目：" 等前缀
                         for prefix in ['题目：', '题目:', '题：', '题:', 'Q:', 'Q：']:
                             if question_text.startswith(prefix):
                                 question_text = question_text[len(prefix):].strip()
                                 break
-                                
-                        if question_text and len(question_text) > 5:  # 至少5个字符才算有效题目
+                        if question_text and len(question_text) > 5:
                             sub_questions.append(question_text)
-                            logger.debug(f"  添加子题: {question_text[:30]}...")
                             if len(sub_questions) >= questions_per_set:
                                 break
-                    
-                    # 补充子题到指定数量
                     while len(sub_questions) < questions_per_set:
                         topic = topics[len(questions) % len(topics)]
                         sub_questions.append(f"请简述 {topic} 的基本概念。")
-                        logger.debug(f"  补充默认子题")
-                    
-                    # 只取前 questions_per_set 个子题
-                    sub_questions = sub_questions[:questions_per_set]
-                    
-                    # 构建套题格式
                     questions.append({
-                        'id': i + 1,
-                        'question': sub_questions,  # 数组格式表示套题
-                        'answer': f"{topics[i % len(topics)]} 的参考答案",
+                        'id': len(questions) + 1,
+                        'question': sub_questions[:questions_per_set],
+                        'answer': f"{topics[0]} 的参考答案",
                         'difficulty': 'medium',
-                        'subject': topics[i % len(topics)],
+                        'subject': topics[0],
                         'is_set': True
                     })
-                    logger.debug(f"套题 {i+1} 解析完成，共 {len(sub_questions)} 道子题")
             else:
-                # 单题模式：每行一题
                 lines = [line.strip() for line in result.split('\n') if line.strip()]
                 for i, line in enumerate(lines[:count]):
-                    # 移除行号
                     question_text = line
                     for prefix in ['1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.',
                                    '1、', '2、', '3、', '4、', '5、', '6、', '7、', '8、', '9、', '0、',
@@ -570,25 +621,21 @@ TCP和UDP协议的主要区别是什么？
                         if question_text.startswith(prefix):
                             question_text = question_text[len(prefix):].strip()
                             break
-
                     questions.append({
-                        'id': i + 1,
+                        'id': len(questions) + 1,
                         'question': question_text,
                         'answer': f"{topics[i % len(topics)]} 的参考答案",
                         'difficulty': 'medium',
                         'subject': topics[i % len(topics)]
                     })
 
-        # 如果 AI 没有返回足够题目，补充一些
+        # 补充不足的题目
         while len(questions) < count:
-            i = len(questions)
-            topic = topics[i % len(topics)]
+            topic = topics[len(questions) % len(topics)]
             if questions_per_set > 1:
-                # 补充套题
-                sub_questions = [f"请简述 {topic} 的基本概念和应用场景。" for _ in range(questions_per_set)]
                 questions.append({
-                    'id': i + 1,
-                    'question': sub_questions,
+                    'id': len(questions) + 1,
+                    'question': [f"请简述 {topic} 的基本概念。" for _ in range(questions_per_set)],
                     'answer': f"{topic} 的参考答案",
                     'difficulty': 'medium',
                     'subject': topic,
@@ -596,17 +643,18 @@ TCP和UDP协议的主要区别是什么？
                 })
             else:
                 questions.append({
-                    'id': i + 1,
+                    'id': len(questions) + 1,
                     'question': f"请简述 {topic} 的基本概念和应用场景。",
                     'answer': f"{topic} 的参考答案",
                     'difficulty': 'medium',
                     'subject': topic
                 })
 
+        logger.info(f"[AI Batch] 最终题目数量: {len(questions)}")
         return jsonify({'questions': questions})
 
     except Exception as e:
-        logger.error(f"AI 批量生成失败: {e}", exc_info=True)
+        logger.error(f"[AI Batch] Exception: {e}", exc_info=True)
         # 失败时返回模拟数据
         questions = []
         for i in range(count):

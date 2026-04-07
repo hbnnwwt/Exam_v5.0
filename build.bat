@@ -68,6 +68,10 @@ echo.
 
 cd frontend
 
+REM Add local bin to PATH for npm scripts (fixes Windows PATH inheritance issue)
+set "ORIGINAL_PATH=%PATH%"
+set "PATH=%~dp0frontend\node_modules\.bin;%PATH%"
+
 REM Check node_modules
 if not exist "node_modules" (
     echo [Step 1] Installing frontend dependencies...
@@ -87,7 +91,7 @@ if not exist "node_modules" (
 )
 
 echo [Step 2] Building frontend...
-call "C:\Program Files\nodejs\npm.cmd" run build
+call npm run build
 if errorlevel 1 (
     echo [Error] Build failed
     pause

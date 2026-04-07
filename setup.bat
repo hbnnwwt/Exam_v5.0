@@ -20,30 +20,38 @@ if exist "%PYTHON_EXE%" (
     goto :install_deps
 )
 
-REM Check if system Python is available
+REM Check if system Python 3.12 is available
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
-    echo [Info] System Python found:
-    python --version
+    for /f "delims=" %%v in ('python --version 2^>^&1') do set "PYTHON_VERSION_STR=%%v"
+    echo [Info] System Python found: %PYTHON_VERSION_STR%
     echo.
 
-    REM Check if venv already exists
-    if exist "%VENV_PYTHON%" (
-        echo [Info] Virtual environment already exists.
+    REM Only use system Python if it's 3.12.x
+    echo %PYTHON_VERSION_STR% | findstr /C:"Python 3.12" >nul 2>&1
+    if %errorlevel% equ 0 (
+        REM Check if venv already exists
+        if exist "%VENV_PYTHON%" (
+            echo [Info] Virtual environment already exists.
+            set "PYTHON_EXE=%VENV_PYTHON%"
+            goto :install_deps
+        )
+
+        REM Create virtual environment
+        echo [Creating] Virtual environment...
+        python -m venv "%VENV_DIR%"
+        if errorlevel 1 (
+            echo [Error] Failed to create virtual environment.
+            pause
+            exit /b 1
+        )
         set "PYTHON_EXE=%VENV_PYTHON%"
         goto :install_deps
+    ) else (
+        echo [Warning] System Python is not 3.12.x.
+        echo [Info] Will use portable Python 3.12 instead.
+        echo.
     )
-
-    REM Create virtual environment
-    echo [Creating] Virtual environment...
-    python -m venv "%VENV_DIR%"
-    if errorlevel 1 (
-        echo [Error] Failed to create virtual environment.
-        pause
-        exit /b 1
-    )
-    set "PYTHON_EXE=%VENV_PYTHON%"
-    goto :install_deps
 )
 
 REM No Python found - download portable version automatically
@@ -99,6 +107,17 @@ set "USE_PORTABLE=1"
 echo.
 
 :install_deps
+REM Safety check: verify Python version before installing
+for /f "delims=" %%v in ('"%PYTHON_EXE%" --version 2^>^&1') do set "ACTUAL_VERSION=%%v"
+echo [Info] Using: %ACTUAL_VERSION%
+echo %ACTUAL_VERSION% | findstr /C:"Python 3.12" >nul 2>&1
+if %errorlevel% neq 0 (
+    echo [Error] Python 3.12 is required but found: %ACTUAL_VERSION%
+    echo [Error] Please delete the venv and python_portable folders, then run setup again.
+    pause
+    exit /b 1
+)
+echo.
 echo [Installing] Dependencies...
 
 REM Set environment variables only for portable Python

@@ -27,8 +27,8 @@ if %errorlevel% equ 0 (
     for /f "delims=" %%v in ('python --version 2^>^&1') do set "PYTHON_VERSION_STR=%%v"
     echo [Info] System Python found: %PYTHON_VERSION_STR%
 
-    REM Only use system Python if it's 3.12.x
-    echo %PYTHON_VERSION_STR% | findstr /C:"Python 3.12" >nul 2>&1
+    REM Only use system Python if it's EXACTLY 3.12.x (not 3.1x)
+    echo %PYTHON_VERSION_STR% | findstr /C:"Python 3.12." >nul 2>&1
     if %errorlevel% equ 0 (
         set "SYS_PYTHON_OK=1"
         echo [Info] Using system Python 3.12.
@@ -113,10 +113,14 @@ echo.
 REM Safety check: verify Python version before installing
 for /f "delims=" %%v in ('"%PYTHON_EXE%" --version 2^>^&1') do set "ACTUAL_VERSION=%%v"
 echo [Info] Using: %ACTUAL_VERSION%
-echo %ACTUAL_VERSION% | findstr /C:"Python 3.12" >nul 2>&1
+echo %ACTUAL_VERSION% | findstr /C:"Python 3.12." >nul 2>&1
 if %errorlevel% neq 0 (
     echo [Error] Python 3.12 is required but found: %ACTUAL_VERSION%
-    echo [Error] Please delete the venv and python_portable folders, then run setup again.
+    if "%USE_PORTABLE%"=="1" (
+        echo [Error] Please delete the python_portable folder, then run setup again.
+    ) else (
+        echo [Error] Please delete the venv folder, then run setup again.
+    )
     pause
     exit /b 1
 )

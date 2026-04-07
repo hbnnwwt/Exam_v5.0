@@ -50,7 +50,7 @@ def call_minimax(provider_config, messages):
         'max_tokens': 1024
     }
 
-    response = requests.post(url, headers=headers, json=data, timeout=60)
+    response = requests.post(url, headers=headers, json=data, timeout=120)
     response.raise_for_status()
 
     result = response.json()
@@ -94,7 +94,7 @@ def call_modelscope(provider_config, messages):
         'temperature': 0.7
     }
 
-    response = requests.post(url, headers=headers, json=data, timeout=60)
+    response = requests.post(url, headers=headers, json=data, timeout=120)
     response.raise_for_status()
 
     result = response.json()
@@ -127,7 +127,7 @@ def call_openai_compatible(provider_config, messages):
         'temperature': 0.7
     }
 
-    response = requests.post(url, headers=headers, json=data, timeout=60)
+    response = requests.post(url, headers=headers, json=data, timeout=120)
     response.raise_for_status()
 
     result = response.json()
@@ -167,7 +167,7 @@ def call_anthropic(provider_config, messages):
     if system_content:
         data['system'] = system_content
 
-    response = requests.post(url, headers=headers, json=data, timeout=60)
+    response = requests.post(url, headers=headers, json=data, timeout=120)
     response.raise_for_status()
 
     result = response.json()

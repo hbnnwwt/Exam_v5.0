@@ -20,49 +20,46 @@ if exist "%PYTHON_EXE%" (
     goto :install_deps
 )
 
-REM Try to use py launcher (Python 3.12) - most reliable method
-set "FOUND_PYTHON="
-where py >nul 2>&1
-if %errorlevel% equ 0 (
-    py -3.12 --version >nul 2>&1
-    if %errorlevel% equ 0 (
-        echo [Info] Python 3.12 found via py launcher.
-        set "FOUND_PYTHON=py -3.12"
-        goto :create_venv
-    )
-)
-
-REM Search for Python 3.12 in standard locations
-if exist "C:\Python312\python.exe" (
-    echo [Info] Found Python 3.12 at C:\Python312.
-    set "FOUND_PYTHON=C:\Python312\python.exe"
-    goto :create_venv
-)
-if exist "C:\Program Files\Python312\python.exe" (
-    echo [Info] Found Python 3.12 at Program Files.
-    set "FOUND_PYTHON=C:\Program Files\Python312\python.exe"
-    goto :create_venv
-)
-if exist "C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python312\python.exe" (
-    echo [Info] Found Python 3.12 in user profile.
-    set "FOUND_PYTHON=C:\Users\%USERNAME%\AppData\Local\Programs\Python\Python312\python.exe"
-    goto :create_venv
-)
-
-REM Fallback: try system python if it's 3.12.x
+REM Detect system Python version
+set "SYS_VERSION="
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
-    for /f "delims=" %%v in ('python --version 2^>^&1') do set "VER=%%v"
-    echo %VER% | findstr /C:"Python 3.12." >nul 2>&1
-    if %errorlevel% equ 0 (
-        echo [Info] Found Python 3.12 in PATH.
-        set "FOUND_PYTHON=python"
-        goto :create_venv
+    for /f "delims=" %%v in ('python --version 2^>^&1') do set "SYS_VERSION=%%v"
+    echo [Info] System Python: !SYS_VERSION!
+    echo !SYS_VERSION! | findstr /C:"Python 3.12." >nul 2>&1
+    if !errorlevel! equ 0 (
+        echo [Info] System Python is 3.12.x, creating venv...
+        echo.
+        goto :create_venv_system
     )
+    echo [Warning] System Python is not 3.12.x.
+    echo [Info] Will download portable Python 3.12.4.
+    echo.
+    goto :download_portable
 )
 
-REM No suitable Python found - download portable version
-echo [Info] Python 3.12 not found.
+REM No Python in PATH at all
+echo [Info] Python not found in PATH.
+echo [Info] Will download portable Python 3.12.4.
+echo.
+goto :download_portable
+
+:create_venv_system
+if exist "%VENV_PYTHON%" (
+    echo [Info] Virtual environment already exists.
+    set "PYTHON_EXE=%VENV_PYTHON%"
+    goto :install_deps
+)
+python -m venv "%VENV_DIR%"
+if errorlevel 1 (
+    echo [Error] Failed to create virtual environment.
+    pause
+    exit /b 1
+)
+set "PYTHON_EXE=%VENV_PYTHON%"
+goto :install_deps
+
+:download_portable
 echo [Downloading] Python 3.12.4 portable...
 echo.
 
@@ -72,7 +69,7 @@ set "DOWNLOAD_URL=https://www.python.org/ftp/python/%PYTHON_VERSION%/%PYTHON_ZIP
 
 powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri '%DOWNLOAD_URL%' -OutFile '%~dp0%PYTHON_ZIP%' -UseBasicParsing }"
 if errorlevel 1 (
-    echo [Error] Download failed. Please check your internet connection.
+    echo [Error] Download failed.
     pause
     exit /b 1
 )
@@ -109,44 +106,22 @@ if not exist "%PYTHON_DIR%\Scripts\pip.exe" (
     exit /b 1
 )
 
-echo [Success] Python installed.
+echo [Success] Portable Python installed.
 set "USE_PORTABLE=1"
 echo.
 goto :install_deps
 
-:create_venv
-REM Use exact Python path with --python to create venv (not relying on PATH)
-echo [Creating] Virtual environment with %FOUND_PYTHON%...
-if exist "%VENV_PYTHON%" (
-    echo [Info] Virtual environment already exists.
-    set "PYTHON_EXE=%VENV_PYTHON%"
-    goto :install_deps
-)
-
-if "%FOUND_PYTHON%"=="py -3.12" (
-    py -3.12 -m venv "%VENV_DIR%"
-) else (
-    %FOUND_PYTHON% -m venv "%VENV_DIR%"
-)
-if errorlevel 1 (
-    echo [Error] Failed to create virtual environment.
-    pause
-    exit /b 1
-)
-set "PYTHON_EXE=%VENV_PYTHON%"
-echo.
-
 :install_deps
-REM Safety check: verify Python version
+REM Verify version before installing anything
 for /f "delims=" %%v in ('"%PYTHON_EXE%" --version 2^>^&1') do set "ACTUAL_VERSION=%%v"
-echo [Info] Using: %ACTUAL_VERSION%
-echo %ACTUAL_VERSION% | findstr /C:"Python 3.12." >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [Error] Python 3.12 is required but found: %ACTUAL_VERSION%
+echo [Info] Using: !ACTUAL_VERSION!
+echo !ACTUAL_VERSION! | findstr /C:"Python 3.12." >nul 2>&1
+if !errorlevel! neq 0 (
+    echo [Error] Python 3.12 required but found: !ACTUAL_VERSION!
     if "%USE_PORTABLE%"=="1" (
-        echo [Error] Please delete the python_portable folder, then run setup again.
+        echo [Error] Please delete python_portable folder and run again.
     ) else (
-        echo [Error] Please delete the venv folder, then run setup again.
+        echo [Error] Please delete venv folder and run again.
     )
     pause
     exit /b 1
@@ -154,7 +129,6 @@ if %errorlevel% neq 0 (
 echo.
 echo [Installing] Dependencies...
 
-REM Set environment variables only for portable Python
 if "%USE_PORTABLE%"=="1" (
     set "PYTHONPATH=%~dp0backend"
     set "PYTHONHOME=%PYTHON_DIR%"
@@ -163,7 +137,6 @@ if "%USE_PORTABLE%"=="1" (
     set "PYTHONHOME="
 )
 
-REM Use python -m pip instead of pip.exe
 "%PYTHON_EXE%" -m pip install --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn >nul 2>&1
 "%PYTHON_EXE%" -m pip install -r "%~dp0backend\requirements.txt" -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
 if errorlevel 1 (

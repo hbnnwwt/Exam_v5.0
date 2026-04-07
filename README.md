@@ -4,17 +4,17 @@
 
 ## 下载版本
 
-### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.9/Exam_v5.0-portable.zip) (54MB)
+### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-portable.zip) (54MB)
 - **解压即用**，无需安装任何环境
 - 包含便携版 Python
 - 适合追求开箱即用的用户
 
-### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.9/Exam_v5.0-release.zip) (2MB)
+### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-release.zip) (2MB)
 - 需先运行 `setup.bat` 安装依赖
 - 需要 Node.js 18+ 构建前端
 - 适合有 Python 环境的用户
 
-### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.9/Exam_v5.0-Source.zip) (67MB)
+### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-Source.zip) (67MB)
 - 完整源码
 
 ## 快速开始
@@ -112,12 +112,12 @@ Exam_v5.0/
 │   ├── config.py          # 配置模块
 │   └── requirements.txt   # 依赖版本锁定
 │
+├── docs/                  # 静态帮助文档 (HTML + 截图)
 ├── python_portable/       # 便携式 Python (仅 Portable 版)
-├── docs/                 # 文档
 │
 ├── run.bat                # 启动系统
 ├── build.bat              # 构建前端
-├── build-releases.bat     # 构建发布版本
+├── build-release.bat     # 构建发布版本 (release + portable)
 └── dev.bat                # 开发模式
 ```
 
@@ -140,8 +140,26 @@ Exam_v5.0/
 7. **AI 智能出题** - 基于 AI 自动生成翻译题和专业问题，支持套题模式和批量生成
 8. **多 AI Provider** - 支持 OpenAI / Claude / Gemini / MiniMax / ModelScope / SiliconFlow 等
 9. **庄重面试风 UI** - 专业、沉稳的视觉设计，深石板灰 + 金色强调色
+10. **双体系帮助文档** - Vue SPA 快速参考（`/help`）+ 静态 HTML 深度文档（`docs/`）
+
+## 帮助文档
+
+系统提供两层帮助文档：
+
+| 入口 | 路由/路径 | 定位 |
+|------|----------|------|
+| 内嵌帮助 | `/help` | 快速参考，8 章节覆盖日常操作 |
+| 文档中心 | `docs/index.html` | 深度文档，含详细截图和技术架构 |
+
+所有页面顶部导航均设有帮助入口。
 
 ## 更新日志
+
+### v1.0.10 (2026-04-07)
+- **帮助文档体系重构**：新增 Vue SPA 内嵌帮助（`/help`），8 章节快速参考
+- **深度文档完善**：静态 HTML 帮助页全面接入截图（考试设置/题库管理/AI配置/导出）
+- **HeaderSettingsView.vue 已移除**：功能合并到统一设置页面
+- **新增 build-release.bat**：一键构建 release/portable 双版本
 
 ### v1.0.9 (2026-04-02)
 - **API Key 安全存储**：新增 `api_keys` 数据库表，Key 从环境变量/数据库/JSON 三层递进读取

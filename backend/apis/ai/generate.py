@@ -435,26 +435,34 @@ def batch_generate():
 2. difficulty 可选值：easy, medium, hard
 3. 只输出 JSON，不要有 markdown 代码块标记"""
         else:
+            topics_str = ', '.join(topics)
             prompt = f"""请生成 {count} 套专业题目，每套包含 {questions_per_set} 道小题。
-知识点：{', '.join(topics)}
+知识点（共 {len(topics)} 个）：{topics_str}
+
+重要：每套题内的 {questions_per_set} 道小题，每道对应一个不同的知识点，{len(topics)} 个知识点轮换覆盖。
 
 请直接输出 JSON 格式，不要输出任何其他内容：
 {{
   "sets": [
     {{
       "id": 1,
-      "subject": "知识点名称",
       "difficulty": "medium",
-      "questions": ["题目1内容", "题目2内容", "题目3内容"]
+      "questions": [
+        {{"topic": "知识点1", "question": "题目内容"}},
+        {{"topic": "知识点2", "question": "题目内容"}},
+        {{"topic": "知识点3", "question": "题目内容"}}
+      ]
     }},
     ...
   ]
 }}
 
 要求：
-1. 每道题目清晰、有针对性，适合研究生复试
-2. difficulty 可选值：easy, medium, hard
-3. 只输出 JSON，不要有 markdown 代码块标记"""
+1. 每套题内的 {questions_per_set} 道题，每道对应一个不同的知识点
+2. 知识点在 {len(topics)} 个中轮换：第1题→{topics[0] if topics else '知识点1'}，第2题→{topics[1] if len(topics) > 1 else topics[0]}，第3题→{topics[2] if len(topics) > 2 else topics[0]}，以此类推
+3. 题目清晰、有针对性，适合研究生复试
+4. difficulty 可选值：easy, medium, hard
+5. 只输出 JSON，不要有 markdown 代码块标记"""
     else:
         # 单题模式
         if question_type == 'translation':
@@ -544,30 +552,52 @@ def batch_generate():
                 # 套题模式
                 sets_data = parsed_json.get('sets', [])
                 for set_item in sets_data[:count]:
-                    sub_questions = set_item.get('questions', [])
-                    if len(sub_questions) < questions_per_set:
-                        # 补充不足的题目
-                        topic = topics[len(questions) % len(topics)]
-                        while len(sub_questions) < questions_per_set:
-                            sub_questions.append(f"请简述 {topic} 的基本概念。")
+                    raw_questions = set_item.get('questions', [])
+                    sub_questions = []
+                    sub_subjects = []
+
+                    for idx, q_item in enumerate(raw_questions[:questions_per_set]):
+                        if isinstance(q_item, dict):
+                            q_text = q_item.get('question', '')
+                            q_topic = q_item.get('topic', topics[idx % len(topics)])
+                        else:
+                            q_text = str(q_item)
+                            q_topic = topics[idx % len(topics)]
+                        if q_text:
+                            sub_questions.append(q_text)
+                            sub_subjects.append(q_topic)
+
+                    # 补充不足的题目
+                    while len(sub_questions) < questions_per_set:
+                        topic = topics[len(sub_questions) % len(topics)]
+                        sub_questions.append(f"请简述 {topic} 的基本概念。")
+                        sub_subjects.append(topic)
+
+                    primary_subject = sub_subjects[0] if sub_subjects else topics[0]
                     questions.append({
                         'id': len(questions) + 1,
                         'question': sub_questions[:questions_per_set],
-                        'answer': f"{set_item.get('subject', topics[0])} 的参考答案",
+                        'answer': f"{primary_subject} 的参考答案",
                         'difficulty': set_item.get('difficulty', 'medium'),
-                        'subject': set_item.get('subject', topics[0]),
+                        'subject': primary_subject,
                         'is_set': True
                     })
             else:
                 # 单题模式
                 questions_data = parsed_json.get('questions', [])
                 for q in questions_data[:count]:
+                    if isinstance(q, dict):
+                        q_text = q.get('question', '')
+                        q_subject = q.get('subject', topics[0])
+                    else:
+                        q_text = str(q)
+                        q_subject = topics[0]
                     questions.append({
                         'id': len(questions) + 1,
-                        'question': q.get('question', ''),
-                        'answer': f"{q.get('subject', topics[0])} 的参考答案",
-                        'difficulty': q.get('difficulty', 'medium'),
-                        'subject': q.get('subject', topics[0])
+                        'question': q_text,
+                        'answer': f"{q_subject} 的参考答案",
+                        'difficulty': q.get('difficulty', 'medium') if isinstance(q, dict) else 'medium',
+                        'subject': q_subject
                     })
         else:
             # Fallback：纯文本解析（旧逻辑）

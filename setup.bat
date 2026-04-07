@@ -21,37 +21,40 @@ if exist "%PYTHON_EXE%" (
 )
 
 REM Check if system Python 3.12 is available
+set "SYS_PYTHON_OK=0"
 python --version >nul 2>&1
 if %errorlevel% equ 0 (
     for /f "delims=" %%v in ('python --version 2^>^&1') do set "PYTHON_VERSION_STR=%%v"
     echo [Info] System Python found: %PYTHON_VERSION_STR%
-    echo.
 
     REM Only use system Python if it's 3.12.x
     echo %PYTHON_VERSION_STR% | findstr /C:"Python 3.12" >nul 2>&1
     if %errorlevel% equ 0 (
-        REM Check if venv already exists
-        if exist "%VENV_PYTHON%" (
-            echo [Info] Virtual environment already exists.
-            set "PYTHON_EXE=%VENV_PYTHON%"
-            goto :install_deps
-        )
+        set "SYS_PYTHON_OK=1"
+        echo [Info] Using system Python 3.12.
+    ) else (
+        echo [Warning] System Python is not 3.12.x, will use portable Python 3.12.4.
+    )
+)
+echo.
 
-        REM Create virtual environment
-        echo [Creating] Virtual environment...
-        python -m venv "%VENV_DIR%"
-        if errorlevel 1 (
-            echo [Error] Failed to create virtual environment.
-            pause
-            exit /b 1
-        )
+REM Only create venv with system Python if it's 3.12
+if "%SYS_PYTHON_OK%"=="1" (
+    if exist "%VENV_PYTHON%" (
+        echo [Info] Virtual environment already exists.
         set "PYTHON_EXE=%VENV_PYTHON%"
         goto :install_deps
-    ) else (
-        echo [Warning] System Python is not 3.12.x.
-        echo [Info] Will use portable Python 3.12 instead.
-        echo.
     )
+
+    echo [Creating] Virtual environment...
+    python -m venv "%VENV_DIR%"
+    if errorlevel 1 (
+        echo [Error] Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
+    set "PYTHON_EXE=%VENV_PYTHON%"
+    goto :install_deps
 )
 
 REM No Python found - download portable version automatically

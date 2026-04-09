@@ -4,18 +4,15 @@
 
 ## 下载版本
 
-### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-portable.zip) (54MB)
+### [Exam_v5.0-portable.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.1.0/Exam_v5.0-portable.zip) (86MB)
 - **解压即用**，无需安装任何环境
 - 包含便携版 Python
 - 适合追求开箱即用的用户
 
-### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-release.zip) (2MB)
+### [Exam_v5.0-release.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.1.0/Exam_v5.0-release.zip) (17MB)
 - 需先运行 `setup.bat` 安装依赖
 - 需要 Node.js 18+ 构建前端
 - 适合有 Python 环境的用户
-
-### [Exam_v5.0-Source.zip](https://github.com/hbnnwwt/Exam_v5.0/releases/download/v1.0.10/Exam_v5.0-Source.zip) (67MB)
-- 完整源码
 
 ## 快速开始
 
@@ -154,6 +151,13 @@ Exam_v5.0/
 所有页面顶部导航均设有帮助入口。
 
 ## 更新日志
+
+### v1.1.0 (2026-04-09)
+- **套题模式 JSON 结构更新**：每道题对应不同知识点，数据结构更灵活
+- **AI 批量生成超时优化**：超时时间增加，支持更大批量生成
+- **AI 批量生成 JSON 化**：改用 JSON 输出格式，解析更可靠
+- **系统标题同步更新浏览器标签页**：修改标题后自动更新 Tab
+- **setup.bat 逻辑简化**：先检测版本再决定动作
 
 ### v1.0.10 (2026-04-07)
 - **帮助文档体系重构**：新增 Vue SPA 内嵌帮助（`/help`），8 章节快速参考

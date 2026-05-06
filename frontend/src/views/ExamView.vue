@@ -47,7 +47,7 @@
       <section class="center-panel">
         <!-- 考生输入区 / 开始考试 -->
         <div v-if="!examStore.currentStudent" class="student-input-area">
-          <h2>研究生复试面试</h2>
+          <h2>{{ settings.title || '研究生复试面试' }}</h2>
           <p class="subtitle">点击下方按钮开始考试，系统将自动分配考生编号</p>
           <button @click="startExam" :disabled="isProcessing" class="load-btn">开始考试</button>
         </div>
